@@ -4,14 +4,10 @@ import (
 	"../pizza"
 )
 
-type Finder struct {
-	 Pizza *pizza.Pizza
-}
-
-func (find Finder) valid(rowV pizza.Vector, cellV pizza.Vector) bool {
+func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
 
 	// find.Pizza.PrintVector(rowV, cellV)
-	ingredient := find.Pizza.Ingredient
+	ingredient := pizzaa.Ingredient
 
 	tomato := 0
 	mushroom := 0
@@ -20,7 +16,7 @@ func (find Finder) valid(rowV pizza.Vector, cellV pizza.Vector) bool {
 
 	for iny := range rowV.Range() {
 		for inx := range cellV.Range() {
-			run := find.Pizza.Cells[ iny ][ inx ].Type
+			run := pizzaa.Cells[ iny ][ inx ].Type
 
 			if run == 'T' {
 				tomato++
@@ -33,15 +29,15 @@ func (find Finder) valid(rowV pizza.Vector, cellV pizza.Vector) bool {
 	return tomato >= ingredient && mushroom >= ingredient
 }
 
-func (find *Finder) find(iny int, inx int) {
+func find(pizzaa *pizza.Pizza, iny int, inx int) {
 
-	cell := find.Pizza.Cells[ iny ][ inx ]
+	cell := pizzaa.Cells[ iny ][ inx ]
 
 	if cell.Slice != nil {
 		return
 	}
 
-	max := find.Pizza.MaxCells
+	max := pizzaa.MaxCells
 
 	var biggest *pizza.Slice
 
@@ -52,7 +48,7 @@ func (find *Finder) find(iny int, inx int) {
 			rowV := pizza.Vector{Start: iny, End: r}
 			cellV := pizza.Vector{Start: inx, End: c}
 
-			if find.Pizza.Columns.End < cellV.End || find.Pizza.Rows.End < rowV.End {
+			if pizzaa.Columns.End < cellV.End || pizzaa.Rows.End < rowV.End {
 				continue
 			}
 
@@ -74,7 +70,7 @@ func (find *Finder) find(iny int, inx int) {
 			// fmt.Printf("cell: %s\n", cellV.Stringify())
 			// fmt.Printf("size: %d\n", cellV.Size(rowV))
 
-			if ! find.valid(rowV, cellV) {
+			if ! valid(pizzaa, rowV, cellV) {
 				continue
 			}
 
@@ -97,22 +93,41 @@ func (find *Finder) find(iny int, inx int) {
 		// find.Pizza.PrintSlice(*biggest)
 		// fmt.Println("-------")
 
-		find.Pizza.AddSlice(*biggest)
+		pizzaa.AddSlice(*biggest)
 
 		// size := len(find.Pizza.Slices)
 		// find.Pizza.Slices[ size ] = *biggest
 	}
 }
 
-func (find *Finder) FindSlice() {
+func FindSlice(part *pizza.Pizza) {
 
 	// find.find(0, 0)
 
-	piz := find.Pizza
+	for _, iny := range part.Rows.Range() {
+		for _, inx := range part.Columns.Range() {
+			find(part, iny, inx)
+		}
+	}
+}
 
-	for _, iny := range piz.Rows.Range() {
-		for _, inx := range piz.Columns.Range() {
-			find.find(iny, inx)
+func cut(part *pizza.Pizza) {
+
+	if ! part.CutPossible() {
+		return
+	}
+
+	parts := part.Cut()
+
+	for _, val := range parts {
+
+		if val != nil {
+			cut(val)
+
+
+			// merge
+
+			break
 		}
 	}
 }

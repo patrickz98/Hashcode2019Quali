@@ -6,50 +6,14 @@ import (
 	"fmt"
 )
 
-var count = 0
-
-func cut(piz *pizza.Pizza) {
-
-	count++
-	fmt.Printf("count=%d\n", count)
-
-	if ! piz.CutPossible() {
-		fmt.Println("Done cutting...")
-		piz.PrintPizza()
-		fmt.Println("")
-		return
-	}
-
-	fmt.Println("Cutting...")
-	piz.PrintPizza()
-	fmt.Println("")
-
-	parts := piz.Cut()
-
-	for _, val := range parts {
-
-		if val != nil {
-			cut(val)
-
-			// merge
-
-			break
-		}
-	}
-}
-
 func main() {
-
-	for inx := 0; inx < 2; inx++ {
-
-	}
 
 	fmt.Println("Start")
 
-	inputPath := "/Users/patrick/Desktop/google/input/a_example.in"
-	// inputPath := "/Users/patrick/Desktop/google/input/b_small.in"
-	// inputPath := "/Users/patrick/Desktop/google/input/c_medium.in"
-	// inputPath := "/Users/patrick/Desktop/google/input/d_big.in"
+	inputPath := "../../input/a_example.in"
+	// inputPath := "../../input/b_small.in"
+	// inputPath := "../../input/c_medium.in"
+	// inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
 
@@ -81,8 +45,7 @@ func main() {
 	pizz.PrintParams()
 	// pizz.PrintSlices()
 
-	finder := slicer.Finder{Pizza: &pizz}
-	finder.FindSlice()
+	slicer.FindSlice(&pizz)
 
 	// pizz.PrintPizzaCells()
 	pizz.PrintSlices()
