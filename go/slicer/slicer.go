@@ -2,6 +2,7 @@ package slicer
 
 import (
 	"../pizza"
+	"../simple"
 )
 
 func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
@@ -12,10 +13,10 @@ func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
 	tomato := 0
 	mushroom := 0
 
-	// fmt.Printf("row=%s cellV=%s\n", rowV.Stringify(), cellV.Stringify())
+	// fmt.Printf("row=%s cell=%s\n", rowV.Stringify(), cellV.Stringify())
 
-	for iny := range rowV.Range() {
-		for inx := range cellV.Range() {
+	for _, iny := range rowV.Range() {
+		for _, inx := range cellV.Range() {
 			run := pizzaa.Cells[ iny ][ inx ].Type
 
 			if run == 'T' {
@@ -39,28 +40,25 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 
 	max := pizzaa.MaxCells
 
+	rowEnd := simple.Min(pizzaa.Rows.End, iny + max)
+	row := pizza.Vector{Start:iny, End: rowEnd}
+
+	colEnd := simple.Min(pizzaa.Columns.End, inx + max)
+	col := pizza.Vector{Start:inx, End: colEnd}
+
+	// fmt.Printf("### iny=%d inx=%d\n", iny, inx)
+	// fmt.Printf("### row=%s col=%s\n", row.Stringify(), col.Stringify())
+
 	var biggest *pizza.Slice
 
-	for r := iny; r <  iny + max; r++ {
-		for c := inx; c < inx + max; c++ {
-			// fmt.Printf("(%d, %d)\n", r, c)
-
+	for _, r := range row.Range() {
+		for _, c := range col.Range() {
 			rowV := pizza.Vector{Start: iny, End: r}
 			cellV := pizza.Vector{Start: inx, End: c}
 
 			if pizzaa.Columns.End < cellV.End || pizzaa.Rows.End < rowV.End {
 				continue
 			}
-
-			// for iny := rowV.Start; iny < rowV.End+1; iny++ {
-			// 	columns := find.Pizza.Cells[ iny ][ cellV.Start : cellV.End+1 ]
-			//
-			// 	for _, cell := range columns {
-			// 		if cell.Slice != nil {
-			// 			continue
-			// 		}
-			// 	}
-			// }
 
 			if rowV.Size(cellV) > max {
 				continue
@@ -102,7 +100,7 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 
 func FindSlice(part *pizza.Pizza) {
 
-	// find.find(0, 0)
+	// find(part, 0, 0)
 
 	for _, iny := range part.Rows.Range() {
 		for _, inx := range part.Columns.Range() {

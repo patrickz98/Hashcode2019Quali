@@ -55,7 +55,7 @@ func (piz Pizza) PrintPizza() {
 		columns := piz.Cells[ iny ][ piz.Columns.Start : piz.Columns.End+1 ]
 
 		for _, cell := range columns {
-			fmt.Print(cell.Type)
+			fmt.Print(string(cell.Type))
 		}
 
 		fmt.Println()

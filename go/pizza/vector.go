@@ -1,6 +1,8 @@
 package pizza
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type Vector struct {
 	Start int
@@ -35,10 +37,11 @@ func (vec Vector) Stringify() string {
 
 func (vec Vector) Range() []int {
 
+	// fmt.Printf("vec.Length = %d\n", vec.Length())
 	numbers := make([]int, vec.Length())
 
 	inx := 0
-	for num := vec.Start; num < vec.Length(); num++ {
+	for num := vec.Start; num <= vec.End; num++ {
 		numbers[ inx ] = num
 		inx++
 	}
