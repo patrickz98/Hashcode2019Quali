@@ -36,12 +36,6 @@ func (piz PizzaPart) PrintSlices() {
 		l := (sli.Column.Start - piz.VectorC.Start) * 2
 		r := (sli.Column.End   - piz.VectorC.Start) * 2 + 1
 
-		// t := sli.Row.Start * 2 + 1
-		// b := sli.Row.End   * 2 + 1
-
-		// l := sli.Column.Start * 2
-		// r := sli.Column.End   * 2 + 1
-
 		// piz.PrintSlicesPlain()
 		// sli.PrintVector()
 
@@ -164,6 +158,20 @@ func (piz *PizzaPart) AddSlice(slice Slice) {
 	}
 
 	piz.Slices = append(piz.Slices, &slice)
+}
+
+func (piz PizzaPart) PrintScore() {
+
+	count := 0
+
+	for _, sli := range piz.Slices {
+		count += sli.Size()
+	}
+
+	total := piz.VectorC.Length() * piz.VectorR.Length()
+	fmt.Printf("total cells: %d\n", total)
+	fmt.Printf("covered: %d\n", count)
+	fmt.Printf("percent: %.2f%%\n", (float32(count) / float32(total)) * 100)
 }
 
 func InitPizzaPart(pizza *Pizza) *PizzaPart {

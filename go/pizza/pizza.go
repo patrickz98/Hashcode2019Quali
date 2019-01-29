@@ -35,20 +35,6 @@ func (piz Pizza) PrintParams() {
 	fmt.Println(string(bytes))
 }
 
-func (piz Pizza) PrintScore() {
-
-	count := 0
-
-	for _, sli := range piz.Slices {
-		count += sli.Size()
-	}
-
-	total := piz.Columns * piz.Rows
-	fmt.Printf("total cells: %d\n", total)
-	fmt.Printf("covered: %d\n", count)
-	fmt.Printf("percent: %.2f%%\n", (float32(count) / float32(total)) * 100)
-}
-
 func (piz Pizza) PrintPizza() {
 
 	row := Vector{Start: 0, End: piz.Rows - 1}

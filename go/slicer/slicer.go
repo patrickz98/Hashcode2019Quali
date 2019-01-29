@@ -92,18 +92,6 @@ func find(pizzaa *pizza.PizzaPart, iny int, inx int) {
 	}
 }
 
-func SearchSlices(pizz *pizza.Pizza) {
-
-	start := pizza.InitPizzaPart(pizz)
-
-	parts := start.Cut()
-
-	findSlices(parts[ 3 ])
-
-	parts[ 3 ].PrintPart()
-	parts[ 3 ].PrintSlices()
-}
-
 func findSlices(part *pizza.PizzaPart) {
 
 	// find(part, 0, 0)
@@ -115,16 +103,62 @@ func findSlices(part *pizza.PizzaPart) {
 	}
 }
 
+func SearchSlices(pizz *pizza.Pizza) {
+
+	start := pizza.InitPizzaPart(pizz)
+
+	// test := recursiveMatch(start)
+	// test.PrintSlices()
+	// test.PrintScore()
+
+	findSlices(start)
+	start.PrintSlices()
+	start.PrintScore()
+
+
+	// bab := start.Cut()
+	// parts := bab[ 1 ].Cut()
+	// bab[ 1 ].PrintSlices()
+	//
+	// for inx := range parts {
+	// 	findSlices(parts[ inx ])
+	//
+	// 	fmt.Println("-----------------")
+	// 	parts[ inx ].PrintSlices()
+	// 	fmt.Println("-----------------")
+	// }
+	//
+	// test := merge(start.Pizza, parts)
+	// test.PrintSlices()
+
+	// parts2 := parts[ 3 ].Cut()
+	//
+	// findSlices(parts2[ 3 ])
+	//
+	// parts2[ 3 ].PrintPart()
+	// parts2[ 3 ].PrintSlices()
+}
+
 func merge(pizz *pizza.Pizza, parts []*pizza.PizzaPart) *pizza.PizzaPart {
 
 	slices := make([]*pizza.Slice, 0)
-	rVector := pizza.Vector{Start:0, End: 0}
-	cVector := pizza.Vector{Start:0, End: 0}
+
+	var rVector *pizza.Vector
+	var cVector *pizza.Vector
 
 	for _, part := range parts {
 
-		rVector = rVector.Join(part.VectorR)
-		cVector = cVector.Join(part.VectorC)
+		if rVector == nil {
+			rVector = &part.VectorR
+		} else {
+			rVector = rVector.Join(part.VectorR)
+		}
+
+		if cVector == nil {
+			cVector = &part.VectorC
+		} else {
+			cVector = cVector.Join(part.VectorC)
+		}
 
 		for _, sli := range part.Slices {
 			slices = append(slices, sli)
@@ -134,14 +168,20 @@ func merge(pizz *pizza.Pizza, parts []*pizza.PizzaPart) *pizza.PizzaPart {
 	return &pizza.PizzaPart{
 		Pizza: pizz,
 		Slices: slices,
-		VectorR: rVector,
-		VectorC: cVector,
+		VectorR: *rVector,
+		VectorC: *cVector,
 	}
+}
+
+func expandSlices(part *pizza.PizzaPart) {
+
+
 }
 
 func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 
 	if ! part.CutPossible() {
+
 		return part
 	}
 
@@ -149,7 +189,17 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 
 	for inx, val := range parts {
 		parts[ inx ] = recursiveMatch(val)
+		findSlices(parts[ inx ])
+
+		// fmt.Println("-----------------")
+		// parts[ inx ].PrintSlices()
+		// fmt.Println("-----------------")
 	}
 
-	return merge(part.Pizza, parts)
+	merged := merge(part.Pizza, parts)
+
+	// Fill open gaps
+	findSlices(merged)
+
+	return merged
 }
