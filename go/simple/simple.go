@@ -1,6 +1,8 @@
 package simple
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 func CheckErr(err error) {
 	if err != nil {

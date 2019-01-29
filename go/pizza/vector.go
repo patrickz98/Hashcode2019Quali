@@ -2,6 +2,7 @@ package pizza
 
 import (
 	"strconv"
+	"../simple"
 )
 
 type Vector struct {
@@ -52,4 +53,12 @@ func (vec Vector) Range() []int {
 func (vec Vector) Size(vec1 Vector) int {
 
 	return vec.Length() * vec1.Length()
+}
+
+func (vec Vector) Join(vec1 Vector) Vector {
+
+	start := simple.Min(vec1.Start, vec.Start)
+	end := simple.Max(vec1.End, vec.End)
+
+	return Vector{Start: start, End: end}
 }

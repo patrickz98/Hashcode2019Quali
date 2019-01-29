@@ -5,11 +5,9 @@ import (
 	"../simple"
 )
 
-func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
+func valid(pizzaa *pizza.PizzaPart, rowV pizza.Vector, cellV pizza.Vector) bool {
 
 	// find.Pizza.PrintVector(rowV, cellV)
-	ingredient := pizzaa.Ingredient
-
 	tomato := 0
 	mushroom := 0
 
@@ -17,7 +15,7 @@ func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
 
 	for _, iny := range rowV.Range() {
 		for _, inx := range cellV.Range() {
-			cell := pizzaa.Cells[ iny ][ inx ]
+			cell := pizzaa.Pizza.Cells[ iny ][ inx ]
 
 			if cell.Slice != nil {
 				return false
@@ -31,23 +29,25 @@ func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
 		}
 	}
 
+	ingredient := pizzaa.Pizza.Ingredient
+
 	return tomato >= ingredient && mushroom >= ingredient
 }
 
-func find(pizzaa *pizza.Pizza, iny int, inx int) {
+func find(pizzaa *pizza.PizzaPart, iny int, inx int) {
 
-	cell := pizzaa.Cells[ iny ][ inx ]
+	cell := pizzaa.Pizza.Cells[ iny ][ inx ]
 
 	if cell.Slice != nil {
 		return
 	}
 
-	max := pizzaa.MaxCells
+	max := pizzaa.Pizza.MaxCells
 
-	rowEnd := simple.Min(pizzaa.Rows.End, iny + max)
+	rowEnd := simple.Min(pizzaa.VectorR.End, iny + max)
 	row := pizza.Vector{Start:iny, End: rowEnd}
 
-	colEnd := simple.Min(pizzaa.Columns.End, inx + max)
+	colEnd := simple.Min(pizzaa.VectorC.End, inx + max)
 	col := pizza.Vector{Start:inx, End: colEnd}
 
 	// fmt.Printf("### iny=%d inx=%d\n", iny, inx)
@@ -92,34 +92,64 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 	}
 }
 
-func FindSlice(part *pizza.Pizza) {
+func SearchSlices(pizz *pizza.Pizza) {
+
+	start := pizza.InitPizzaPart(pizz)
+
+	parts := start.Cut()
+
+	findSlices(parts[ 3 ])
+
+	parts[ 3 ].PrintPart()
+	parts[ 3 ].PrintSlices()
+}
+
+func findSlices(part *pizza.PizzaPart) {
 
 	// find(part, 0, 0)
 
-	for _, iny := range part.Rows.Range() {
-		for _, inx := range part.Columns.Range() {
+	for _, iny := range part.VectorR.Range() {
+		for _, inx := range part.VectorC.Range() {
 			find(part, iny, inx)
 		}
 	}
 }
 
-func cut(part *pizza.Pizza) {
+func merge(pizz *pizza.Pizza, parts []*pizza.PizzaPart) *pizza.PizzaPart {
+
+	slices := make([]*pizza.Slice, 0)
+	rVector := pizza.Vector{Start:0, End: 0}
+	cVector := pizza.Vector{Start:0, End: 0}
+
+	for _, part := range parts {
+
+		rVector = rVector.Join(part.VectorR)
+		cVector = cVector.Join(part.VectorC)
+
+		for _, sli := range part.Slices {
+			slices = append(slices, sli)
+		}
+	}
+
+	return &pizza.PizzaPart{
+		Pizza: pizz,
+		Slices: slices,
+		VectorR: rVector,
+		VectorC: cVector,
+	}
+}
+
+func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 
 	if ! part.CutPossible() {
-		return
+		return part
 	}
 
 	parts := part.Cut()
 
-	for _, val := range parts {
-
-		if val != nil {
-			cut(val)
-
-
-			// merge
-
-			break
-		}
+	for inx, val := range parts {
+		parts[ inx ] = recursiveMatch(val)
 	}
+
+	return merge(part.Pizza, parts)
 }

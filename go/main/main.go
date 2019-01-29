@@ -32,13 +32,12 @@ func main() {
 	// inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
-
-	// pizz.Slices = cuters
-
 	pizz.PrintParams()
 	pizz.PrintPizza()
-
 	fmt.Println("-------")
+
+	slicer.SearchSlices(&pizz)
+
 	// pizz.PrintSlices()
 
 	// parts := pizz.Cut()
@@ -49,10 +48,10 @@ func main() {
 	// slicer.FindSlice(part)
 	// part.PrintSlices()
 
-	slicer.FindSlice(&pizz)
+	// slicer.FindSlice(&pizz)
 
 	// pizz.PrintPizzaCells()
-	pizz.PrintSlices()
+	// pizz.PrintSlices()
 	// pizz.PrintSlicesPlain()
 	// pizz.PrintScore()
 }
