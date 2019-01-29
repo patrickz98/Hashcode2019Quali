@@ -16,8 +16,8 @@ func main() {
 	// 	fmt.Printf("inx=%d\n", inx)
 	// }
 
-	inputPath := "../../input/a_example.in"
-	// inputPath := "../../input/b_small.in"
+	// inputPath := "../../input/a_example.in"
+	inputPath := "../../input/b_small.in"
 	// inputPath := "../../input/c_medium.in"
 	// inputPath := "../../input/d_big.in"
 
@@ -33,5 +33,6 @@ func main() {
 
 	// pizz.PrintPizzaCells()
 	pizz.PrintSlices()
+	pizz.PrintSlicesPlain()
 	pizz.PrintScore()
 }

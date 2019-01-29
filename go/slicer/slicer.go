@@ -17,9 +17,13 @@ func valid(pizzaa *pizza.Pizza, rowV pizza.Vector, cellV pizza.Vector) bool {
 
 	for _, iny := range rowV.Range() {
 		for _, inx := range cellV.Range() {
-			run := pizzaa.Cells[ iny ][ inx ].Type
+			cell := pizzaa.Cells[ iny ][ inx ]
 
-			if run == 'T' {
+			if cell.Slice != nil {
+				return false
+			}
+
+			if cell.Type == 'T' {
 				tomato++
 			} else {
 				mushroom++
@@ -53,14 +57,13 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 
 	for _, r := range row.Range() {
 		for _, c := range col.Range() {
+
 			rowV := pizza.Vector{Start: iny, End: r}
 			cellV := pizza.Vector{Start: inx, End: c}
 
-			if pizzaa.Columns.End < cellV.End || pizzaa.Rows.End < rowV.End {
-				continue
-			}
+			slic := pizza.Slice{Row: rowV, Column: cellV}
 
-			if rowV.Size(cellV) > max {
+			if slic.Size() > max {
 				continue
 			}
 
@@ -72,7 +75,6 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 				continue
 			}
 
-			slic := pizza.Slice{Row: rowV, Column: cellV}
 
 			if (biggest == nil) || (biggest.Size() < slic.Size()) {
 				biggest = &slic

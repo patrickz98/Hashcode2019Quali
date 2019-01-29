@@ -124,6 +124,13 @@ func (piz Pizza) PrintSlices() {
 	}
 }
 
+func (piz Pizza) PrintSlicesPlain() {
+
+	for _, sli := range piz.Slices {
+		sli.PrintVector()
+	}
+}
+
 func (piz Pizza) PrintScore() {
 
 	count := 0
