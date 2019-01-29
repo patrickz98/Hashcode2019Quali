@@ -79,11 +79,6 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 			if (biggest == nil) || (biggest.Size() < slic.Size()) {
 				biggest = &slic
 			}
-
-			// find.Pizza.Slices = make([]pizza.Slice, 1)
-			// find.Pizza.Slices[ 0 ] =
-
-			// find.Pizza.PrintSlices()
 		}
 	}
 
@@ -94,9 +89,6 @@ func find(pizzaa *pizza.Pizza, iny int, inx int) {
 		// fmt.Println("-------")
 
 		pizzaa.AddSlice(*biggest)
-
-		// size := len(find.Pizza.Slices)
-		// find.Pizza.Slices[ size ] = *biggest
 	}
 }
 

@@ -38,7 +38,7 @@ type Cell struct {
 type Pizza struct {
 	*parameters
 	Cells  [][]Cell
-	Slices []Slice
+	Slices []*Slice
 }
 
 func (piz Pizza) PrintParams() {
@@ -82,19 +82,16 @@ func (piz Pizza) PrintSlices() {
 
 	field := make([][]rune, height)
 
-	for inx := range field {
-		field[ inx ] = make([]rune, width)
-	}
-
 	for iny := range field {
+		field[ iny ] = make([]rune, width)
 		for inx := range field[ iny ] {
 			field[ iny ][ inx ] = ' '
 		}
 	}
 
-	for iny := range piz.Rows.Range() {
-		for inx := range piz.Columns.Range() {
-			field[ iny * 2 + 1 ][ inx * 2 +1 ] = piz.Cells[ iny ][ inx ].Type
+	for iny, yy := range piz.Rows.Range() {
+		for inx, xx := range piz.Columns.Range() {
+			field[ iny * 2 + 1 ][ inx * 2 + 1 ] = piz.Cells[ yy ][ xx ].Type
 		}
 	}
 
@@ -160,7 +157,7 @@ func (piz Pizza) CutPeace(row Vector, column Vector) *Pizza {
 			MaxCells:   piz.MaxCells,
 		},
 		Cells:  piz.Cells,
-		Slices: []Slice{},
+		Slices: []*Slice{},
 	}
 
 	return pizza
@@ -249,7 +246,7 @@ func (piz *Pizza) AddSlice(slice Slice) {
 		}
 	}
 
-	piz.Slices = append(piz.Slices, slice)
+	piz.Slices = append(piz.Slices, &slice)
 }
 
 
@@ -298,7 +295,7 @@ func initPizza(params parameters, lines []string) Pizza {
 	return Pizza{
 		parameters: &params,
 		Cells:      data,
-		Slices:     []Slice{},
+		Slices:     []*Slice{},
 	}
 }
 

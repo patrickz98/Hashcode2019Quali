@@ -6,6 +6,16 @@ import (
 	"fmt"
 )
 
+func printParts(parts []*pizza.Pizza) {
+
+	for _, parts := range parts {
+		if parts != nil {
+			fmt.Println("--------------")
+			parts.PrintPizza()
+		}
+	}
+}
+
 func main() {
 
 	fmt.Println("Start")
@@ -26,13 +36,23 @@ func main() {
 	// pizz.Slices = cuters
 
 	pizz.PrintParams()
-	// pizz.PrintPizza()
+	pizz.PrintPizza()
+
+	fmt.Println("-------")
 	// pizz.PrintSlices()
+
+	// parts := pizz.Cut()
+	// printParts(parts)
+
+	// part := parts[ 2 ]
+	// part.PrintPizza()
+	// slicer.FindSlice(part)
+	// part.PrintSlices()
 
 	slicer.FindSlice(&pizz)
 
 	// pizz.PrintPizzaCells()
 	pizz.PrintSlices()
-	pizz.PrintSlicesPlain()
-	pizz.PrintScore()
+	// pizz.PrintSlicesPlain()
+	// pizz.PrintScore()
 }
