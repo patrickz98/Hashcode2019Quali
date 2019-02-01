@@ -62,3 +62,25 @@ func (vec Vector) Join(vec1 Vector) *Vector {
 
 	return &Vector{Start: start, End: end}
 }
+
+func (vec Vector) Overlap(vec2 Vector) bool {
+
+	if vec.Start <= vec2.Start && vec.End >= vec2.Start {
+		return true
+	}
+
+	if vec.Start <= vec2.End && vec.End >= vec2.End {
+		return true
+	}
+
+	return false
+}
+
+func (vec Vector) Equals(vec2 Vector) bool {
+
+	if vec.Start == vec2.Start && vec.End == vec2.End {
+		return true
+	}
+
+	return false
+}

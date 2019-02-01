@@ -3,38 +3,190 @@ package slicer
 import (
 	"../pizza"
 	"../simple"
+	"fmt"
 )
 
-func valid(pizzaa *pizza.PizzaPart, rowV pizza.Vector, cellV pizza.Vector) bool {
+func overlap(pizzaa *pizza.PizzaPart, slice *pizza.Slice) bool {
 
-	// find.Pizza.PrintVector(rowV, cellV)
-	tomato := 0
-	mushroom := 0
-
-	// fmt.Printf("row=%s cell=%s\n", rowV.Stringify(), cellV.Stringify())
-
-	for _, iny := range rowV.Range() {
-		for _, inx := range cellV.Range() {
+	for _, iny := range slice.Row.Range() {
+		for _, inx := range slice.Column.Range() {
 			cell := pizzaa.Pizza.Cells[ iny ][ inx ]
 
 			if cell.Slice != nil {
-				return false
-			}
-
-			if cell.Type == 'T' {
-				tomato++
-			} else {
-				mushroom++
+				return true
 			}
 		}
 	}
 
-	ingredient := pizzaa.Pizza.Ingredient
-
-	return tomato >= ingredient && mushroom >= ingredient
+	return false
 }
 
-func find(pizzaa *pizza.PizzaPart, iny int, inx int) {
+func findSlice(pizzaa *pizza.Pizza, row pizza.Vector, col pizza.Vector) []*pizza.Slice {
+
+	max := pizzaa.MaxCells
+
+	slices := make([]*pizza.Slice, 0)
+
+	for _, iny := range row.Range() {
+		for _, inx := range col.Range() {
+
+			rowEnd := simple.Min(row.End, iny + max)
+			searchR := pizza.Vector{Start:iny, End: rowEnd}
+
+			colEnd := simple.Min(col.End, inx + max)
+			searchC := pizza.Vector{Start:inx, End: colEnd}
+
+			for _, r := range searchR.Range() {
+				for _, c := range searchC.Range() {
+
+					rowV := pizza.Vector{Start: iny, End: r}
+					cellV := pizza.Vector{Start: inx, End: c}
+
+					slic := &pizza.Slice{
+						Pizza: pizzaa,
+						Row: rowV,
+						Column: cellV,
+					}
+
+					if slic.Oversize() {
+						continue
+					}
+
+					if ! slic.IngredientsOk() {
+						continue
+					}
+
+					// fmt.Printf("row: %s\n", rowV.Stringify())
+					// fmt.Printf("cell: %s\n", cellV.Stringify())
+					// fmt.Printf("size: %d\n", cellV.Size(rowV))
+
+					slices = append(slices, slic)
+				}
+			}
+		}
+	}
+
+	return slices
+}
+
+func checkOverlap(part *pizza.PizzaPart, orig *pizza.Slice, slice *pizza.Slice) bool {
+
+	// fmt.Println("------------ check overlap ------------")
+	// slice.PrintInfo()
+	// fmt.Println("++++")
+
+	for _, sli := range part.Slices {
+
+		if sli == orig {
+			continue
+		}
+
+		if sli.Overlap(slice) {
+
+			// sli.PrintInfo()
+			// fmt.Println("------------ overlap true ------------")
+			return true
+		}
+	}
+
+	// fmt.Println("------------ overlap false ------------")
+
+	return false
+}
+
+func expandSlices(part *pizza.PizzaPart) {
+
+	slices := part.Slices
+
+	for sliceIndex, sli := range slices {
+		if sli.HasMaxSize() {
+			continue
+		}
+
+		// sliceSize := sli.Size()
+
+		biggest := sli
+
+		rowExpand := (part.Pizza.MaxCells / sli.Column.Length()) - sli.Row.Length()
+		colExpand := (part.Pizza.MaxCells / sli.Row.Length())    - sli.Column.Length()
+
+		sli.PrintInfo()
+		fmt.Printf("rowExpand=%d\n", rowExpand)
+		fmt.Printf("colExpand=%d\n", colExpand)
+
+		// TODO: Optimisation
+
+		for iny := -rowExpand; iny <= rowExpand; iny++ {
+
+			var row pizza.Vector
+
+			if iny < 0 {
+				rStart := simple.Max(part.VectorR.Start, sli.Row.Start + iny)
+				row = pizza.Vector{Start: rStart, End: sli.Row.End}
+			} else {
+				rEnd := simple.Min(part.VectorR.End, sli.Row.End + iny)
+				row = pizza.Vector{Start: sli.Row.Start, End: rEnd}
+			}
+
+			if iny == 0 {
+				row = sli.Row
+			}
+
+			for inx := -colExpand; inx <= colExpand; inx++ {
+
+				var col pizza.Vector
+
+				if inx < 0 {
+					cStart := simple.Max(part.VectorC.Start, sli.Column.Start + inx)
+					col = pizza.Vector{Start: cStart, End: sli.Column.End}
+				} else {
+					cEnd := simple.Min(part.VectorC.End, sli.Column.End+inx)
+					col = pizza.Vector{Start: sli.Column.Start, End: cEnd}
+				}
+
+				if inx == 0 {
+					col = sli.Column
+				}
+
+				expandedSlice := &pizza.Slice{
+					Pizza: sli.Pizza,
+					Row: row,
+					Column: col,
+				}
+
+				// fmt.Printf("iny=%d inx=%d\n", iny, inx)
+				// fmt.Printf("row=%s col=%s\n", row.Stringify(), col.Stringify())
+				// expandedSlice.PrintInfo()
+				// expandedSlice.PrintVector()
+
+				if expandedSlice.Equals(sli) {
+					continue
+				}
+
+				if ! expandedSlice.IngredientsOk() {
+					continue
+				}
+
+				if checkOverlap(part, sli, expandedSlice) {
+					continue
+				}
+
+				if biggest.Size() < expandedSlice.Size() {
+					biggest = expandedSlice
+				}
+
+				// expandedSlice.PrintInfo()
+			}
+		}
+
+		part.Slices[ sliceIndex ] = biggest
+
+		biggest.PrintInfo()
+		fmt.Println("**************************")
+	}
+}
+
+func findAt(pizzaa *pizza.PizzaPart, iny int, inx int) {
 
 	cell := pizzaa.Pizza.Cells[ iny ][ inx ]
 
@@ -50,55 +202,39 @@ func find(pizzaa *pizza.PizzaPart, iny int, inx int) {
 	colEnd := simple.Min(pizzaa.VectorC.End, inx + max)
 	col := pizza.Vector{Start:inx, End: colEnd}
 
-	// fmt.Printf("### iny=%d inx=%d\n", iny, inx)
-	// fmt.Printf("### row=%s col=%s\n", row.Stringify(), col.Stringify())
+	slices := findSlice(pizzaa.Pizza, row, col)
 
-	var biggest *pizza.Slice
+	var smallest *pizza.Slice
 
-	for _, r := range row.Range() {
-		for _, c := range col.Range() {
+	for _, slic := range slices {
 
-			rowV := pizza.Vector{Start: iny, End: r}
-			cellV := pizza.Vector{Start: inx, End: c}
+		if slic == nil {
+			continue
+		}
 
-			slic := pizza.Slice{Row: rowV, Column: cellV}
+		if overlap(pizzaa, slic) {
+			continue
+		}
 
-			if slic.Size() > max {
-				continue
-			}
+		// slic.PrintInfo()
 
-			// fmt.Printf("row: %s\n", rowV.Stringify())
-			// fmt.Printf("cell: %s\n", cellV.Stringify())
-			// fmt.Printf("size: %d\n", cellV.Size(rowV))
-
-			if ! valid(pizzaa, rowV, cellV) {
-				continue
-			}
-
-
-			if (biggest == nil) || (biggest.Size() < slic.Size()) {
-				biggest = &slic
-			}
+		if (smallest == nil) || (smallest.Size() > slic.Size()) {
+			smallest = slic
 		}
 	}
 
-	if biggest != nil {
-		// fmt.Println("Biggest")
-		// biggest.PrintVector()
-		// find.Pizza.PrintSlice(*biggest)
-		// fmt.Println("-------")
-
-		pizzaa.AddSlice(*biggest)
+	if smallest != nil {
+		pizzaa.AddSlice(*smallest)
 	}
 }
 
 func findSlices(part *pizza.PizzaPart) {
 
-	// find(part, 0, 0)
+	// findAt(part, 0, 0)
 
 	for _, iny := range part.VectorR.Range() {
 		for _, inx := range part.VectorC.Range() {
-			find(part, iny, inx)
+			findAt(part, iny, inx)
 		}
 	}
 }
@@ -111,15 +247,25 @@ func SearchSlices(pizz *pizza.Pizza) {
 	// test.PrintSlices()
 	// test.PrintScore()
 
-	findSlices(start)
-	start.PrintSlices()
-	start.PrintScore()
+	// findSlices(start)
+	// start.PrintSlices()
+	// start.PrintScore()
 
+	bab := start.Cut()
 
-	// bab := start.Cut()
-	// parts := bab[ 1 ].Cut()
-	// bab[ 1 ].PrintSlices()
-	//
+	part := bab[ 0 ]
+
+	findSlices(part)
+	part.PrintSlices()
+
+	fmt.Println("---------- expandSlices ----------")
+	expandSlices(part)
+
+	part.PrintSlices()
+
+	// start.Slices = part.Slices
+	// start.PrintSlices()
+
 	// for inx := range parts {
 	// 	findSlices(parts[ inx ])
 	//
@@ -171,11 +317,6 @@ func merge(pizz *pizza.Pizza, parts []*pizza.PizzaPart) *pizza.PizzaPart {
 		VectorR: *rVector,
 		VectorC: *cVector,
 	}
-}
-
-func expandSlices(part *pizza.PizzaPart) {
-
-
 }
 
 func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
