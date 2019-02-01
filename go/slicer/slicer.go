@@ -3,6 +3,7 @@ package slicer
 import (
 	"../pizza"
 	"../simple"
+	"fmt"
 	"os"
 )
 
@@ -213,11 +214,11 @@ func hasSliceAt(pizzaa *pizza.PizzaPart, iny int, inx int) bool {
 		row := sli.Row
 		col := sli.Column
 
-		if row.Start <= iny && row.End >= iny {
+		if row.Start < iny && row.End > iny {
 			return true
 		}
 
-		if col.Start <= inx && col.End >= inx {
+		if col.Start < inx && col.End > inx {
 			return true
 		}
 	}
@@ -227,9 +228,12 @@ func hasSliceAt(pizzaa *pizza.PizzaPart, iny int, inx int) bool {
 
 func findAt(pizzaa *pizza.PizzaPart, iny int, inx int) {
 
+	// fmt.Printf("find at iny=%d inx=%d\n", iny, inx)
+
 	if hasSliceAt(pizzaa, iny, inx) {
 		return
 	}
+	// fmt.Println(">>>>>>>> ok")
 
 	max := pizzaa.Pizza.MaxCells
 
@@ -274,97 +278,6 @@ func findSlices(part *pizza.PizzaPart) {
 			findAt(part, iny, inx)
 		}
 	}
-}
-
-func SearchSlices(pizz *pizza.Pizza) {
-
-	start := pizza.InitPizzaPart(pizz)
-
-	// start = &pizza.PizzaPart{
-	// 	Pizza: pizz,
-	// 	VectorR: pizza.Vector{Start: 13, End: 24},
-	// 	VectorC: pizza.Vector{Start: 32, End: 47},
-	// 	Slices: []*pizza.Slice{},
-	// }
-
-	test := recursiveMatch(start)
-	test.PrintSlices()
-	test.PrintScore()
-
-	// findSlices(start)
-	// expandSlices(start)
-	//
-	// start.PrintSlices()
-	// start.PrintScore()
-
-	// parts := start.Cut()[2].Cut()
-	//
-	// for inx, _ := range parts {
-	// 	findSlices(parts[ inx ])
-	// 	expandSlices(parts[ inx ])
-	// }
-	//
-	// merged := merge(pizz, parts)
-	// findSlices(merged)
-	// expandSlices(merged)
-	//
-	// // merged.PrintSlices()
-	//
-	// parts2 := start.Cut()[3].Cut()
-	//
-	// for inx, _ := range parts2 {
-	// 	findSlices(parts2[ inx ])
-	// 	expandSlices(parts2[ inx ])
-	// }
-	//
-	// merged2 := merge(pizz, parts2)
-	// findSlices(merged2)
-	// expandSlices(merged2)
-	//
-	// // merged2.PrintSlices()
-	//
-	// merged3 := merge(pizz, []*pizza.PizzaPart{merged, merged2})
-	// merged3.PrintSlices()
-	//
-	// findSlices(merged3)
-	// expandSlices(merged3)
-	//
-	// fmt.Println()
-	// merged3.PrintSlices()
-
-
-	// bab := start.Cut()
-	//
-	// part := bab[ 0 ]
-	//
-	// findSlices(part)
-	// part.PrintSlices()
-	//
-	// fmt.Println("---------- expandSlices ----------")
-	// expandSlices(part)
-	// part.PrintSlices()
-
-
-	// start.Slices = part.Slices
-	// start.PrintSlices()
-
-	// for inx := range parts {
-	// 	findSlices(parts[ inx ])
-	//
-	// 	fmt.Println("-----------------")
-	// 	parts[ inx ].PrintSlices()
-	// 	fmt.Println("-----------------")
-	// }
-	//
-	// test := merge(start.Pizza, parts)
-	// test.PrintSlices()
-
-	// parts2 := parts[ 3 ].Cut()
-	//
-	// findSlices(parts2[ 3 ])
-	//
-	// parts2[ 3 ].PrintPart()
-	// parts2[ 3 ].PrintSlices()
 }
 
 func merge(pizz *pizza.Pizza, parts []*pizza.PizzaPart) *pizza.PizzaPart {
@@ -432,9 +345,9 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 	findSlices(merged)
 	expandSlices(merged)
 
-	_, _, score := merged.Score()
-	// total, count, score := merged.Score()
-	// fmt.Printf("total=%d count=%d score=%.2f\n", total, count, score * 100)
+	// _, _, score := merged.Score()
+	total, count, score := merged.Score()
+	fmt.Printf("total=%d count=%d score=%.2f\n", total, count, score * 100)
 
 	if score > 1 {
 
@@ -452,4 +365,97 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 	}
 
 	return merged
+}
+
+func SearchSlices(pizz *pizza.Pizza) {
+
+	start := pizza.InitPizzaPart(pizz)
+
+	// start = &pizza.PizzaPart{
+	// 	Pizza: pizz,
+	// 	VectorR: pizza.Vector{Start: 13, End: 24},
+	// 	VectorC: pizza.Vector{Start: 32, End: 47},
+	// 	Slices: []*pizza.Slice{},
+	// }
+
+	test := recursiveMatch(start)
+	test.PrintSlices()
+	test.PrintScore()
+
+	// findSlices(start)
+	// expandSlices(start)
+	//
+	// start.PrintSlices()
+	// start.PrintScore()
+
+	// parts := start.Cut()[2].Cut()
+	//
+	// for inx, _ := range parts {
+	// 	findSlices(parts[ inx ])
+	// 	expandSlices(parts[ inx ])
+	// }
+	//
+	// merged := merge(pizz, parts)
+	// findSlices(merged)
+	// expandSlices(merged)
+	//
+	// // merged.PrintSlices()
+	//
+	// parts2 := start.Cut()[3].Cut()
+	//
+	// for inx, _ := range parts2 {
+	// 	findSlices(parts2[ inx ])
+	// 	expandSlices(parts2[ inx ])
+	// }
+	//
+	// merged2 := merge(pizz, parts2)
+	// findSlices(merged2)
+	// expandSlices(merged2)
+	//
+	// // merged2.PrintSlices()
+	//
+	// merged3 := merge(pizz, []*pizza.PizzaPart{merged, merged2})
+	//
+	// fmt.Println("######################")
+	// merged3.PrintSlices()
+	//
+	// findSlices(merged3)
+	// expandSlices(merged3)
+	//
+	// fmt.Println()
+	// merged3.PrintSlices()
+
+
+	// bab := start.Cut()
+	//
+	// part := bab[ 0 ]
+	//
+	// findSlices(part)
+	// part.PrintSlices()
+	//
+	// fmt.Println("---------- expandSlices ----------")
+	// expandSlices(part)
+	// part.PrintSlices()
+
+
+	// start.Slices = part.Slices
+	// start.PrintSlices()
+
+	// for inx := range parts {
+	// 	findSlices(parts[ inx ])
+	//
+	// 	fmt.Println("-----------------")
+	// 	parts[ inx ].PrintSlices()
+	// 	fmt.Println("-----------------")
+	// }
+	//
+	// test := merge(start.Pizza, parts)
+	// test.PrintSlices()
+
+	// parts2 := parts[ 3 ].Cut()
+	//
+	// findSlices(parts2[ 3 ])
+	//
+	// parts2[ 3 ].PrintPart()
+	// parts2[ 3 ].PrintSlices()
 }
