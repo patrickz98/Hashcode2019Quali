@@ -70,7 +70,10 @@ func (slice Slice) Overlap(slice2 *Slice) bool {
 	col1 := slice.Column
 	col2 := slice2.Column
 
-	return row1.Overlap(row2) && col1.Overlap(col2)
+	overlay := row1.Overlap(row2) && col1.Overlap(col2)
+	crossover := row1.Overlap(col2) && row2.Overlap(col1)
+
+	return overlay || crossover
 }
 
 func (slice Slice) Equals(slice2 *Slice) bool {

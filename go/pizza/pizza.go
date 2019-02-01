@@ -17,7 +17,7 @@ type parameters struct {
 }
 
 type Cell struct {
-	Slice *Slice
+	// Slice *Slice
 	Type rune
 }
 
