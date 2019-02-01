@@ -1,8 +1,8 @@
 package pizza
 
 import (
-	"strconv"
 	"../simple"
+	"strconv"
 )
 
 type Vector struct {
@@ -69,7 +69,15 @@ func (vec Vector) Overlap(vec2 Vector) bool {
 		return true
 	}
 
+	if vec2.Start <= vec.Start && vec2.End >= vec.Start {
+		return true
+	}
+
 	if vec.Start <= vec2.End && vec.End >= vec2.End {
+		return true
+	}
+
+	if vec2.Start <= vec.End && vec2.End >= vec.End {
 		return true
 	}
 

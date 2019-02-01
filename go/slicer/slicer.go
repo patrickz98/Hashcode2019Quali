@@ -68,10 +68,6 @@ func findSlice(pizzaa *pizza.Pizza, row pizza.Vector, col pizza.Vector) []*pizza
 
 func checkOverlap(part *pizza.PizzaPart, orig *pizza.Slice, slice *pizza.Slice) bool {
 
-	// fmt.Println("------------ check overlap ------------")
-	// slice.PrintInfo()
-	// fmt.Println("++++")
-
 	for _, sli := range part.Slices {
 
 		if sli == orig {
@@ -79,16 +75,47 @@ func checkOverlap(part *pizza.PizzaPart, orig *pizza.Slice, slice *pizza.Slice) 
 		}
 
 		if sli.Overlap(slice) {
-
-			// sli.PrintInfo()
-			// fmt.Println("------------ overlap true ------------")
 			return true
 		}
 	}
 
-	// fmt.Println("------------ overlap false ------------")
-
 	return false
+}
+
+func appendVector(array []*pizza.Vector, vector *pizza.Vector) []*pizza.Vector {
+
+	for _, vec := range array {
+		if vec.Equals(*vector) {
+			return array
+		}
+	}
+
+	return append(array, vector)
+}
+
+func vectorFind(vec pizza.Vector, sli pizza.Vector, maxExpand int) []*pizza.Vector {
+
+	rVectors := make([]*pizza.Vector, 0)
+
+	for rStart := 0; rStart <= maxExpand; rStart++ {
+		for rEnd := 0; rEnd <= maxExpand; rEnd++ {
+
+			start := simple.Max(vec.Start, sli.Start - rStart)
+			end := simple.Min(vec.End, sli.End + rEnd)
+			// start := sli.Start - rStart
+			// end := sli.End + rEnd
+
+			vec2 := &pizza.Vector{Start: start, End: end}
+
+			if (vec2.Length() - vec.Length()) > maxExpand {
+				continue
+			}
+
+			rVectors = appendVector(rVectors, vec2)
+		}
+	}
+
+	return rVectors
 }
 
 func expandSlices(part *pizza.PizzaPart) {
@@ -107,48 +134,33 @@ func expandSlices(part *pizza.PizzaPart) {
 		rowExpand := (part.Pizza.MaxCells / sli.Column.Length()) - sli.Row.Length()
 		colExpand := (part.Pizza.MaxCells / sli.Row.Length())    - sli.Column.Length()
 
-		// sli.PrintInfo()
+		// part.PrintPart()
+		// sli.Print()
 		// fmt.Printf("rowExpand=%d\n", rowExpand)
 		// fmt.Printf("colExpand=%d\n", colExpand)
+		// fmt.Printf("sli.Row=%s\n", sli.Row.Stringify())
+		// fmt.Printf("sli.Column=%s\n", sli.Column.Stringify())
 
 		// TODO: Optimisation
 
-		for iny := -rowExpand; iny <= rowExpand; iny++ {
+		rowVectors := vectorFind(part.VectorR, sli.Row, rowExpand)
+		colVetors := vectorFind(part.VectorC, sli.Column, colExpand)
 
-			var row pizza.Vector
+		// fmt.Printf("part.VectorR=%s\n", part.VectorR.Stringify())
+		// fmt.Printf("sli.Row=%s\n", sli.Row.Stringify())
 
-			if iny < 0 {
-				rStart := simple.Max(part.VectorR.Start, sli.Row.Start + iny)
-				row = pizza.Vector{Start: rStart, End: sli.Row.End}
-			} else {
-				rEnd := simple.Min(part.VectorR.End, sli.Row.End + iny)
-				row = pizza.Vector{Start: sli.Row.Start, End: rEnd}
-			}
+		// for _, val := range rowVectors {
+		// 	fmt.Printf("val=%s\n", val.Stringify())
+		// }
+		// fmt.Println()
 
-			if iny == 0 {
-				row = sli.Row
-			}
-
-			for inx := -colExpand; inx <= colExpand; inx++ {
-
-				var col pizza.Vector
-
-				if inx < 0 {
-					cStart := simple.Max(part.VectorC.Start, sli.Column.Start + inx)
-					col = pizza.Vector{Start: cStart, End: sli.Column.End}
-				} else {
-					cEnd := simple.Min(part.VectorC.End, sli.Column.End+inx)
-					col = pizza.Vector{Start: sli.Column.Start, End: cEnd}
-				}
-
-				if inx == 0 {
-					col = sli.Column
-				}
+		for _, row := range rowVectors {
+			for _, col := range colVetors {
 
 				expandedSlice := &pizza.Slice{
 					Pizza: sli.Pizza,
-					Row: row,
-					Column: col,
+					Row: *row,
+					Column: *col,
 				}
 
 				// fmt.Printf("iny=%d inx=%d\n", iny, inx)
@@ -156,7 +168,11 @@ func expandSlices(part *pizza.PizzaPart) {
 				// expandedSlice.PrintInfo()
 				// expandedSlice.PrintVector()
 
-				if expandedSlice.Size() > part.Pizza.MaxCells {
+				if expandedSlice.Size() <= sli.Size() {
+					continue
+				}
+
+				if expandedSlice.Oversize() {
 					continue
 				}
 
@@ -172,7 +188,11 @@ func expandSlices(part *pizza.PizzaPart) {
 					continue
 				}
 
-				if biggest.Size() < expandedSlice.Size() {
+				// fmt.Printf("row=%s\n", row.Stringify())
+				// fmt.Printf("col=%s\n", col.Stringify())
+				// fmt.Printf("size=%d\n", expandedSlice.Size())
+
+				if expandedSlice.Size() > biggest.Size() {
 					biggest = expandedSlice
 				}
 

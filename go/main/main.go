@@ -35,6 +35,24 @@ func main() {
 	pizz.PrintParams()
 	// pizz.PrintPizza()
 
+	// ori := pizza.Slice{
+	// 	Pizza: &pizz,
+	// 	Row: pizza.Vector{Start: 0, End: 2},
+	// 	Column: pizza.Vector{Start: 0, End: 1},
+	//
+	// }
+	// ori.PrintVector()
+	//
+	// over := pizza.Slice{
+	// 	Pizza: &pizz,
+	// 	Row: pizza.Vector{Start: 0, End: 1},
+	// 	Column: pizza.Vector{Start: 2, End: 2},
+	//
+	// }
+	// over.PrintVector()
+	//
+	// fmt.Println(ori.Overlap(&over))
+
 	slicer.SearchSlices(&pizz)
 
 	// pizz.PrintSlices()

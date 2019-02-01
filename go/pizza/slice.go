@@ -71,9 +71,11 @@ func (slice Slice) Overlap(slice2 *Slice) bool {
 	col2 := slice2.Column
 
 	overlay := row1.Overlap(row2) && col1.Overlap(col2)
-	crossover := row1.Overlap(col2) && row2.Overlap(col1)
+	// crossover := row1.Overlap(col2) && row2.Overlap(col1)
 
-	return overlay || crossover
+	return overlay
+	// return overlay || crossover
+	// return !overlay && !crossover
 }
 
 func (slice Slice) Equals(slice2 *Slice) bool {
@@ -85,4 +87,9 @@ func (slice Slice) Equals(slice2 *Slice) bool {
 	col2 := slice2.Column
 
 	return row1.Equals(row2) && col1.Equals(col2)
+}
+
+func (slice Slice) Print() {
+
+	slice.Pizza.PrintVector(slice.Row, slice.Column)
 }
