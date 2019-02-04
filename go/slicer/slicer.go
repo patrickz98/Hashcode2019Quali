@@ -485,7 +485,10 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 
 	// _, _, score := merged.Score()
 	total, count, score := merged.Score()
-	fmt.Printf("total=%5d count=%5d score=%6.2f\n", total, count, score * 100)
+	percent := float32(total) / (float32(part.Pizza.Columns) * float32(part.Pizza.Rows))
+
+	// fmt.Printf("total=%5d count=%5d score=%6.2f\n", total, count, score * 100)
+	fmt.Printf("(%6.2f%%) total=%5d count=%5d score=%6.2f\n", percent, total, count, score * 100)
 
 	if score > 1 {
 
