@@ -54,6 +54,7 @@ func main() {
 	// fmt.Println(ori.Overlap(&over))
 
 	slicer.SearchSlices(&pizz)
+	// slicer.FindSlice(part)
 
 	// pizz.PrintSlices()
 

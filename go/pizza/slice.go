@@ -51,6 +51,11 @@ func (slice Slice) Oversize() bool {
 	return slice.Size() > slice.Pizza.MaxCells
 }
 
+func (slice Slice) Ok() bool {
+
+	return slice.IngredientsOk() && !slice.Oversize()
+}
+
 func (slice Slice) HasMaxSize() bool {
 
 	return slice.Size() == slice.Pizza.MaxCells

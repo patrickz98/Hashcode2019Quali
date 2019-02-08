@@ -60,19 +60,9 @@ func findSlice(pizzaa *pizza.Pizza, row pizza.Vector, col pizza.Vector) []*pizza
 						Column: cellV,
 					}
 
-					if slic.Oversize() {
-						continue
+					if slic.Ok() {
+						slices = append(slices, slic)
 					}
-
-					if ! slic.IngredientsOk() {
-						continue
-					}
-
-					// fmt.Printf("row: %s\n", rowV.Stringify())
-					// fmt.Printf("cell: %s\n", cellV.Stringify())
-					// fmt.Printf("size: %d\n", cellV.Size(rowV))
-
-					slices = append(slices, slic)
 				}
 			}
 		}
@@ -460,9 +450,9 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 		rpart := recursiveMatch(val)
 		findSlices(rpart)
 		expandSlices(rpart)
-		findNewByBreak(rpart)
-		findSlices(rpart)
-		expandSlices(rpart)
+		// findNewByBreak(rpart)
+		// findSlices(rpart)
+		// expandSlices(rpart)
 
 		mParts = append(mParts, rpart)
 	}
@@ -479,9 +469,9 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 
 	findSlices(merged)
 	expandSlices(merged)
-	findNewByBreak(merged)
-	findSlices(merged)
-	expandSlices(merged)
+	// findNewByBreak(merged)
+	// findSlices(merged)
+	// expandSlices(merged)
 
 	// _, _, score := merged.Score()
 	total, count, score := merged.Score()
@@ -509,6 +499,18 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 	return merged
 }
 
+func buildSlicesCache(part *pizza.PizzaPart) {
+
+	rowEnd := simple.Min(part.VectorR.End, iny + max)
+	row := pizza.Vector{Start:iny, End: rowEnd}
+
+	colEnd := simple.Min(part.VectorC.End, inx + max)
+	col := pizza.Vector{Start:inx, End: colEnd}
+
+	slices := findSlice(part.Pizza, row, col)
+
+}
+
 func SearchSlices(pizz *pizza.Pizza) {
 
 	start := pizza.InitPizzaPart(pizz)
@@ -520,15 +522,16 @@ func SearchSlices(pizz *pizza.Pizza) {
 	// 	Slices: []*pizza.Slice{},
 	// }
 
-	test := recursiveMatch(start)
-	test.PrintSlices()
-	test.PrintScore()
+	// test := recursiveMatch(start)
+	// test.PrintSlices()
+	// test.PrintScore()
 
-	// findSlices(start)
+	findSlices(start)
+	// findNewByBreak(start)
 	// expandSlices(start)
-	//
-	// start.PrintSlices()
-	// start.PrintScore()
+
+	start.PrintSlices()
+	start.PrintScore()
 
 	// parts := start.Cut()[2].Cut()
 	//
