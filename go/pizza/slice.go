@@ -25,23 +25,17 @@ func (slice Slice) IngredientsOk() bool {
 
 	// fmt.Printf("row=%s cell=%s\n", rowV.Stringify(), cellV.Stringify())
 
-	for _, iny := range slice.Row.Range() {
-		for _, inx := range slice.Column.Range() {
-			cell := slice.Pizza.Cells[ iny ][ inx ]
+	for _, xy := range slice.Traversal() {
+		cell := slice.Pizza.Cells[ xy ]
 
-			// if cell.Slice != nil {
-			// 	return false
-			// }
-
-			if cell.Type == 'T' {
-				tomato++
-			} else {
-				mushroom++
-			}
+		if cell.Type == 'T' {
+			tomato++
+		} else {
+			mushroom++
 		}
 	}
 
-	ingredient := slice.Pizza.Ingredient
+	ingredient := slice.Pizza.Ingredients
 
 	return tomato >= ingredient && mushroom >= ingredient
 }

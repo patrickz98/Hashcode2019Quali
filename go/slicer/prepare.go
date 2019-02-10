@@ -7,7 +7,7 @@ import (
 )
 
 type Slicer struct {
-	Pizza *pizza.PizzaPart
+	Pizza *pizza.Pizza
 	Slices map[pizza.Coordinate] []*pizza.Slice
 }
 
@@ -17,7 +17,7 @@ func (slicer *Slicer) Init() {
 
 func (slicer *Slicer) buildSlicesCache() {
 
-	max := slicer.Pizza.Pizza.MaxCells
+	max := slicer.Pizza.MaxCells
 
 	slices := make(map[pizza.Coordinate][]*pizza.Slice)
 
@@ -27,10 +27,10 @@ func (slicer *Slicer) buildSlicesCache() {
 
 	for count, coordinate := range slicer.Pizza.Traversal() {
 
-		rowEnd := simple.Min(slicer.Pizza.VectorR.End, coordinate.Row+max)
+		rowEnd := simple.Min(slicer.Pizza.Row.End, coordinate.Row+max)
 		searchR := pizza.Vector{Start: coordinate.Row, End: rowEnd}
 
-		colEnd := simple.Min(slicer.Pizza.VectorC.End, coordinate.Column+max)
+		colEnd := simple.Min(slicer.Pizza.Column.End, coordinate.Column+max)
 		searchC := pizza.Vector{Start: coordinate.Column, End: colEnd}
 
 		// Test all possible Slice dimensions.
@@ -41,7 +41,7 @@ func (slicer *Slicer) buildSlicesCache() {
 				cellV := pizza.Vector{Start: coordinate.Column, End: endC}
 
 				slic := &pizza.Slice{
-					Pizza:  slicer.Pizza.Pizza,
+					Pizza:  slicer.Pizza,
 					Row:    rowV,
 					Column: cellV,
 				}
@@ -73,9 +73,10 @@ func (slicer *Slicer) buildSlicesCache() {
 func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
 
 	// TODO: Optimise
-	for _, sli := range slicer.Pizza.Slices {
+	for _, xy := range slice.Traversal() {
 
-		if sli.Overlap(slice) {
+		cell := slicer.Pizza.Cells[ xy ]
+		if cell.Slice != nil {
 			return true
 		}
 	}
@@ -109,7 +110,7 @@ func (slicer *Slicer) FindSmallestParts() {
 		}
 
 		if smallest != nil {
-			slicer.Pizza.AddSlice(*smallest)
+			slicer.Pizza.AddSlice(smallest)
 		}
 	}
 }
