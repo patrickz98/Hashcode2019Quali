@@ -148,9 +148,14 @@ func (piz *PizzaPart) AddSlice(slice Slice) {
 	piz.Slices = append(piz.Slices, &slice)
 }
 
+func (piz PizzaPart) Size() int {
+
+	return piz.VectorC.Length() * piz.VectorR.Length()
+}
+
 func (piz PizzaPart) Score() (total int, count int, score float32) {
 
-	total = piz.VectorC.Length() * piz.VectorR.Length()
+	total = piz.Size()
 
 	count = 0
 
@@ -194,4 +199,18 @@ func (piz PizzaPart) PrintVectors() {
 
 	fmt.Printf("vectorR := pizza.Vector{Start: %d, End: %d}\n", piz.VectorR.Start, piz.VectorR.End)
 	fmt.Printf("vectorC := pizza.Vector{Start: %d, End: %d}\n", piz.VectorC.Start, piz.VectorC.End)
+}
+
+func (piz PizzaPart) Traversal() []Coordinate {
+
+	coordinates := make([]Coordinate, piz.Size())
+
+	for iny, row := range piz.VectorR.Range() {
+		for inx, col := range piz.VectorC.Range() {
+			index := (iny * piz.Pizza.Columns) + inx
+			coordinates[ index ] = Coordinate{Row: row, Column: col}
+		}
+	}
+
+	return coordinates
 }

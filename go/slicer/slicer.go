@@ -499,21 +499,16 @@ func recursiveMatch(part *pizza.PizzaPart) *pizza.PizzaPart {
 	return merged
 }
 
-func buildSlicesCache(part *pizza.PizzaPart) {
-
-	rowEnd := simple.Min(part.VectorR.End, iny + max)
-	row := pizza.Vector{Start:iny, End: rowEnd}
-
-	colEnd := simple.Min(part.VectorC.End, inx + max)
-	col := pizza.Vector{Start:inx, End: colEnd}
-
-	slices := findSlice(part.Pizza, row, col)
-
-}
-
 func SearchSlices(pizz *pizza.Pizza) {
 
 	start := pizza.InitPizzaPart(pizz)
+
+	slicer := Slicer{Pizza: start}
+
+	slicer.Init()
+	slicer.FindSmallestParts()
+
+	slicer.Pizza.PrintSlices()
 
 	// start = &pizza.PizzaPart{
 	// 	Pizza: pizz,
@@ -526,11 +521,11 @@ func SearchSlices(pizz *pizza.Pizza) {
 	// test.PrintSlices()
 	// test.PrintScore()
 
-	findSlices(start)
+	// findSlices(start)
 	// findNewByBreak(start)
 	// expandSlices(start)
 
-	start.PrintSlices()
+	// start.PrintSlices()
 	start.PrintScore()
 
 	// parts := start.Cut()[2].Cut()

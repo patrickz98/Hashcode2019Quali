@@ -53,7 +53,7 @@ func (slice Slice) Oversize() bool {
 
 func (slice Slice) Ok() bool {
 
-	return slice.IngredientsOk() && !slice.Oversize()
+	return !slice.Oversize() && slice.IngredientsOk()
 }
 
 func (slice Slice) HasMaxSize() bool {
@@ -97,4 +97,18 @@ func (slice Slice) Equals(slice2 *Slice) bool {
 func (slice Slice) Print() {
 
 	slice.Pizza.PrintVector(slice.Row, slice.Column)
+}
+
+func (slice Slice) Traversal() []Coordinate {
+
+	coordinates := make([]Coordinate, slice.Size())
+
+	for iny, row := range slice.Row.Range() {
+		for inx, col := range slice.Column.Range() {
+			index := (iny * slice.Column.Length()) + inx
+			coordinates[ index ] = Coordinate{Row: row, Column: col}
+		}
+	}
+
+	return coordinates
 }

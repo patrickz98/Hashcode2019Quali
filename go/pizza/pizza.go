@@ -16,6 +16,11 @@ type parameters struct {
 	MaxCells   int
 }
 
+type Coordinate struct {
+	Row    int
+	Column int
+}
+
 type Cell struct {
 	// Slice *Slice
 	Type rune
