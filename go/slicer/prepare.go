@@ -84,9 +84,112 @@ func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
 	return false
 }
 
-func (slicer *Slicer) FindSmallestParts() {
+func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
+
+	overlap := make([]*pizza.Slice, 0)
+
+	for _, xy := range slice.Traversal() {
+
+		cell := slicer.Pizza.Cells[ xy ]
+
+		if cell.Slice != nil {
+			overlap = append(overlap, cell.Slice)
+		}
+	}
+
+	return overlap
+}
+
+func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
+// func (slicer *Slicer) tryExpand(queue *chan pizza.Coordinate) {
+// func (slicer *Slicer) tryExpand(queue *[]pizza.Coordinate) {
+
+	// list := *queue
+	// xy := <-*queue
+	xy := queue.Pop()
+
+	bestGain := 0
+	var newSlice *pizza.Slice
+	var newSliceOverlaps []*pizza.Slice
+
+	for _, sliceCandidate := range slicer.Slices[ *xy ] {
+		overlaps := slicer.overlapSlices(sliceCandidate)
+
+		destruction := 0
+
+		for _, destructSlice := range overlaps {
+			destruction += destructSlice.Size()
+		}
+
+		gain := sliceCandidate.Size() - destruction
+
+		if gain > bestGain {
+			bestGain = gain
+			newSlice = sliceCandidate
+			newSliceOverlaps = overlaps
+		}
+	}
+
+	if newSlice == nil {
+		return
+	}
+
+	newQueueElements := make(map[pizza.Coordinate] *pizza.Slice)
+
+	for _, destructSlice := range newSliceOverlaps {
+		slicer.Pizza.RemoveSlice(destructSlice)
+
+		for _, xy := range destructSlice.Traversal() {
+			newQueueElements[ xy ] = destructSlice
+		}
+	}
+
+	for _, xy := range newSlice.Traversal() {
+		delete(newQueueElements, xy);
+	}
+
+	slicer.Pizza.AddSlice(newSlice)
+
+	for xy := range newQueueElements {
+		queue.Push(xy)
+		// *queue <- xy
+		// tmp := append(*queue, xy)
+		// queue = &tmp
+	}
+}
+
+func (slicer *Slicer) ExpandThroughDestruction() {
+
+	fmt.Println("ExpandThroughDestruction")
+
+	// queue := make([]pizza.Coordinate, 0)
+	// queue := make(chan pizza.Coordinate)
+	queue := InitCoordinateQueue()
 
 	for _, xy := range slicer.Pizza.Traversal() {
+		cell := slicer.Pizza.Cells[ xy ]
+
+		if cell.Slice != nil {
+			continue
+		}
+
+		// queue = append(queue, xy)
+		// queue <- xy
+		queue.Push(xy)
+	}
+
+	for queue.HasItems() {
+		// fmt.Printf("len(queue)=%d\n", len(queue))
+		// fmt.Printf("len(queue)=%d\n", len(queue.data))
+		slicer.tryExpand(queue)
+	}
+}
+
+func (slicer *Slicer) FindSmallestParts() {
+
+	size := slicer.Pizza.Size()
+
+	for count, xy := range slicer.Pizza.Traversal() {
 
 		slices := slicer.Slices[ xy ]
 
@@ -112,5 +215,9 @@ func (slicer *Slicer) FindSmallestParts() {
 		if smallest != nil {
 			slicer.Pizza.AddSlice(smallest)
 		}
+
+		fmt.Printf("Find smalest slices %d/%d\r", size, count + 1)
 	}
+
+	fmt.Println()
 }

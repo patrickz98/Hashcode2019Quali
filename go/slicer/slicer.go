@@ -503,6 +503,7 @@ func SearchSlices(pizza *pizza.Pizza) {
 
 	slicer.Init()
 	slicer.FindSmallestParts()
+	slicer.ExpandThroughDestruction()
 
 	pizza.PrintSlices()
 	pizza.PrintScore()
