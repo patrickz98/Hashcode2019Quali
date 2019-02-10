@@ -108,11 +108,15 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 	// xy := <-*queue
 	xy := queue.Pop()
 
+	// slicer.Pizza.PrintSlices()
+	// fmt.Printf("xy=(%d, %d)\n", xy.Row, xy.Column)
+
 	bestGain := 0
 	var newSlice *pizza.Slice
 	var newSliceOverlaps []*pizza.Slice
 
 	for _, sliceCandidate := range slicer.Slices[ *xy ] {
+
 		overlaps := slicer.overlapSlices(sliceCandidate)
 
 		destruction := 0
@@ -123,6 +127,9 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 
 		gain := sliceCandidate.Size() - destruction
 
+		// sliceCandidate.PrintVector()
+		// fmt.Printf("gain=%d\n", gain)
+
 		if gain > bestGain {
 			bestGain = gain
 			newSlice = sliceCandidate
@@ -131,6 +138,7 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 	}
 
 	if newSlice == nil {
+		// queue.Push(*xy)
 		return
 	}
 
@@ -181,8 +189,11 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 	for queue.HasItems() {
 		// fmt.Printf("len(queue)=%d\n", len(queue))
 		// fmt.Printf("len(queue)=%d\n", len(queue.data))
+		fmt.Printf("CoordinateQueue --> %-7d\r", len(queue.data))
 		slicer.tryExpand(queue)
 	}
+
+	fmt.Println()
 }
 
 func (slicer *Slicer) FindSmallestParts() {
