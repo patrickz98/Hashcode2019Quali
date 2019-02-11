@@ -27,8 +27,8 @@ func main() {
 	// }
 
 	// inputPath := "../../input/a_example.in"
-	// inputPath := "../../input/b_small.in"
-	inputPath := "../../input/c_medium.in"
+	inputPath := "../../input/b_small.in"
+	// inputPath := "../../input/c_medium.in"
 	// inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)

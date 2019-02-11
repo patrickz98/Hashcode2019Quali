@@ -101,11 +101,7 @@ func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
 }
 
 func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
-// func (slicer *Slicer) tryExpand(queue *chan pizza.Coordinate) {
-// func (slicer *Slicer) tryExpand(queue *[]pizza.Coordinate) {
 
-	// list := *queue
-	// xy := <-*queue
 	xy := queue.Pop()
 
 	// slicer.Pizza.PrintSlices()
@@ -160,9 +156,6 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 
 	for xy := range newQueueElements {
 		queue.Push(xy)
-		// *queue <- xy
-		// tmp := append(*queue, xy)
-		// queue = &tmp
 	}
 }
 
@@ -170,8 +163,6 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 
 	fmt.Println("ExpandThroughDestruction")
 
-	// queue := make([]pizza.Coordinate, 0)
-	// queue := make(chan pizza.Coordinate)
 	queue := InitCoordinateQueue()
 
 	for _, xy := range slicer.Pizza.Traversal() {
@@ -181,8 +172,6 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 			continue
 		}
 
-		// queue = append(queue, xy)
-		// queue <- xy
 		queue.Push(xy)
 	}
 
@@ -228,6 +217,43 @@ func (slicer *Slicer) FindSmallestParts() {
 		}
 
 		fmt.Printf("Find smalest slices %d/%d\r", size, count + 1)
+	}
+
+	fmt.Println()
+}
+
+func (slicer *Slicer) FindBiggestParts() {
+
+	size := slicer.Pizza.Size()
+
+	for count, xy := range slicer.Pizza.Traversal() {
+
+		slices := slicer.Slices[ xy ]
+
+		var bigggest *pizza.Slice
+
+		for _, slice := range slices {
+
+			if slice == nil {
+				continue
+			}
+
+			if slicer.overlap(slice) {
+				continue
+			}
+
+			// slic.PrintInfo()
+
+			if (bigggest == nil) || (bigggest.Size() < slice.Size()) {
+				bigggest = slice
+			}
+		}
+
+		if bigggest != nil {
+			slicer.Pizza.AddSlice(bigggest)
+		}
+
+		fmt.Printf("Find biggest slices %d/%d\r", size, count + 1)
 	}
 
 	fmt.Println()
