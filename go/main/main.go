@@ -10,7 +10,7 @@ func main() {
 	// 100.00%
 	// inputPath := "../../input/a_example.in"
 
-	// 97.62%
+	// 100.00%
 	inputPath := "../../input/b_small.in"
 
 	// 98.53%
