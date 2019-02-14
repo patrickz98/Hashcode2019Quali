@@ -70,11 +70,8 @@ func (slice Slice) Overlap(slice2 *Slice) bool {
 	col2 := slice2.Column
 
 	overlay := row1.Overlap(row2) && col1.Overlap(col2)
-	// crossover := row1.Overlap(col2) && row2.Overlap(col1)
 
 	return overlay
-	// return overlay || crossover
-	// return !overlay && !crossover
 }
 
 func (slice Slice) Equals(slice2 *Slice) bool {
@@ -110,4 +107,26 @@ func (slice Slice) Traversal() []Coordinate {
 func (slice Slice) Contains(slice2 *Slice) bool {
 
 	return slice.Row.ContainsVector(slice2.Row) && slice.Column.ContainsVector(slice2.Column)
+}
+
+func (slice Slice) ContainsCoordinate(coordinate Coordinate) bool {
+
+	xOk := slice.Row.Start <= coordinate.Row && slice.Row.End >= coordinate.Row
+	yOk := slice.Column.Start <= coordinate.Column && slice.Column.End >= coordinate.Column
+
+	return xOk && yOk
+}
+
+func (slice Slice) Complement(slice2 *Slice) []Coordinate {
+
+	complement := make([]Coordinate, 0)
+
+	for _, xy := range slice2.Traversal() {
+
+		if !slice.ContainsCoordinate(xy) {
+			complement = append(complement, xy)
+		}
+	}
+
+	return complement
 }

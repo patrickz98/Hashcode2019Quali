@@ -89,7 +89,7 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 	}
 
 	for queue.HasItems() {
-		fmt.Printf("CoordinateQueue --> %-7d\r", len(queue.data))
+		fmt.Printf("Destruction queue --> %-7d\r", len(queue.data) - 1)
 		slicer.tryExpand(queue)
 	}
 

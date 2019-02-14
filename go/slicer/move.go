@@ -44,17 +44,21 @@ func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (sh
 	}
 }
 
-func (slicer *Slicer) tryExpandMove(xy pizza.Coordinate) {
+func (slicer *Slicer) tryExpandMove(queue *CoordinateQueue) {
+
+	xy := queue.Pop()
 
 	bestGain := 0
 	var newSlice *pizza.Slice
 	var sliceOverlaps []*pizza.Slice
 	var sliceReplacements []*pizza.Slice
+	// var leftovers []pizza.Coordinate
 
-	for _, sliceCandidate := range slicer.SliceCache[ xy ] {
+	for _, sliceCandidate := range slicer.SliceCache[ *xy ] {
 
 		overlaps := slicer.overlapSlices(sliceCandidate)
 		newSlices := make([]*pizza.Slice, 0)
+		// newLeftovers := make([]pizza.Coordinate, 0)
 
 		lost := 0
 		replacementOk := true
@@ -74,27 +78,24 @@ func (slicer *Slicer) tryExpandMove(xy pizza.Coordinate) {
 
 			lost += shrinkSlice.Size() - newSlice.Size()
 			newSlices = append(newSlices, newSlice)
+
+			// for _, leftXY := range newSlice.Complement(shrinkSlice) {
+			// 	newLeftovers = append(newLeftovers, leftXY)
+			// }
 		}
 
 		if !replacementOk {
 			break
 		}
 
-		// if lost == 0 {
-		// 	continue
-		// }
-
 		gain := sliceCandidate.Size() - lost
-		// fmt.Printf("gain=%d lost=%d\n", sliceCandidate.Size(), lost)
-
-		// sliceCandidate.PrintVector()
-		// fmt.Printf("gain=%d\n", gain)
 
 		if gain > bestGain {
 			bestGain = gain
 			newSlice = sliceCandidate
 			sliceOverlaps = overlaps
 			sliceReplacements = newSlices
+			// leftovers = newLeftovers
 		}
 	}
 
@@ -111,22 +112,31 @@ func (slicer *Slicer) tryExpandMove(xy pizza.Coordinate) {
 	}
 
 	slicer.Pizza.AddSlice(newSlice)
+
+	// for _, leftXY := range leftovers {
+		// queue.Push(leftXY)
+	// }
 }
 
 func (slicer *Slicer) ExpandThroughMove() {
 
 	fmt.Println("Expand through move")
 
-	for inx, xy := range slicer.Pizza.Traversal() {
+	queue := InitCoordinateQueue()
+
+	for _, xy := range slicer.Pizza.Traversal() {
 		cell := slicer.Pizza.Cells[ xy ]
 
 		if cell.Slice != nil {
 			continue
 		}
 
-		fmt.Printf("Try to move %d/%d\r", slicer.Pizza.Size(), inx + 1)
+		queue.Push(xy)
+	}
 
-		slicer.tryExpandMove(xy)
+	for queue.HasItems() {
+		fmt.Printf("Move queue --> %-7d\r", len(queue.data) - 1)
+		slicer.tryExpandMove(queue)
 	}
 
 	fmt.Println()
