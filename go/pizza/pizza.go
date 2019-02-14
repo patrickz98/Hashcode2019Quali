@@ -72,7 +72,7 @@ func (pizza Pizza) PrintPizza() {
 	fmt.Println()
 }
 
-func (pizza Pizza) SlicesAsString() string {
+func (pizza Pizza) SlicesAsString(mark bool) string {
 	width := pizza.Column.Length() * 2 + 1
 	height := pizza.Row.Length() * 2 + 1
 
@@ -92,7 +92,11 @@ func (pizza Pizza) SlicesAsString() string {
 			coord := Coordinate{Row: yy, Column: xx}
 			cell := pizza.Cells[ coord ]
 
-			field[ iny * 2 + 1 ][ inx * 2 + 1 ] = cell.Type
+			if mark && cell.Slice == nil {
+				field[ iny * 2 + 1 ][ inx * 2 + 1 ] = '*'
+			} else {
+				field[ iny * 2 + 1 ][ inx * 2 + 1 ] = cell.Type
+			}
 
 			if cell.Slice != nil {
 				slices = append(slices, *cell.Slice)
@@ -106,14 +110,6 @@ func (pizza Pizza) SlicesAsString() string {
 		b := (sli.Row.End      - pizza.Row.Start) * 2 + 1
 		l := (sli.Column.Start - pizza.Column.Start) * 2
 		r := (sli.Column.End   - pizza.Column.Start) * 2 + 1
-
-		// piz.PrintSlicesPlain()
-		// sli.PrintVector()
-
-		// fmt.Printf("t=%d b=%d\n", t, b)
-		// fmt.Printf("l=%d r=%d\n", l, r)
-
-		// break
 
 		horizontalLenth := sli.Column.Length() * 2
 
@@ -137,14 +133,14 @@ func (pizza Pizza) SlicesAsString() string {
 	return text
 }
 
-func (pizza Pizza) PrintSlices() {
+func (pizza Pizza) PrintSlices(mark bool) {
 
-	fmt.Print(pizza.SlicesAsString())
+	fmt.Print(pizza.SlicesAsString(mark))
 }
 
-func (pizza Pizza) PrintSlicesToFile(path string) {
+func (pizza Pizza) PrintSlicesToFile(mark bool, path string) {
 
-	text := pizza.SlicesAsString()
+	text := pizza.SlicesAsString(mark)
 	bytes := []byte(text)
 
 	err := ioutil.WriteFile(path, bytes, 0644)

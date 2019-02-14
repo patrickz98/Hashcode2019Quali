@@ -20,22 +20,24 @@ func main() {
 	inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
+
+	// pizz = pizza.Pizza{
+	// 	Ingredients: pizz.Ingredients,
+	// 	MaxCells:    pizz.MaxCells,
+	// 	Cells:       pizz.Cells,
+	// 	Row: pizza.Vector{Start: 0, End: 99},
+	// 	Column: pizza.Vector{Start: 0, End: 99},
+	// }
+
 	pizz.PrintParams()
 
 	slicer.SearchSlices(&pizz)
 
-	// pizz.PrintSlices()
+	// pizz.PrintSlices(true)
 	pizz.PrintScore()
 
-	// pizz.PrintSlicesToFile("xxx.txt")
+	pizz.PrintSlicesToFile(true, "xxx.txt")
 
-	// ori := pizza.Slice{
-	// 	Pizza: &pizz,
-	// 	Row: pizza.Vector{Start: 0, End: 2},
-	// 	Column: pizza.Vector{Start: 0, End: 1},
-	//
-	// }
-	// ori.PrintVector()
 	//
 	// over := pizza.Slice{
 	// 	Pizza: &pizz,
