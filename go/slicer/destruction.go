@@ -74,7 +74,7 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 
 func (slicer *Slicer) ExpandThroughDestruction() {
 
-	fmt.Println("ExpandThroughDestruction")
+	fmt.Println("Expand through destruction")
 
 	queue := InitCoordinateQueue()
 

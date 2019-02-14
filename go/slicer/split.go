@@ -15,6 +15,28 @@ func contains(slices []*pizza.Slice, slice *pizza.Slice) bool {
 	return false
 }
 
+func (slicer Slicer) slicesInSlice(slice *pizza.Slice) []*pizza.Slice {
+
+	parts := make([]*pizza.Slice, 0)
+
+	for _, xy := range slice.Traversal() {
+		for _, sli := range slicer.SliceCache[ xy ] {
+
+			if contains(parts, sli) {
+				continue
+			}
+
+			if !slice.Contains(sli) {
+				continue
+			}
+
+			parts = append(parts, sli)
+		}
+	}
+
+	return parts
+}
+
 // Split existing slice in small peaces.
 func (slicer Slicer) splitSlice(slice *pizza.Slice) []*pizza.Slice {
 
@@ -24,28 +46,22 @@ func (slicer Slicer) splitSlice(slice *pizza.Slice) []*pizza.Slice {
 
 	// slice.Print()
 
-	for _, xy := range slice.Traversal() {
-		for _, sli := range slicer.SliceCache[ xy ] {
+	for _, sli := range slicer.slicesInSlice(slice) {
 
-			if slice == sli || contains(possibleParts, sli) {
-				continue
-			}
-
-			if !slice.Contains(sli) {
-				continue
-			}
-
-			leftOver := slice.Size() - sli.Size()
-
-			if leftOver < (ingredientsCount * 2) {
-				continue
-			}
-
-			possibleParts = append(possibleParts, sli)
-
-			// fmt.Println("Possible part:")
-			// sli.Print()
+		if slice == sli {
+			continue
 		}
+
+		leftOver := slice.Size() - sli.Size()
+
+		if leftOver < (ingredientsCount * 2) {
+			continue
+		}
+
+		possibleParts = append(possibleParts, sli)
+
+		// fmt.Println("Possible part:")
+		// sli.Print()
 	}
 
 	// if true {

@@ -36,7 +36,7 @@ func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
 
 		cell := slicer.Pizza.Cells[ xy ]
 
-		if cell.Slice != nil {
+		if cell.Slice != nil && !contains(overlap, cell.Slice) {
 			overlap = append(overlap, cell.Slice)
 		}
 	}
