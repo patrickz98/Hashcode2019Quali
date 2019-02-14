@@ -117,15 +117,17 @@ func (slicer *Slicer) ExpandThroughMove() {
 
 	fmt.Println("Expand through move")
 
-	for _, xy := range slicer.Pizza.Traversal() {
+	for inx, xy := range slicer.Pizza.Traversal() {
 		cell := slicer.Pizza.Cells[ xy ]
 
 		if cell.Slice != nil {
 			continue
 		}
 
-		fmt.Printf("(%4d, %4d)\r", xy.Row, xy.Column)
+		fmt.Printf("Try to move %d/%d\r", slicer.Pizza.Size(), inx + 1)
 
 		slicer.tryExpandMove(xy)
 	}
+
+	fmt.Println()
 }

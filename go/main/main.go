@@ -11,10 +11,10 @@ func main() {
 	// inputPath := "../../input/a_example.in"
 
 	// 100.00%
-	inputPath := "../../input/b_small.in"
+	// inputPath := "../../input/b_small.in"
 
 	// 98.53%
-	// inputPath := "../../input/c_medium.in"
+	inputPath := "../../input/c_medium.in"
 
 	// 89.55%
 	// inputPath := "../../input/d_big.in"
