@@ -180,9 +180,8 @@ func (pizza Pizza) PrintScore() {
 
 	total, count, score := pizza.Score()
 
-	fmt.Printf("total cells: %d\n", total)
-	fmt.Printf("covered: %d\n", count)
-	fmt.Printf("percent: %.2f%%\n", score * 100)
+	fmt.Printf("Covered cells: %d/%d\n", total, count)
+	fmt.Printf("Percent: %.2f%%\n", score * 100)
 }
 
 func (pizza Pizza) PrintVector(row Vector, column Vector) {

@@ -36,7 +36,8 @@ func main() {
 	// pizz.PrintSlices(true)
 	pizz.PrintScore()
 
-	pizz.PrintSlicesToFile(true, "xxx.txt")
+	// pizz.PrintSlicesToFile(true, "xxx.txt")
+	// pizz.PrintSlicesToFile(false, "yyy.txt")
 
 	//
 	// over := pizza.Slice{
