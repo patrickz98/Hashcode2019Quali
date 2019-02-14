@@ -22,6 +22,6 @@ func SearchSlices(pizza *pizza.Pizza) {
 	// 	Pizza: pizz,
 	// 	VectorR: pizza.Vector{Start: 13, End: 24},
 	// 	VectorC: pizza.Vector{Start: 32, End: 47},
-	// 	Slices: []*pizza.Slice{},
+	// 	SliceCache: []*pizza.Slice{},
 	// }
 }
