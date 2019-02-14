@@ -6,14 +6,21 @@ import (
 	// "os"
 )
 
-func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) *pizza.Slice {
+type shrinkStatus int
+
+const (
+	failed  shrinkStatus = -1
+	success shrinkStatus = 0
+	eaten   shrinkStatus = 1
+)
+
+func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, *pizza.Slice) {
 
 	// TODO: Add support for cutting slices.
-	// fmt.Println("Trigger:")
-	// trigger.Print()
 
-	// fmt.Println("Shrink:")
-	// shrink.Print()
+	if trigger.Contains(shrink) {
+		return eaten, nil
+	}
 
 	parts := slicer.slicesInSlice(shrink)
 
@@ -30,10 +37,11 @@ func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) *pi
 		}
 	}
 
-	// fmt.Println("Successor:")
-	// replacement.Print()
-
-	return replacement
+	if replacement == nil {
+		return failed, replacement
+	} else {
+		return success, replacement
+	}
 }
 
 func (slicer *Slicer) tryExpandMove(xy pizza.Coordinate) {
@@ -46,28 +54,29 @@ func (slicer *Slicer) tryExpandMove(xy pizza.Coordinate) {
 	for _, sliceCandidate := range slicer.SliceCache[ xy ] {
 
 		overlaps := slicer.overlapSlices(sliceCandidate)
-		newSlices := make([]*pizza.Slice, len(overlaps))
+		newSlices := make([]*pizza.Slice, 0)
 
 		lost := 0
+		replacementOk := true
 
-		replacementsFund := true
+		for _, shrinkSlice := range overlaps {
 
-		for inx, shrinkSlice := range overlaps {
+			status, newSlice := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
 
-			newSlice := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
-
-			if newSlice == nil {
-				replacementsFund = false
+			if status == failed {
+				replacementOk = false
 				break
 			}
 
-			// fmt.Printf("shrinkSlice=%d newSlice=%d\n", shrinkSlice.Size(), newSlice.Size())
+			if status == eaten {
+				continue
+			}
 
 			lost += shrinkSlice.Size() - newSlice.Size()
-			newSlices[ inx ] = newSlice
+			newSlices = append(newSlices, newSlice)
 		}
 
-		if !replacementsFund {
+		if !replacementOk {
 			break
 		}
 
