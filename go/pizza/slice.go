@@ -106,3 +106,8 @@ func (slice Slice) Traversal() []Coordinate {
 
 	return coordinates
 }
+
+func (slice Slice) Contains(slice2 *Slice) bool {
+
+	return slice.Row.ContainsVector(slice2.Row) && slice.Column.ContainsVector(slice2.Column)
+}
