@@ -14,14 +14,20 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 
 	// 98.53%
-	inputPath := "../../input/c_medium.in"
+	// inputPath := "../../input/c_medium.in"
 
 	// 89.55%
-	// inputPath := "../../input/d_big.in"
+	inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
 	pizz.PrintParams()
-	// pizz.PrintPizza()
+
+	slicer.SearchSlices(&pizz)
+
+	// pizz.PrintSlices()
+	pizz.PrintScore()
+
+	// pizz.PrintSlicesToFile("xxx.txt")
 
 	// ori := pizza.Slice{
 	// 	Pizza: &pizz,
@@ -38,26 +44,4 @@ func main() {
 	//
 	// }
 	// over.PrintVector()
-	//
-	// fmt.Println(ori.Overlap(&over))
-
-	slicer.SearchSlices(&pizz)
-	// slicer.FindSlice(part)
-
-	// pizz.PrintSlices()
-
-	// parts := pizz.Cut()
-	// printParts(parts)
-
-	// part := parts[ 2 ]
-	// part.PrintPizza()
-	// slicer.FindSlice(part)
-	// part.PrintSlices()
-
-	// slicer.FindSlice(&pizz)
-
-	// pizz.PrintPizzaCells()
-	// pizz.PrintSlices()
-	// pizz.PrintSlicesPlain()
-	// pizz.PrintScore()
 }
