@@ -6,16 +6,6 @@ import (
 	"fmt"
 )
 
-func printParts(parts []*pizza.Pizza) {
-
-	for _, parts := range parts {
-		if parts != nil {
-			fmt.Println("--------------")
-			parts.PrintPizza()
-		}
-	}
-}
-
 func main() {
 
 	fmt.Println("Start")
@@ -26,9 +16,16 @@ func main() {
 	// 	fmt.Printf("inx=%d\n", inx)
 	// }
 
+	// 80.00%
 	// inputPath := "../../input/a_example.in"
+
+	// 83.33%
 	inputPath := "../../input/b_small.in"
+
+	// 98.47%
 	// inputPath := "../../input/c_medium.in"
+
+	// 89.39%
 	// inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)

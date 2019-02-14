@@ -503,11 +503,13 @@ func SearchSlices(pizza *pizza.Pizza) {
 
 	slicer.Init()
 	// slicer.FindBiggestParts()
-	slicer.FindSmallestParts()
+	// slicer.FindSmallestParts()
 	slicer.ExpandThroughDestruction()
 
 	pizza.PrintSlices()
 	pizza.PrintScore()
+
+	pizza.PrintSlicesToFile("xxx.txt")
 
 	// start = &pizza.PizzaPart{
 	// 	Pizza: pizz,

@@ -100,12 +100,25 @@ func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
 	return overlap
 }
 
+// Split existing slice in small peaces.
+func (slicer Slicer) splitSlice(slice *pizza.Slice) []*pizza.Slice {
+
+	parts := make([]*pizza.Slice, 0)
+	parts = append(parts, slice)
+
+	return parts
+}
+
 func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 
 	xy := queue.Pop()
 
 	// slicer.Pizza.PrintSlices()
 	// fmt.Printf("xy=(%d, %d)\n", xy.Row, xy.Column)
+
+	if slicer.Pizza.Cells[ *xy ].Slice != nil {
+		return
+	}
 
 	bestGain := 0
 	var newSlice *pizza.Slice
@@ -126,7 +139,11 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 		// sliceCandidate.PrintVector()
 		// fmt.Printf("gain=%d\n", gain)
 
-		if gain > bestGain {
+		if gain <= 0 {
+			continue
+		}
+
+		if gain < bestGain {
 			bestGain = gain
 			newSlice = sliceCandidate
 			newSliceOverlaps = overlaps
@@ -152,7 +169,11 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 		delete(newQueueElements, xy);
 	}
 
-	slicer.Pizza.AddSlice(newSlice)
+	splitParts := slicer.splitSlice(newSlice)
+
+	for _, slice := range splitParts {
+		slicer.Pizza.AddSlice(slice)
+	}
 
 	for xy := range newQueueElements {
 		queue.Push(xy)
@@ -176,8 +197,6 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 	}
 
 	for queue.HasItems() {
-		// fmt.Printf("len(queue)=%d\n", len(queue))
-		// fmt.Printf("len(queue)=%d\n", len(queue.data))
 		fmt.Printf("CoordinateQueue --> %-7d\r", len(queue.data))
 		slicer.tryExpand(queue)
 	}

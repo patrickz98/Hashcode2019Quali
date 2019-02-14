@@ -72,8 +72,7 @@ func (pizza Pizza) PrintPizza() {
 	fmt.Println()
 }
 
-func (pizza Pizza) PrintSlices() {
-
+func (pizza Pizza) SlicesAsString() string {
 	width := pizza.Column.Length() * 2 + 1
 	height := pizza.Row.Length() * 2 + 1
 
@@ -129,9 +128,27 @@ func (pizza Pizza) PrintSlices() {
 		}
 	}
 
+	text := ""
+
 	for iny := range field {
-		fmt.Println(string(field[ iny ]))
+		text += string(field[ iny ]) + "\n"
 	}
+
+	return text
+}
+
+func (pizza Pizza) PrintSlices() {
+
+	fmt.Print(pizza.SlicesAsString())
+}
+
+func (pizza Pizza) PrintSlicesToFile(path string) {
+
+	text := pizza.SlicesAsString()
+	bytes := []byte(text)
+
+	err := ioutil.WriteFile(path, bytes, 0644)
+	simple.CheckErr(err)
 }
 
 func (pizza Pizza) Score() (total int, covered int, score float32) {
