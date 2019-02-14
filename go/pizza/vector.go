@@ -92,3 +92,11 @@ func (vec Vector) Equals(vec2 Vector) bool {
 
 	return false
 }
+
+func (vec Vector) ContainsVector(vec2 Vector) bool {
+
+	startOk := vec.Start <= vec2.Start && vec.End >= vec2.Start
+	endOk   := vec.Start <= vec2.End   && vec.End >= vec2.End
+
+	return startOk && endOk
+}
