@@ -509,7 +509,7 @@ func SearchSlices(pizza *pizza.Pizza) {
 	pizza.PrintSlices()
 	pizza.PrintScore()
 
-	pizza.PrintSlicesToFile("xxx.txt")
+	// pizza.PrintSlicesToFile("xxx.txt")
 
 	// start = &pizza.PizzaPart{
 	// 	Pizza: pizz,
