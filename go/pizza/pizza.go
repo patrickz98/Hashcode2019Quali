@@ -256,9 +256,12 @@ func (pizza Pizza) PrintSubmission() {
 
 func (pizza Pizza) CreateSubmission(path string) {
 
+	fmt.Print("Create submission ...\r")
 	bytes := []byte(pizza.submission())
 	err := ioutil.WriteFile(path, bytes, 0644)
 	simple.CheckErr(err)
+
+	fmt.Print("Create submission done\n")
 }
 
 

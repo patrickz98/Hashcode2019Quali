@@ -14,10 +14,10 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 
 	// 98.53%
-	// inputPath := "../../input/c_medium.in"
+	inputPath := "../../input/c_medium.in"
 
 	// 89.55%
-	inputPath := "../../input/d_big.in"
+	// inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
 
