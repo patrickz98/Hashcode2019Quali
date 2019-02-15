@@ -139,5 +139,5 @@ func (slicer *Slicer) ExpandThroughMove() {
 		slicer.tryExpandMove(queue)
 	}
 
-	fmt.Println()
+	fmt.Printf("Move queue --> done\n")
 }

@@ -8,7 +8,7 @@ import (
 func main() {
 
 	// 100.00%
-	inputPath := "../../input/a_example.in"
+	// inputPath := "../../input/a_example.in"
 
 	// 100.00%
 	// inputPath := "../../input/b_small.in"
@@ -17,7 +17,7 @@ func main() {
 	// inputPath := "../../input/c_medium.in"
 
 	// 89.55%
-	// inputPath := "../../input/d_big.in"
+	inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
 
@@ -33,8 +33,8 @@ func main() {
 
 	slicer.SearchSlices(&pizz)
 
-	pizz.PrintSubmission()
-	pizz.PrintSlices(false)
+	pizz.CreateSubmission("submission.txt")
+	// pizz.PrintSlices(false)
 	pizz.PrintScore()
 
 	// pizz.PrintSlicesToFile(true, "xxx.txt")

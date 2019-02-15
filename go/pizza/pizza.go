@@ -195,8 +195,8 @@ func (pizza Pizza) PrintScore() {
 
 	total, count, score := pizza.Score()
 
-	fmt.Printf("Covered cells: %d/%d\n", total, count)
 	fmt.Printf("Slices: %d\n", pizza.SliceCount())
+	fmt.Printf("Covered cells: %d/%d\n", total, count)
 	fmt.Printf("Percent: %.2f%%\n", score * 100)
 }
 

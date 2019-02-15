@@ -93,5 +93,5 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 		slicer.tryExpand(queue)
 	}
 
-	fmt.Println()
+	fmt.Printf("Destruction queue --> done\n")
 }
