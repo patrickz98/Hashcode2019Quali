@@ -147,28 +147,43 @@ func (pizza Pizza) PrintSlicesToFile(mark bool, path string) {
 	simple.CheckErr(err)
 }
 
+func (pizza Pizza) Slices() []*Slice {
+
+	tmp := make(map[string] *Slice)
+
+	for _, xy := range pizza.Traversal() {
+		cell := pizza.Cells[ xy ]
+		sli := cell.Slice
+
+		if sli != nil {
+			tmp[ sli.FormatCoordinates() ] = sli
+		}
+	}
+
+	slices := make([]*Slice, len(tmp))
+
+	inx := 0
+	for _, sli := range tmp {
+		slices[ inx ] = sli
+		inx++
+	}
+
+	return slices
+}
+
+func (pizza Pizza) SliceCount() int {
+
+	return len(pizza.Slices())
+}
+
 func (pizza Pizza) Score() (total int, covered int, score float32) {
 
 	total = pizza.Size()
 
-	// TODO: make nice.
-	tmp := make(map[string] int)
-
-	for _, xy := range pizza.Traversal() {
-		cell := pizza.Cells[ xy ]
-
-		if cell.Slice != nil {
-			col := cell.Slice.Row.Stringify()
-			row := cell.Slice.Column.Stringify()
-
-			tmp[ col + row ] = cell.Slice.Size()
-		}
-	}
-
 	covered = 0
 
-	for _, inx := range tmp {
-		covered += inx
+	for _, sli := range pizza.Slices() {
+		covered += sli.Size()
 	}
 
 	score = float32(covered) / float32(total)
@@ -181,6 +196,7 @@ func (pizza Pizza) PrintScore() {
 	total, count, score := pizza.Score()
 
 	fmt.Printf("Covered cells: %d/%d\n", total, count)
+	fmt.Printf("Slices: %d\n", pizza.SliceCount())
 	fmt.Printf("Percent: %.2f%%\n", score * 100)
 }
 
@@ -204,7 +220,7 @@ func (pizza Pizza) PrintVectors() {
 	fmt.Printf("vectorC := pizza.Vector{Start: %d, End: %d}\n", pizza.Column.Start, pizza.Column.End)
 }
 
-func (pizza Pizza) PrintSlicesPlain() {
+func (pizza Pizza) PrintSlicesVectors() {
 
 	for _, xy := range pizza.Traversal() {
 		cell := pizza.Cells[ xy ]
@@ -214,6 +230,37 @@ func (pizza Pizza) PrintSlicesPlain() {
 		}
 	}
 }
+
+func (pizza Pizza) PrintSlicesCoordinates() {
+
+	for _, sli := range pizza.Slices() {
+		sli.PrintCoordinates()
+	}
+}
+
+func (pizza Pizza) submission() string {
+
+	text := fmt.Sprint(pizza.SliceCount()) + "\n"
+
+	for _, sli := range pizza.Slices() {
+
+		text += sli.FormatCoordinates() + "\n"
+	}
+
+	return text
+}
+
+func (pizza Pizza) PrintSubmission() {
+	fmt.Print(pizza.submission())
+}
+
+func (pizza Pizza) CreateSubmission(path string) {
+
+	bytes := []byte(pizza.submission())
+	err := ioutil.WriteFile(path, bytes, 0644)
+	simple.CheckErr(err)
+}
+
 
 func (pizza *Pizza) AddSlice(slice *Slice) {
 

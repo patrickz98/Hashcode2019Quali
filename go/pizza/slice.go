@@ -1,6 +1,8 @@
 package pizza
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Slice struct {
 	Pizza  *Pizza
@@ -11,10 +13,6 @@ type Slice struct {
 func (slice Slice) Size() int {
 
 	return slice.Row.Length() * slice.Column.Length()
-}
-
-func (slice Slice) PrintVector() {
-	fmt.Printf("row=%s column=%s\n", slice.Row.Stringify(), slice.Column.Stringify())
 }
 
 func (slice Slice) IngredientsOk() bool {
@@ -55,12 +53,6 @@ func (slice Slice) HasMaxSize() bool {
 	return slice.Size() == slice.Pizza.MaxCells
 }
 
-func (slice Slice) PrintInfo() {
-	fmt.Printf("row: %s\n", slice.Row.Stringify())
-	fmt.Printf("col: %s\n", slice.Column.Stringify())
-	fmt.Printf("size: %d\n\n", slice.Size())
-}
-
 func (slice Slice) Overlap(slice2 *Slice) bool {
 
 	row1 := slice.Row
@@ -83,11 +75,6 @@ func (slice Slice) Equals(slice2 *Slice) bool {
 	col2 := slice2.Column
 
 	return row1.Equals(row2) && col1.Equals(col2)
-}
-
-func (slice Slice) Print() {
-
-	slice.Pizza.PrintVector(slice.Row, slice.Column)
 }
 
 func (slice Slice) Traversal() []Coordinate {
@@ -129,4 +116,36 @@ func (slice Slice) Complement(slice2 *Slice) []Coordinate {
 	}
 
 	return complement
+}
+
+func (slice Slice) Print() {
+
+	slice.Pizza.PrintVector(slice.Row, slice.Column)
+}
+
+func (slice Slice) PrintInfo() {
+	fmt.Printf("row: %s\n", slice.Row.Stringify())
+	fmt.Printf("col: %s\n", slice.Column.Stringify())
+	fmt.Printf("size: %d\n\n", slice.Size())
+}
+
+func (slice Slice) FormatCoordinates() string {
+
+	format := fmt.Sprintf("%d %d %d %d", slice.Row.Start, slice.Column.Start,
+		slice.Row.End, slice.Column.End)
+
+	return format
+}
+
+func (slice Slice) FormatVectors() string {
+
+	return fmt.Sprintf("row%s column%s\n", slice.Row.Stringify(), slice.Column.Stringify())
+}
+
+func (slice Slice) PrintVector() {
+	fmt.Println(slice.FormatVectors())
+}
+
+func (slice Slice) PrintCoordinates() {
+	fmt.Println(slice.FormatCoordinates())
 }
