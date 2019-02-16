@@ -76,13 +76,17 @@ func (slicer *Slicer) FindSmallestParts() {
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
+		fmt.Printf("Find smalest slices %d/%d\r", size, count + 1)
+
+		if slicer.Pizza.Cells[ xy ].Slice != nil {
+			continue
+		}
+
 		smallest := slicer.findSmallestAt(xy)
 
 		if smallest != nil {
 			slicer.Pizza.AddSlice(smallest)
 		}
-
-		fmt.Printf("Find smalest slices %d/%d\r", size, count + 1)
 	}
 
 	fmt.Println()
@@ -120,13 +124,17 @@ func (slicer *Slicer) FindBiggestParts() {
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
+		fmt.Printf("Find biggest slices %d/%d\r", size, count + 1)
+
+		if slicer.Pizza.Cells[ xy ].Slice != nil {
+			continue
+		}
+
 		biggest := slicer.findBiggestAt(xy)
 
 		if biggest != nil {
 			slicer.Pizza.AddSlice(biggest)
 		}
-
-		fmt.Printf("Find biggest slices %d/%d\r", size, count + 1)
 	}
 
 	fmt.Println()

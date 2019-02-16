@@ -1,6 +1,58 @@
 package slicer
 
 import "fmt"
+// import "../simple"
+import "../pizza"
+
+func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
+
+	if slicer.Pizza.Cells[ xy ].Slice != nil {
+		return
+	}
+
+	slices := slicer.SliceCache[ xy ]
+
+	for _, moveCandidate := range slices {
+
+		overlaps := slicer.overlapSlices(moveCandidate)
+
+		if len(overlaps) > 1 {
+			continue
+		}
+
+		for _, overlap := range overlaps {
+
+			if moveCandidate.Size() != overlap.Size() {
+				continue
+			}
+
+			if moveCandidate == overlap {
+				continue
+			}
+
+			slicer.Pizza.RemoveSlice(overlap)
+			slicer.Pizza.AddSlice(moveCandidate)
+
+			return
+
+			// fmt.Printf("trigger: (%d, %d)\n", xy.Row, xy.Column)
+			//
+			// fmt.Println("moveCandidate:")
+			// moveCandidate.Print()
+			// moveCandidate.PrintVector()
+			//
+			// fmt.Println("overlap:")
+			// overlap.Print()
+			// overlap.PrintVector()
+			//
+			// for _, xxy := range moveCandidate.Complement(overlap) {
+			// 	fmt.Printf("(%d, %d)\n", xxy.Row, xxy.Column)
+			// }
+			//
+			// simple.Exit()
+		}
+	}
+}
 
 func (slicer *Slicer) ExpandThroughMove() {
 
@@ -8,20 +60,14 @@ func (slicer *Slicer) ExpandThroughMove() {
 
 	queue := InitCoordinateQueue()
 
-	for _, xy := range slicer.Pizza.Traversal() {
-		cell := slicer.Pizza.Cells[ xy ]
-
-		if cell.Slice != nil {
-			continue
-		}
-
+	for _, xy := range slicer.Pizza.TraversalLeftCells() {
 		queue.Push(xy)
 	}
 
 	for queue.HasItems() {
-		fmt.Printf("Destruction queue --> %-7d\r", len(queue.data) - 1)
-		slicer.tryExpand(queue)
+		fmt.Printf("Move queue --> %-7d\r", len(queue.data) - 1)
+		slicer.tryMove(*queue.Pop())
 	}
 
-	fmt.Printf("Destruction queue --> done\n")
+	fmt.Printf("Move queue --> done\n")
 }

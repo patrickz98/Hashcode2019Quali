@@ -17,11 +17,11 @@ func main() {
 	// 100.00%
 	// inputPath := "../../input/b_small.in"
 
-	// 98.27%
-	inputPath := "../../input/c_medium.in"
+	// 99.05%
+	// inputPath := "../../input/c_medium.in"
 
-	// 90.75%
-	// inputPath := "../../input/d_big.in"
+	// 89.68%
+	inputPath := "../../input/d_big.in"
 
 	pizz := pizza.NewPizza(inputPath)
 
@@ -38,7 +38,7 @@ func main() {
 	slicer.SearchSlices(&pizz)
 
 	// pizz.CreateSubmission("submission-big.txt")
-	// pizz.PrintSlices(false)
+	pizz.PrintSlices(false)
 	pizz.PrintScore()
 
 	// pizz.PrintSlicesToFile(true, "xxx.txt")

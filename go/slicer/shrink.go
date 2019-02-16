@@ -14,15 +14,72 @@ const (
 	eaten   shrinkStatus = 1
 )
 
-func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, int, []*pizza.Slice) {
+// func (slicer *Slicer) shrinkCutSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, int, []*pizza.Slice) {
+//
+// 	if trigger.Contains(shrink) {
+// 		return eaten, 0, nil
+// 	}
+//
+// 	parts := slicer.slicesInSlice(shrink)
+//
+// 	replacements := make([]*pizza.Slice, 0)
+//
+// 	for _, part := range parts {
+//
+// 		if part.Overlap(trigger) {
+// 			continue
+// 		}
+//
+// 		replacements = append(replacements, part)
+// 	}
+//
+// 	if len(replacements) <= 0 {
+// 		return failed, 0, nil
+// 	}
+//
+// 	bestSum := 0
+// 	var bestReplacements []*pizza.Slice
+//
+// 	for _, set := range slicer.powerSet(replacements) {
+//
+// 		overlap := false
+// 		sum := 0
+//
+// 		for _, sli1 := range set {
+//
+// 			for _, sli2 := range set {
+//
+// 				if sli1 != sli2 && sli1.Overlap(sli2) {
+// 					overlap = true
+// 				}
+// 			}
+//
+// 			sum += sli1.Size()
+// 		}
+//
+// 		if overlap {
+// 			continue
+// 		}
+//
+// 		if bestSum > sum {
+// 			continue
+// 		}
+//
+// 		bestReplacements = set
+// 	}
+//
+// 	return success, 0, bestReplacements
+// }
+
+func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, *pizza.Slice) {
 
 	if trigger.Contains(shrink) {
-		return eaten, 0, nil
+		return eaten, nil
 	}
 
 	parts := slicer.slicesInSlice(shrink)
 
-	replacements := make([]*pizza.Slice, 0)
+	var replacement *pizza.Slice
 
 	for _, part := range parts {
 
@@ -30,60 +87,16 @@ func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (sh
 			continue
 		}
 
-		replacements = append(replacements, part)
+		if (replacement == nil) || (replacement.Size() < part.Size()) {
+			replacement = part
+		}
 	}
 
-	if len(replacements) <= 0 {
-		return failed, 0, nil
+	if replacement == nil {
+		return failed, replacement
+	} else {
+		return success, replacement
 	}
-
-	bestSum := 0
-	var bestReplacements []*pizza.Slice
-
-	for _, set := range slicer.powerSet(replacements) {
-
-		overlap := false
-		sum := 0
-
-		for _, sli1 := range set {
-
-			for _, sli2 := range set {
-
-				if sli1 != sli2 && sli1.Overlap(sli2) {
-					overlap = true
-				}
-			}
-
-			sum += sli1.Size()
-		}
-
-		if overlap {
-			continue
-		}
-
-		if bestSum > sum {
-			continue
-		}
-
-		bestReplacements = set
-	}
-
-	// if len(bestReplacements) > 1 {
-	// 	fmt.Println("---------------")
-	// 	trigger.Print()
-	//
-	// 	fmt.Println("Replacement:")
-	//
-	// 	for inx, sli := range bestReplacements {
-	//
-	// 		fmt.Printf("inx => %d\n", inx)
-	// 		sli.Print()
-	// 	}
-	//
-	// 	fmt.Println("---------------")
-	// }
-
-	return success, 0, bestReplacements
 }
 
 func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
@@ -107,7 +120,7 @@ func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
 
 		for _, shrinkSlice := range overlaps {
 
-			status, sum, shrinked := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
+			status, newSlice := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
 
 			if status == failed {
 				replacementOk = false
@@ -118,16 +131,12 @@ func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
 				continue
 			}
 
-			lost += shrinkSlice.Size() - sum
-			newSlices = append(newSlices, shrinked...)
-
-			// for _, leftXY := range newSlice.Complement(shrinkSlice) {
-			// 	newLeftovers = append(newLeftovers, leftXY)
-			// }
+			lost += shrinkSlice.Size() - newSlice.Size()
+			newSlices = append(newSlices, newSlice)
 		}
 
 		if !replacementOk {
-			break
+			continue
 		}
 
 		gain := sliceCandidate.Size() - lost
@@ -162,7 +171,7 @@ func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
 
 func (slicer *Slicer) ExpandThroughShrink() {
 
-	fmt.Println("Expand through move")
+	fmt.Println("Expand through shrink")
 
 	queue := InitCoordinateQueue()
 
@@ -171,9 +180,9 @@ func (slicer *Slicer) ExpandThroughShrink() {
 	}
 
 	for queue.HasItems() {
-		fmt.Printf("Move queue --> %-7d\r", len(queue.data) - 1)
+		fmt.Printf("Shrink queue --> %-7d\r", len(queue.data) - 1)
 		slicer.tryExpandShrink(queue)
 	}
 
-	fmt.Printf("Move queue --> done\n")
+	fmt.Printf("Shrink queue --> done\n")
 }

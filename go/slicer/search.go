@@ -15,6 +15,24 @@ func SearchSlices(pizza *pizza.Pizza) {
 	// slicer.FindSingles()
 	// slicer.FindSmallestParts()
 
-	// slicer.ExpandThroughDestruction()
+	slicer.ExpandThroughDestruction()
 	slicer.ExpandThroughShrink()
+
+	// covered := pizza.Covered()
+	//
+	// for {
+	// 	slicer.ExpandThroughMove()
+	//
+	// 	slicer.FindBiggestParts()
+	// 	slicer.ExpandThroughDestruction()
+	// 	slicer.ExpandThroughShrink()
+	//
+	// 	covered2 := pizza.Covered()
+	//
+	// 	if covered == covered2 {
+	// 		break
+	// 	} else {
+	// 		covered = covered2
+	// 	}
+	// }
 }

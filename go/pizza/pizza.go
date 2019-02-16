@@ -67,7 +67,7 @@ func (pizza Pizza) TraversalLeftCells() []Coordinate {
 
 	for _, xy := range pizza.Traversal() {
 
-		if pizza.Cells[ xy ].Slice != nil {
+		if pizza.Cells[ xy ].Slice == nil {
 			coordinates = append(coordinates, xy)
 		}
 	}
@@ -203,6 +203,12 @@ func (pizza Pizza) Score() (total int, covered int, score float32) {
 	score = float32(covered) / float32(total)
 
 	return total, covered, score
+}
+
+func (pizza Pizza) Covered() int {
+
+	_, covered, _ := pizza.Score()
+	return covered
 }
 
 func (pizza Pizza) PrintScore() {
