@@ -3,9 +3,13 @@ package main
 import (
 	"../pizza"
 	"../slicer"
+	"fmt"
+	"time"
 )
 
 func main() {
+
+	start := time.Now()
 
 	// 100.00%
 	// inputPath := "../../input/a_example.in"
@@ -33,7 +37,7 @@ func main() {
 
 	slicer.SearchSlices(&pizz)
 
-	// pizz.CreateSubmission("submission.txt")
+	// pizz.CreateSubmission("submission-big.txt")
 	// pizz.PrintSlices(false)
 	pizz.PrintScore()
 
@@ -48,4 +52,7 @@ func main() {
 	//
 	// }
 	// over.PrintVector()
+
+	elapsed := time.Since(start)
+	fmt.Printf("Done: %s\n", elapsed)
 }
