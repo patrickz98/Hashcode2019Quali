@@ -14,62 +14,66 @@ const (
 	eaten   shrinkStatus = 1
 )
 
-// func (slicer *Slicer) shrinkCutSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, int, []*pizza.Slice) {
-//
-// 	if trigger.Contains(shrink) {
-// 		return eaten, 0, nil
-// 	}
-//
-// 	parts := slicer.slicesInSlice(shrink)
-//
-// 	replacements := make([]*pizza.Slice, 0)
-//
-// 	for _, part := range parts {
-//
-// 		if part.Overlap(trigger) {
-// 			continue
-// 		}
-//
-// 		replacements = append(replacements, part)
-// 	}
-//
-// 	if len(replacements) <= 0 {
-// 		return failed, 0, nil
-// 	}
-//
-// 	bestSum := 0
-// 	var bestReplacements []*pizza.Slice
-//
-// 	for _, set := range slicer.powerSet(replacements) {
-//
-// 		overlap := false
-// 		sum := 0
-//
-// 		for _, sli1 := range set {
-//
-// 			for _, sli2 := range set {
-//
-// 				if sli1 != sli2 && sli1.Overlap(sli2) {
-// 					overlap = true
-// 				}
-// 			}
-//
-// 			sum += sli1.Size()
-// 		}
-//
-// 		if overlap {
-// 			continue
-// 		}
-//
-// 		if bestSum > sum {
-// 			continue
-// 		}
-//
-// 		bestReplacements = set
-// 	}
-//
-// 	return success, 0, bestReplacements
-// }
+func (slicer *Slicer) shrinkCutSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, int, []*pizza.Slice) {
+
+	// TODO: Not working.
+
+	if trigger.Contains(shrink) {
+		return eaten, 0, nil
+	}
+
+	parts := slicer.slicesInSlice(shrink)
+	replacements := make([]*pizza.Slice, 0)
+
+	for _, part := range parts {
+
+		if part.Overlap(trigger) {
+			continue
+		}
+
+		replacements = append(replacements, part)
+	}
+
+	if len(replacements) <= 0 {
+		return failed, 0, nil
+	}
+
+	bestSum := 0
+	bestReplacements := make([]*pizza.Slice, 0)
+
+	for _, set := range slicer.powerSet(replacements) {
+
+		overlap := false
+		sum := 0
+
+		for _, sli1 := range set {
+
+			for _, sli2 := range set {
+
+				if !overlap && sli1 != sli2 && sli1.Overlap(sli2) {
+					overlap = true
+				}
+			}
+
+			sum += sli1.Size()
+		}
+
+		if overlap {
+			continue
+		}
+
+		if bestSum < sum && len(bestReplacements) < len(set) {
+			bestSum = sum
+			bestReplacements = set
+		}
+	}
+
+	if len(bestReplacements) == 0 {
+		return failed, 0, nil
+	}
+
+	return success, bestSum, bestReplacements
+}
 
 func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (shrinkStatus, *pizza.Slice) {
 
@@ -121,6 +125,7 @@ func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
 		for _, shrinkSlice := range overlaps {
 
 			status, newSlice := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
+			// status, sum, newSlice := slicer.shrinkCutSlice(sliceCandidate, shrinkSlice)
 
 			if status == failed {
 				replacementOk = false
@@ -133,6 +138,9 @@ func (slicer *Slicer) tryExpandShrink(queue *CoordinateQueue) {
 
 			lost += shrinkSlice.Size() - newSlice.Size()
 			newSlices = append(newSlices, newSlice)
+
+			// lost += shrinkSlice.Size() - sum
+			// newSlices = append(newSlices, newSlice...)
 		}
 
 		if !replacementOk {
