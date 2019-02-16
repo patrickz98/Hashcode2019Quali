@@ -37,6 +37,26 @@ func (slicer Slicer) slicesInSlice(slice *pizza.Slice) []*pizza.Slice {
 	return parts
 }
 
+func (slicer Slicer) powerSet(slices []*pizza.Slice) [][]*pizza.Slice {
+
+	powerSet := make([][]*pizza.Slice, 0)
+
+	for _, slicePart := range slices {
+
+		tmp := make([]*pizza.Slice, 0)
+		tmp = append(tmp, slicePart)
+
+		for _, rr := range powerSet {
+			tmp2 := append(tmp, rr...)
+			powerSet = append(powerSet, tmp2)
+		}
+
+		powerSet = append(powerSet, tmp)
+	}
+
+	return powerSet
+}
+
 // Split existing slice in small peaces.
 func (slicer Slicer) splitSlice(slice *pizza.Slice) []*pizza.Slice {
 
@@ -60,24 +80,9 @@ func (slicer Slicer) splitSlice(slice *pizza.Slice) []*pizza.Slice {
 		possibleParts = append(possibleParts, sli)
 	}
 
-	powerSet := make([][]*pizza.Slice, 0)
-
-	for _, slicePart := range possibleParts {
-
-		tmp := make([]*pizza.Slice, 0)
-		tmp = append(tmp, slicePart)
-
-		for _, rr := range powerSet {
-			tmp2 := append(tmp, rr...)
-			powerSet = append(powerSet, tmp2)
-		}
-
-		powerSet = append(powerSet, tmp)
-	}
-
 	newSlices := make([]*pizza.Slice, 0)
 
-	for _, set := range powerSet {
+	for _, set := range slicer.powerSet(possibleParts) {
 
 		overlap := false
 		sum := 0
