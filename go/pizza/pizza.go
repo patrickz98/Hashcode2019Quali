@@ -61,6 +61,20 @@ func (pizza Pizza) Traversal() []Coordinate {
 	return coordinates
 }
 
+func (pizza Pizza) TraversalLeftCells() []Coordinate {
+
+	coordinates := make([]Coordinate, 0)
+
+	for _, xy := range pizza.Traversal() {
+
+		if pizza.Cells[ xy ].Slice != nil {
+			coordinates = append(coordinates, xy)
+		}
+	}
+
+	return coordinates
+}
+
 func (pizza Pizza) PrintPizza() {
 
 	for _, xy := range pizza.Traversal() {

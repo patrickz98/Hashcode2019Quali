@@ -44,32 +44,39 @@ func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
 	return overlap
 }
 
+func (slicer *Slicer) findSmallestAt(xy pizza.Coordinate) *pizza.Slice {
+
+	var smallest *pizza.Slice
+
+	slices := slicer.SliceCache[ xy ]
+
+	for _, slice := range slices {
+
+		if slice == nil {
+			continue
+		}
+
+		if slicer.overlap(slice) {
+			continue
+		}
+
+		// slic.PrintInfo()
+
+		if (smallest == nil) || (smallest.Size() > slice.Size()) {
+			smallest = slice
+		}
+	}
+
+	return smallest
+}
+
 func (slicer *Slicer) FindSmallestParts() {
 
 	size := slicer.Pizza.Size()
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
-		slices := slicer.SliceCache[ xy ]
-
-		var smallest *pizza.Slice
-
-		for _, slice := range slices {
-
-			if slice == nil {
-				continue
-			}
-
-			if slicer.overlap(slice) {
-				continue
-			}
-
-			// slic.PrintInfo()
-
-			if (smallest == nil) || (smallest.Size() > slice.Size()) {
-				smallest = slice
-			}
-		}
+		smallest := slicer.findSmallestAt(xy)
 
 		if smallest != nil {
 			slicer.Pizza.AddSlice(smallest)
@@ -81,35 +88,42 @@ func (slicer *Slicer) FindSmallestParts() {
 	fmt.Println()
 }
 
+func (slicer *Slicer) findBiggestAt(xy pizza.Coordinate) *pizza.Slice {
+
+	slices := slicer.SliceCache[ xy ]
+
+	var bigggest *pizza.Slice
+
+	for _, slice := range slices {
+
+		if slice == nil {
+			continue
+		}
+
+		if slicer.overlap(slice) {
+			continue
+		}
+
+		// slic.PrintInfo()
+
+		if (bigggest == nil) || (bigggest.Size() < slice.Size()) {
+			bigggest = slice
+		}
+	}
+
+	return bigggest
+}
+
 func (slicer *Slicer) FindBiggestParts() {
 
 	size := slicer.Pizza.Size()
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
-		slices := slicer.SliceCache[ xy ]
+		biggest := slicer.findBiggestAt(xy)
 
-		var bigggest *pizza.Slice
-
-		for _, slice := range slices {
-
-			if slice == nil {
-				continue
-			}
-
-			if slicer.overlap(slice) {
-				continue
-			}
-
-			// slic.PrintInfo()
-
-			if (bigggest == nil) || (bigggest.Size() < slice.Size()) {
-				bigggest = slice
-			}
-		}
-
-		if bigggest != nil {
-			slicer.Pizza.AddSlice(bigggest)
+		if biggest != nil {
+			slicer.Pizza.AddSlice(biggest)
 		}
 
 		fmt.Printf("Find biggest slices %d/%d\r", size, count + 1)

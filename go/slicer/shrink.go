@@ -166,13 +166,7 @@ func (slicer *Slicer) ExpandThroughShrink() {
 
 	queue := InitCoordinateQueue()
 
-	for _, xy := range slicer.Pizza.Traversal() {
-		cell := slicer.Pizza.Cells[ xy ]
-
-		if cell.Slice != nil {
-			continue
-		}
-
+	for _, xy := range slicer.Pizza.TraversalLeftCells() {
 		queue.Push(xy)
 	}
 
