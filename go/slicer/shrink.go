@@ -111,7 +111,11 @@ func (slicer *Slicer) tryExpandMove(queue *CoordinateQueue) {
 		slicer.Pizza.AddSlice(slice)
 	}
 
-	slicer.Pizza.AddSlice(newSlice)
+	splitParts := slicer.splitSlice(newSlice)
+
+	for _, slice := range splitParts {
+		slicer.Pizza.AddSlice(slice)
+	}
 
 	// for _, leftXY := range leftovers {
 		// queue.Push(leftXY)
