@@ -118,7 +118,7 @@ func (slicer *Slicer) tryExpandMove(queue *CoordinateQueue) {
 	// }
 }
 
-func (slicer *Slicer) ExpandThroughMove() {
+func (slicer *Slicer) ExpandThroughShrink() {
 
 	fmt.Println("Expand through move")
 
