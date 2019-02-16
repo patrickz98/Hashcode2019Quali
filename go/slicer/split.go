@@ -42,7 +42,7 @@ func (slicer Slicer) powerSet(slices []*pizza.Slice) [][]*pizza.Slice {
 	powerSet := make([][]*pizza.Slice, 0)
 
 	for _, slicePart := range slices {
-
+		
 		tmp := make([]*pizza.Slice, 0)
 		tmp = append(tmp, slicePart)
 
