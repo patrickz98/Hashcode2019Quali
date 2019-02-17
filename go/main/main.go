@@ -13,15 +13,19 @@ func main() {
 
 	// 100.00%
 	// inputPath := "../../input/a_example.in"
+	// submissionPath := "../../submissions/a_example.out"
 
 	// 100.00%
 	// inputPath := "../../input/b_small.in"
+	// submissionPath := "../../submissions/b_small.out"
 
 	// 98.43%
-	// inputPath := "../../input/c_medium.in"
+	inputPath := "../../input/c_medium.in"
+	submissionPath := "../../submissions/c_medium.out"
 
 	// 90.83%
-	inputPath := "../../input/d_big.in"
+	// inputPath := "../../input/d_big.in"
+	// submissionPath := "../../submissions/d_big.out"
 
 	pizz := pizza.NewPizza(inputPath)
 
@@ -36,9 +40,10 @@ func main() {
 	pizz.PrintParams()
 
 	slicer.SearchSlices(&pizz)
+	// pizz.CheckErrors()
 
-	// pizz.CreateSubmission("submission-big.txt")
 	// pizz.PrintSlices(false)
+	pizz.CreateSubmission(submissionPath)
 	pizz.PrintScore()
 
 	// pizz.PrintSlicesToFile(true, "xxx.txt")
@@ -51,7 +56,7 @@ func main() {
 	// 	Column: pizza.Vector{Start: 2, End: 2},
 	//
 	// }
-	// over.PrintVector()
+	// over.VectorPrint()
 
 	elapsed := time.Since(start)
 	fmt.Printf("Done: %s\n", elapsed)

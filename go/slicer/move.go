@@ -39,11 +39,11 @@ func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 			//
 			// fmt.Println("moveCandidate:")
 			// moveCandidate.Print()
-			// moveCandidate.PrintVector()
+			// moveCandidate.VectorPrint()
 			//
 			// fmt.Println("overlap:")
 			// overlap.Print()
-			// overlap.PrintVector()
+			// overlap.VectorPrint()
 			//
 			// for _, xxy := range moveCandidate.Complement(overlap) {
 			// 	fmt.Printf("(%d, %d)\n", xxy.Row, xxy.Column)
@@ -60,7 +60,7 @@ func (slicer *Slicer) ExpandThroughMove() {
 
 	queue := InitCoordinateQueue()
 
-	for _, xy := range slicer.Pizza.TraversalLeftCells() {
+	for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
 		queue.Push(xy)
 	}
 

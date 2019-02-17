@@ -37,7 +37,7 @@ func (slicer *Slicer) buildSlicesCache() {
 					Column: cellV,
 				}
 
-				if ! slic.Ok() {
+				if ! slic.Valid() {
 					continue
 				}
 

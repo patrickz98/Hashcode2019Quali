@@ -17,11 +17,8 @@ func (slice Slice) Size() int {
 
 func (slice Slice) IngredientsOk() bool {
 
-	// find.Pizza.PrintVector(rowV, cellV)
 	tomato := 0
 	mushroom := 0
-
-	// fmt.Printf("row=%s cell=%s\n", rowV.Stringify(), cellV.Stringify())
 
 	for _, xy := range slice.Traversal() {
 		cell := slice.Pizza.Cells[ xy ]
@@ -33,9 +30,9 @@ func (slice Slice) IngredientsOk() bool {
 		}
 	}
 
-	ingredient := slice.Pizza.Ingredients
+	ingredients := slice.Pizza.Ingredients
 
-	return tomato >= ingredient && mushroom >= ingredient
+	return tomato >= ingredients && mushroom >= ingredients
 }
 
 func (slice Slice) Oversize() bool {
@@ -43,14 +40,9 @@ func (slice Slice) Oversize() bool {
 	return slice.Size() > slice.Pizza.MaxCells
 }
 
-func (slice Slice) Ok() bool {
+func (slice Slice) Valid() bool {
 
 	return !slice.Oversize() && slice.IngredientsOk()
-}
-
-func (slice Slice) HasMaxSize() bool {
-
-	return slice.Size() == slice.Pizza.MaxCells
 }
 
 func (slice Slice) Overlap(slice2 *Slice) bool {
@@ -120,7 +112,7 @@ func (slice Slice) Complement(slice2 *Slice) []Coordinate {
 
 func (slice Slice) Print() {
 
-	slice.Pizza.PrintVector(slice.Row, slice.Column)
+	slice.Pizza.VectorPrint(slice.Row, slice.Column)
 }
 
 func (slice Slice) PrintInfo() {

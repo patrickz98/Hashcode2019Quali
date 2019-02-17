@@ -32,7 +32,7 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 
 		gain := sliceCandidate.Size() - destruction
 
-		// sliceCandidate.PrintVector()
+		// sliceCandidate.VectorPrint()
 		// fmt.Printf("gain=%d\n", gain)
 
 		if gain > bestGain {
@@ -78,7 +78,7 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 
 	queue := InitCoordinateQueue()
 
-	for _, xy := range slicer.Pizza.TraversalLeftCells() {
+	for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
 		queue.Push(xy)
 	}
 

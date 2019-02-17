@@ -21,6 +21,8 @@ func SearchSlices(pizza *pizza.Pizza) {
 	// covered := pizza.Covered()
 	//
 	// for {
+	// 	fmt.Printf("covered=%d\n", covered)
+	//
 	// 	slicer.ExpandThroughMove()
 	//
 	// 	slicer.FindBiggestParts()

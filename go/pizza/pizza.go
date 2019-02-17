@@ -1,20 +1,10 @@
 package pizza
 
 import (
+	"../simple"
 	"fmt"
 	"io/ioutil"
-	"strconv"
-	"strings"
-
-	"../simple"
 )
-
-type parameters struct {
-	Rows        int
-	Columns     int
-	Ingredients int
-	MaxCells    int
-}
 
 type Coordinate struct {
 	Row    int
@@ -37,9 +27,9 @@ type Pizza struct {
 func (pizza Pizza) PrintParams() {
 
 	fmt.Printf("Ingredients: %d\n", pizza.Ingredients)
-	fmt.Printf("MaxCells: %d\n", pizza.MaxCells)
-	fmt.Printf("Rows: %d\n", pizza.Row.Length())
-	fmt.Printf("Columns: %d\n", pizza.Column.Length())
+	fmt.Printf("MaxCells: %d\n",    pizza.MaxCells)
+	fmt.Printf("Rows: %d\n",        pizza.Row.Length())
+	fmt.Printf("Columns: %d\n",     pizza.Column.Length())
 }
 
 func (pizza Pizza) Size() int {
@@ -61,7 +51,7 @@ func (pizza Pizza) Traversal() []Coordinate {
 	return coordinates
 }
 
-func (pizza Pizza) TraversalLeftCells() []Coordinate {
+func (pizza Pizza) TraversalNotSlicedCells() []Coordinate {
 
 	coordinates := make([]Coordinate, 0)
 
@@ -73,17 +63,6 @@ func (pizza Pizza) TraversalLeftCells() []Coordinate {
 	}
 
 	return coordinates
-}
-
-func (pizza Pizza) PrintPizza() {
-
-	for _, xy := range pizza.Traversal() {
-
-		cell := pizza.Cells[ xy ]
-		fmt.Print(string(cell.Type))
-	}
-
-	fmt.Println()
 }
 
 func (pizza Pizza) SlicesAsString(mark bool) string {
@@ -190,9 +169,9 @@ func (pizza Pizza) SliceCount() int {
 	return len(pizza.Slices())
 }
 
-func (pizza Pizza) Score() (total int, covered int, score float32) {
+func (pizza Pizza) Score() (covered int, score float32) {
 
-	total = pizza.Size()
+	total := pizza.Size()
 
 	covered = 0
 
@@ -202,25 +181,19 @@ func (pizza Pizza) Score() (total int, covered int, score float32) {
 
 	score = float32(covered) / float32(total)
 
-	return total, covered, score
-}
-
-func (pizza Pizza) Covered() int {
-
-	_, covered, _ := pizza.Score()
-	return covered
+	return covered, score
 }
 
 func (pizza Pizza) PrintScore() {
 
-	total, count, score := pizza.Score()
+	count, score := pizza.Score()
 
 	fmt.Printf("Slices: %d\n", pizza.SliceCount())
-	fmt.Printf("Covered cells: %d/%d\n", total, count)
+	fmt.Printf("Covered cells: %d/%d\n", pizza.Size(), count)
 	fmt.Printf("Percent: %.2f%%\n", score * 100)
 }
 
-func (pizza Pizza) PrintVector(row Vector, column Vector) {
+func (pizza Pizza) VectorPrint(row Vector, column Vector) {
 
 	for _, iny := range row.Range() {
 		for _, inx := range column.Range() {
@@ -234,20 +207,21 @@ func (pizza Pizza) PrintVector(row Vector, column Vector) {
 	}
 }
 
+func (pizza Pizza) PrintPizza() {
+
+	pizza.VectorPrint(pizza.Row, pizza.Column)
+}
+
 func (pizza Pizza) PrintVectors() {
 
-	fmt.Printf("vectorR := pizza.Vector{Start: %d, End: %d}\n", pizza.Row.Start, pizza.Row.End)
-	fmt.Printf("vectorC := pizza.Vector{Start: %d, End: %d}\n", pizza.Column.Start, pizza.Column.End)
+	fmt.Printf("Row    := pizza.Vector{Start: %d, End: %d}\n", pizza.Row.Start, pizza.Row.End)
+	fmt.Printf("Column := pizza.Vector{Start: %d, End: %d}\n", pizza.Column.Start, pizza.Column.End)
 }
 
 func (pizza Pizza) PrintSlicesVectors() {
 
-	for _, xy := range pizza.Traversal() {
-		cell := pizza.Cells[ xy ]
-
-		if cell.Slice != nil {
-			cell.Slice.PrintVector()
-		}
+	for _, sli := range pizza.Slices() {
+		sli.PrintVector()
 	}
 }
 
@@ -276,14 +250,11 @@ func (pizza Pizza) PrintSubmission() {
 
 func (pizza Pizza) CreateSubmission(path string) {
 
-	fmt.Print("Create submission ...\r")
+	fmt.Print("Create submission ...\n")
 	bytes := []byte(pizza.submission())
 	err := ioutil.WriteFile(path, bytes, 0644)
 	simple.CheckErr(err)
-
-	fmt.Print("Create submission done\n")
 }
-
 
 func (pizza *Pizza) AddSlice(slice *Slice) {
 
@@ -301,60 +272,25 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 	}
 }
 
-func initParams(head string) parameters {
+func (pizza *Pizza) CheckErrors() {
 
-	line := strings.TrimSuffix(head, "\n")
-	parts := strings.Split(line, " ")
+	fmt.Println("Check for errors...")
 
-	paramsArray := make([]int64, 4)
+	for _, sli1 := range pizza.Slices() {
+		for _, sli2 := range pizza.Slices() {
 
-	for inx, str := range parts {
-		val, _ := strconv.ParseInt(str, 10, 64)
-		paramsArray[ inx ] = val
-	}
+			if sli1 == sli2 {
+				continue
+			}
 
-	params := parameters{
-		Rows:        int(paramsArray[ 0 ]),
-		Columns:     int(paramsArray[ 1 ]),
-		Ingredients: int(paramsArray[ 2 ]),
-		MaxCells:    int(paramsArray[ 3 ]),
-	}
+			if sli1.Overlap(sli2) {
+				fmt.Println("Overlap Error:")
+				sli1.PrintVector()
+				sli2.PrintVector()
 
-	return params
-}
-
-func initPizza(params parameters, lines []string) Pizza {
-
-	cells := make(map[Coordinate] *Cell)
-
-	for iny, line := range lines {
-		line = strings.TrimSuffix(line, "\n")
-		runes := []rune(line)
-
-		for inx, val := range runes {
-
-			coordinate := Coordinate{Row: iny, Column: inx}
-			cells[ coordinate ] = &Cell{Type: val}
+				fmt.Println("Exit")
+				simple.Exit()
+			}
 		}
 	}
-
-	return Pizza{
-		Ingredients: params.Ingredients,
-		MaxCells:    params.MaxCells,
-		Cells:       cells,
-		Row:         Vector{Start: 0, End: params.Rows - 1},
-		Column:      Vector{Start: 0, End: params.Columns - 1},
-	}
-}
-
-func NewPizza(path string) Pizza {
-	dat, err := ioutil.ReadFile(path)
-	simple.CheckErr(err)
-
-	lines := strings.SplitAfter(string(dat), "\n")
-
-	head, lines := lines[ 0 ], lines[ 1:]
-	params := initParams(head)
-
-	return initPizza(params, lines)
 }

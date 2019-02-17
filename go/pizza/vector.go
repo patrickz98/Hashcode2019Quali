@@ -35,6 +35,11 @@ func (vec Vector) Stringify() string {
 	return fmt.Sprintf("{Start: %d, End: %d}", vec.Start, vec.End)
 }
 
+func (vec Vector) Print() {
+
+	fmt.Println(vec.Stringify())
+}
+
 func (vec Vector) Range() []int {
 
 	// fmt.Printf("vec.Length = %d\n", vec.Length())
