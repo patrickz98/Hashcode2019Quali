@@ -283,7 +283,7 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 	}
 }
 
-func (pizza *Pizza) CheckErrors() {
+func (pizza Pizza) CheckErrors() {
 
 	fmt.Println("Check for errors...")
 
