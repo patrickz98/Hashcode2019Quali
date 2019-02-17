@@ -2,6 +2,7 @@ package simple
 
 import (
 	"encoding/json"
+	"os"
 )
 
 func CheckErr(err error) {
@@ -26,4 +27,8 @@ func Min(x, y int) int {
 		return y
 	}
 	return x
+}
+
+func Exit() {
+	os.Exit(0)
 }

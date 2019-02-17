@@ -2,7 +2,7 @@ package pizza
 
 import (
 	"../simple"
-	"strconv"
+	"fmt"
 )
 
 type Vector struct {
@@ -32,8 +32,12 @@ func (vec Vector) Cut() (Vector, Vector) {
 
 func (vec Vector) Stringify() string {
 
-	return "(" + strconv.FormatInt(int64(vec.Start), 10) + ", " +
-		strconv.FormatInt(int64(vec.End), 10) + ")"
+	return fmt.Sprintf("{Start: %d, End: %d}", vec.Start, vec.End)
+}
+
+func (vec Vector) Print() {
+
+	fmt.Println(vec.Stringify())
 }
 
 func (vec Vector) Range() []int {
@@ -91,4 +95,12 @@ func (vec Vector) Equals(vec2 Vector) bool {
 	}
 
 	return false
+}
+
+func (vec Vector) ContainsVector(vec2 Vector) bool {
+
+	startOk := vec.Start <= vec2.Start && vec.End >= vec2.Start
+	endOk   := vec.Start <= vec2.End   && vec.End >= vec2.End
+
+	return startOk && endOk
 }
