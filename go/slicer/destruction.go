@@ -18,14 +18,15 @@ func (slicer *Slicer) tryExpand(xy pizza.Coordinate) {
 
 	bestGain := 0
 	var newSlice *pizza.Slice
+	var overlaps []*pizza.Slice
 
 	for _, sliceCandidate := range slicer.SliceCache[ xy ] {
 
-		overlaps := slicer.overlapSlices(sliceCandidate)
+		posoverlaps := slicer.overlapSlices(sliceCandidate)
 
 		destruction := 0
 
-		for _, destructSlice := range overlaps {
+		for _, destructSlice := range posoverlaps {
 			destruction += destructSlice.Size()
 		}
 
@@ -37,12 +38,16 @@ func (slicer *Slicer) tryExpand(xy pizza.Coordinate) {
 		if gain > bestGain {
 			bestGain = gain
 			newSlice = sliceCandidate
-			// newSliceOverlaps = overlaps
+			overlaps = posoverlaps
 		}
 	}
 
 	if newSlice == nil {
 		return
+	}
+
+	for _, over := range overlaps {
+		slicer.Pizza.RemoveSlice(over)
 	}
 
 	splitParts := slicer.splitSlice(newSlice)
