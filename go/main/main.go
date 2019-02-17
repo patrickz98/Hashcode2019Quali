@@ -19,17 +19,17 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
-	// 98.43%
+	// 99.08%
 	inputPath := "../../input/c_medium.in"
 	submissionPath := "../../submissions/c_medium.out"
 
-	// 90.83%
+	// 93.06%
 	// inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
-	pizz := pizza.NewPizza(inputPath)
+	piz := pizza.NewPizza(inputPath)
 
-	// pizz = pizza.Pizza{
+	// piz = pizza.Pizza{
 	// 	Ingredients: pizz.Ingredients,
 	// 	MaxCells:    pizz.MaxCells,
 	// 	Cells:       pizz.Cells,
@@ -37,17 +37,17 @@ func main() {
 	// 	Column: pizza.Vector{Start: 0, End: 99},
 	// }
 
-	pizz.PrintParams()
+	piz.PrintParams()
 
-	slicer.SearchSlices(&pizz)
-	// pizz.CheckErrors()
+	slicer.SearchSlices(&piz)
+	// piz.CheckErrors()
 
-	// pizz.PrintSlices(false)
-	pizz.CreateSubmission(submissionPath)
-	pizz.PrintScore()
+	// piz.PrintSlices(false)
+	piz.CreateSubmission(submissionPath)
+	piz.PrintScore()
 
-	// pizz.PrintSlicesToFile(true, "xxx.txt")
-	// pizz.PrintSlicesToFile(false, "yyy.txt")
+	piz.PrintSlicesToFile(true, "xxx-marked.txt")
+	piz.PrintSlicesToFile(false, "xxx.txt")
 
 	//
 	// over := pizza.Slice{

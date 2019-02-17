@@ -22,11 +22,11 @@ func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 
 		for _, overlap := range overlaps {
 
-			if moveCandidate.Size() != overlap.Size() {
+			if moveCandidate == overlap {
 				continue
 			}
 
-			if moveCandidate == overlap {
+			if moveCandidate.Size() != overlap.Size() {
 				continue
 			}
 

@@ -5,22 +5,21 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
+func (slicer *Slicer) tryExpand(xy pizza.Coordinate) {
 
-	xy := queue.Pop()
+	// xy := queue.Pop()
 
 	// slicer.Pizza.PrintSlices()
 	// fmt.Printf("xy=(%d, %d)\n", xy.Row, xy.Column)
 
-	if slicer.Pizza.Cells[ *xy ].Slice != nil {
-		return
-	}
+	// if slicer.Pizza.Cells[ xy ].Slice != nil {
+	// 	return
+	// }
 
 	bestGain := 0
 	var newSlice *pizza.Slice
-	var newSliceOverlaps []*pizza.Slice
 
-	for _, sliceCandidate := range slicer.SliceCache[ *xy ] {
+	for _, sliceCandidate := range slicer.SliceCache[ xy ] {
 
 		overlaps := slicer.overlapSlices(sliceCandidate)
 
@@ -38,37 +37,18 @@ func (slicer *Slicer) tryExpand(queue *CoordinateQueue) {
 		if gain > bestGain {
 			bestGain = gain
 			newSlice = sliceCandidate
-			newSliceOverlaps = overlaps
+			// newSliceOverlaps = overlaps
 		}
 	}
 
 	if newSlice == nil {
-		// queue.Push(*xy)
 		return
-	}
-
-	newQueueElements := make(map[pizza.Coordinate] *pizza.Slice)
-
-	for _, destructSlice := range newSliceOverlaps {
-		slicer.Pizza.RemoveSlice(destructSlice)
-
-		for _, xy := range destructSlice.Traversal() {
-			newQueueElements[ xy ] = destructSlice
-		}
-	}
-
-	for _, xy := range newSlice.Traversal() {
-		delete(newQueueElements, xy);
 	}
 
 	splitParts := slicer.splitSlice(newSlice)
 
 	for _, slice := range splitParts {
 		slicer.Pizza.AddSlice(slice)
-	}
-
-	for xy := range newQueueElements {
-		queue.Push(xy)
 	}
 }
 
@@ -82,10 +62,21 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 		queue.Push(xy)
 	}
 
+	start, _ := slicer.Pizza.Score()
+
 	for queue.HasItems() {
 		fmt.Printf("Destruction queue --> %-7d\r", len(queue.data) - 1)
-		slicer.tryExpand(queue)
+		// slicer.tryExpand(queue)
+
+		xy := queue.Pop()
+		slicer.tryExpand(*xy)
 	}
 
-	fmt.Printf("Destruction queue --> done\n")
+	fmt.Println()
+
+	now, _ := slicer.Pizza.Score()
+	fmt.Printf("Destruction gain --> %d\n", now - start)
+
+	// fmt.Println()
+	// fmt.Printf("Destruction queue --> done\n")
 }

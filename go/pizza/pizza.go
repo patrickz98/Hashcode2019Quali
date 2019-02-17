@@ -85,11 +85,22 @@ func (pizza Pizza) SlicesAsString(mark bool) string {
 			coord := Coordinate{Row: yy, Column: xx}
 			cell := pizza.Cells[ coord ]
 
-			if mark && cell.Slice == nil {
-				field[ iny * 2 + 1 ][ inx * 2 + 1 ] = '*'
+			// if mark && cell.Slice == nil {
+			// 	field[ iny * 2 + 1 ][ inx * 2 + 1 ] = '*'
+			// } else {
+			// 	field[ iny * 2 + 1 ][ inx * 2 + 1 ] = cell.Type
+			// }
+
+			if mark {
+				if cell.Slice == nil {
+					field[ iny * 2 + 1 ][ inx * 2 + 1 ] = cell.Type
+				} else {
+					field[ iny * 2 + 1 ][ inx * 2 + 1 ] = ' '
+				}
 			} else {
 				field[ iny * 2 + 1 ][ inx * 2 + 1 ] = cell.Type
 			}
+
 
 			if cell.Slice != nil {
 				slices = append(slices, *cell.Slice)
