@@ -321,3 +321,16 @@ func (pizza Pizza) CheckErrors() {
 		}
 	}
 }
+
+func (pizza Pizza) ContainsCoordinate(coordinate Coordinate) bool {
+
+	xOk := pizza.Row.Start <= coordinate.Row && pizza.Row.End >= coordinate.Row
+	yOk := pizza.Column.Start <= coordinate.Column && pizza.Column.End >= coordinate.Column
+
+	return xOk && yOk
+}
+
+func (pizza Pizza) HasSliceAt(xy Coordinate) bool {
+
+	return pizza.Cells[ xy ].Slice != nil
+}

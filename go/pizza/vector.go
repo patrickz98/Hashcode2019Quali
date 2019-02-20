@@ -42,7 +42,6 @@ func (vec Vector) Print() {
 
 func (vec Vector) Range() []int {
 
-	// fmt.Printf("vec.Length = %d\n", vec.Length())
 	numbers := make([]int, vec.Length())
 
 	inx := 0
