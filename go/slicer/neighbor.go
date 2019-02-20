@@ -75,7 +75,7 @@ func (slicer *Slicer) findBestFitEdge(xy pizza.Coordinate) {
 	slicer.Pizza.AddSlice(slice)
 }
 
-func (slicer *Slicer) ExpandThroughEdge() {
+func (slicer *Slicer) ExpandThroughNeighbors() {
 
 	fmt.Println("Expand edge...")
 

@@ -14,7 +14,7 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.FindBiggestParts()
 	// slicer.FindSingles()
 
-	slicer.ExpandThroughEdge()
+	slicer.ExpandThroughNeighbors()
 	// slicer.FindSmallestParts()
 	slicer.ExpandThroughDestruction()
 	slicer.ExpandThroughShrink()
