@@ -46,8 +46,8 @@ func main() {
 	// piz.CreateSubmission(submissionPath)
 	piz.PrintScore()
 
-	piz.PrintSlicesToFile(true, "xxx-marked.txt")
-	piz.PrintSlicesToFile(false, "xxx.txt")
+	// piz.PrintSlicesToFile(true, "yyy-marked.txt")
+	// piz.PrintSlicesToFile(false, "yyy.txt")
 
 	//
 	// over := pizza.Slice{
