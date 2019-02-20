@@ -271,6 +271,15 @@ func (pizza *Pizza) AddSlice(slice *Slice) {
 
 	for _, xy := range slice.Traversal() {
 		cell := pizza.Cells[ xy ]
+
+		if cell.Slice != nil {
+
+			slice.PrintVector()
+			cell.Slice.PrintVector()
+
+			panic("Added overlaping slice...")
+		}
+
 		cell.Slice = slice
 	}
 }
@@ -280,6 +289,13 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 	for _, xy := range slice.Traversal() {
 		cell := pizza.Cells[ xy ]
 		cell.Slice = nil
+	}
+}
+
+func (pizza *Pizza) RemoveAllSlice() {
+
+	for _, xy := range pizza.Traversal() {
+		pizza.Cells[ xy ].Slice = nil
 	}
 }
 

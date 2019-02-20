@@ -4,13 +4,14 @@ import (
 	"../pizza"
 	"../simple"
 	"fmt"
+	"sort"
 )
 
 func (slicer *Slicer) buildSlicesCache() {
 
 	max := slicer.Pizza.MaxCells
 
-	slices := make(map[pizza.Coordinate][]*pizza.Slice)
+	slices := make(map[pizza.Coordinate] []*pizza.Slice)
 
 	total := slicer.Pizza.Size()
 
@@ -59,4 +60,10 @@ func (slicer *Slicer) buildSlicesCache() {
 	fmt.Printf("Generated %d slices\n", slicesCount)
 
 	slicer.SliceCache = slices
+
+	for key := range slices {
+		sort.Slice(slices[ key ], func(i int, j int) bool {
+			return slices[ key ][ i ].Size() < slices[ key ][ j ].Size()
+		})
+	}
 }
