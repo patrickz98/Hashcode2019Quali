@@ -14,12 +14,23 @@ func (slicer *Slicer) Init() {
 	slicer.buildSlicesCache()
 }
 
+func (slicer Slicer) CalculateSize(slices []*pizza.Slice) int {
+
+	size := 0
+
+	for _, sil := range slices {
+		size += sil.Size()
+	}
+
+	return size
+}
+
 func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
 
-	// TODO: Optimise
 	for _, xy := range slice.Traversal() {
 
 		cell := slicer.Pizza.Cells[ xy ]
+
 		if cell.Slice != nil {
 			return true
 		}

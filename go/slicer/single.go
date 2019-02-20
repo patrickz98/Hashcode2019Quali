@@ -8,7 +8,7 @@ func (slicer *Slicer) FindSingles() {
 	fmt.Println("Find singles")
 
 	noSlicesCoords := make([]pizza.Coordinate, 0)
-	oneSlicesPoss := make([]*pizza.Slice, 0)
+	oneSlicesPoss := make([]pizza.Coordinate, 0)
 
 	for _, xy := range slicer.Pizza.Traversal() {
 		cell := slicer.Pizza.Cells[ xy ]
@@ -24,21 +24,43 @@ func (slicer *Slicer) FindSingles() {
 			continue
 		}
 
-		if len(slices) == 1 {
-
-			if ! contains(oneSlicesPoss, slices[ 0 ]) {
-				oneSlicesPoss = append(oneSlicesPoss, slices[ 0 ])
-			}
-
+		if len(slices) > 1 {
 			continue
 		}
 
+		oneSlicesPoss = append(oneSlicesPoss, xy)
 	}
 
 	fmt.Printf("Not containable cells: %d\n", len(noSlicesCoords))
 	fmt.Printf("Single containable cells: %d\n", len(oneSlicesPoss))
 
-	for _, sli := range oneSlicesPoss {
+	slices := make([]*pizza.Slice, 0)
+
+	for _, xy := range oneSlicesPoss {
+
+		slice := slicer.SliceCache[ xy ][ 0 ]
+
+		ok := true
+
+		for inx, sli := range slices {
+
+			if !slice.Overlap(sli) {
+				continue
+			}
+
+			ok = false
+
+			if sli.Size() < slice.Size() {
+				slices[ inx ] = slice
+			}
+		}
+
+		if ok {
+			slices = append(slices, slice)
+		}
+	}
+
+	for _, sli := range slices {
 		slicer.Pizza.AddSlice(sli)
 	}
 }

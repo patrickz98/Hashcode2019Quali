@@ -21,29 +21,29 @@ func main() {
 
 	// best: 99.33% --> 99.08%
 	inputPath := "../../input/c_medium.in"
-	submissionPath := "../../submissions/c_medium.out"
+	// submissionPath := "../../submissions/c_medium.out"
 
-	// best: 93.06% --> 90.79%
+	// best: 93.06% --> 90.69%
 	// inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
 
 	// piz = pizza.Pizza{
-	// 	Ingredients: pizz.Ingredients,
-	// 	MaxCells:    pizz.MaxCells,
-	// 	Cells:       pizz.Cells,
-	// 	Row: pizza.Vector{Start: 0, End: 99},
-	// 	Column: pizza.Vector{Start: 0, End: 99},
+	// 	Ingredients: piz.Ingredients,
+	// 	MaxCells:    piz.MaxCells,
+	// 	Cells:       piz.Cells,
+	// 	Row: pizza.Vector{Start: 0, End: 59},
+	// 	Column: pizza.Vector{Start: 0, End: 79},
 	// }
 
-	piz.PrintParams()
+	// piz.PrintParams()
 
 	slicer.SearchSlices(&piz)
 	// piz.CheckErrors()
 
 	// piz.PrintSlices(false)
-	piz.CreateSubmission(submissionPath)
+	// piz.CreateSubmission(submissionPath)
 	piz.PrintScore()
 
 	// piz.PrintSlicesToFile(true, "xxx-marked.txt")
