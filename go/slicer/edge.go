@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) int {
+func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) float32 {
 
 	rowStart := slice.Row.Start - 1
 	rowEnd := slice.Row.End + 1
@@ -14,9 +14,6 @@ func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) int {
 	colEnd := slice.Column.End + 1
 
 	factor := 0
-
-	// slice.Print()
-	// slice.PrintVector()
 
 	for iny := rowStart; iny <= rowEnd; iny++ {
 		for inx := colStart; inx <= colEnd; inx++ {
@@ -38,17 +35,14 @@ func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) int {
 		}
 	}
 
-	// fmt.Printf("factor --> %d\n", factor)
-	// simple.Exit()
-
-	return factor
+	return float32(factor) / float32(slice.Size())
 }
 
 func (slicer *Slicer) findBestFitEdge(xy pizza.Coordinate) {
 
 	slices := slicer.SliceCache[ xy ]
 
-	bestNeighborFactor := 0
+	bestNeighborFactor := float32(0)
 	var slice *pizza.Slice
 
 	for _, sli := range slices {
