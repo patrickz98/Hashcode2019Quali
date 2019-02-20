@@ -131,7 +131,7 @@ func (slice Slice) FormatCoordinates() string {
 
 func (slice Slice) FormatVectors() string {
 
-	return fmt.Sprintf("row%s column%s\n", slice.Row.Stringify(), slice.Column.Stringify())
+	return fmt.Sprintf("row%s column%s", slice.Row.Stringify(), slice.Column.Stringify())
 }
 
 func (slice Slice) PrintVector() {

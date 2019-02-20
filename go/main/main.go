@@ -19,12 +19,12 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
-	// best: 99.33% --> 99.08%
-	inputPath := "../../input/c_medium.in"
+	// best: 99.33% --> 99.23%
+	// inputPath := "../../input/c_medium.in"
 	// submissionPath := "../../submissions/c_medium.out"
 
-	// best: 93.06% --> 90.69%
-	// inputPath := "../../input/d_big.in"
+	// best: 93.06% --> 91.05%
+	inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
