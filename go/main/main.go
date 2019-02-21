@@ -19,11 +19,11 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
-	// best: 99.33% --> 99.23%
+	// best: 99.33% --> 99.30%
 	// inputPath := "../../input/c_medium.in"
 	// submissionPath := "../../submissions/c_medium.out"
 
-	// best: 93.06% --> 91.05%
+	// best: 93.06% --> 91.19%
 	inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
@@ -46,8 +46,8 @@ func main() {
 	// piz.CreateSubmission(submissionPath)
 	piz.PrintScore()
 
-	// piz.PrintSlicesToFile(true, "xxx-marked.txt")
-	// piz.PrintSlicesToFile(false, "xxx.txt")
+	// piz.PrintSlicesToFile(true, "yyy-marked.txt")
+	// piz.PrintSlicesToFile(false, "yyy.txt")
 
 	//
 	// over := pizza.Slice{

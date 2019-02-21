@@ -115,13 +115,11 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 	var newSlice *pizza.Slice
 	var sliceOverlaps []*pizza.Slice
 	var sliceReplacements []*pizza.Slice
-	// var leftovers []pizza.Coordinate
 
 	for _, sliceCandidate := range slicer.SliceCache[ xy ] {
 
 		overlaps := slicer.overlapSlices(sliceCandidate)
 		newSlices := make([]*pizza.Slice, 0)
-		// newLeftovers := make([]pizza.Coordinate, 0)
 
 		lost := 0
 		replacementOk := true
@@ -129,7 +127,6 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 		for _, shrinkSlice := range overlaps {
 
 			status, newSlice := slicer.shrinkSlice(sliceCandidate, shrinkSlice)
-			// status, sum, newSlice := slicer.shrinkCutSlice(sliceCandidate, shrinkSlice)
 
 			if status == failed {
 				replacementOk = false
@@ -142,11 +139,6 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 
 			lost += shrinkSlice.Size() - newSlice.Size()
 			newSlices = append(newSlices, newSlice)
-
-			// lost += shrinkSlice.Size() - sum
-			// newSlices = append(newSlices, newSlice...)
-
-			// newLeftovers = append(newLeftovers, newSlice.Complement(shrinkSlice)...)
 		}
 
 		if !replacementOk {
@@ -160,7 +152,6 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 			newSlice = sliceCandidate
 			sliceOverlaps = overlaps
 			sliceReplacements = newSlices
-			// leftovers = newLeftovers
 		}
 	}
 
@@ -181,10 +172,6 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 	for _, slice := range splitParts {
 		slicer.Pizza.AddSlice(slice)
 	}
-
-	// for _, xy := range leftovers {
-	// 	queue.Push(xy)
-	// }
 }
 
 func (slicer *Slicer) ExpandThroughShrink() {
