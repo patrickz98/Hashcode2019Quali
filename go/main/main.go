@@ -27,7 +27,37 @@ func main() {
 	inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
+	paramSlices := make([]slicer.SlicerParams, 0)
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 0/3", 0, 3,
+	})
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 50/3", 50, 3,
+	})
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 100/3", 100, 3,
+	})
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 150/3", 150, 3,
+	})
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 500/3", 500, 3,
+	})
+
+	paramSlices = append(paramSlices, slicer.SlicerParams{
+		"Corner 1000/3", 500, 3,
+	})
+
 	piz := pizza.NewPizza(inputPath)
+
+	slicer.SearchSlices(&piz, paramSlices)
+
+	//piz := pizza.NewPizza(inputPath)
 
 	// piz = pizza.Pizza{
 	// 	Ingredients: piz.Ingredients,
@@ -39,12 +69,12 @@ func main() {
 
 	// piz.PrintParams()
 
-	slicer.SearchSlices(&piz)
+	//slicer.SearchSlices(&piz)
 	// piz.CheckErrors()
 
 	// piz.PrintSlices(false)
 	// piz.CreateSubmission(submissionPath)
-	piz.PrintScore()
+	//piz.PrintScore()
 
 	// piz.PrintSlicesToFile(true, "yyy-marked.txt")
 	// piz.PrintSlicesToFile(false, "yyy.txt")

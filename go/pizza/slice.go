@@ -21,7 +21,7 @@ func (slice Slice) IngredientsOk() bool {
 	mushroom := 0
 
 	for _, xy := range slice.Traversal() {
-		cell := slice.Pizza.Cells[ xy ]
+		cell := slice.Pizza.Cells[xy]
 
 		if cell.Type == 'T' {
 			tomato++
@@ -76,7 +76,7 @@ func (slice Slice) Traversal() []Coordinate {
 	for iny, row := range slice.Row.Range() {
 		for inx, col := range slice.Column.Range() {
 			index := (iny * slice.Column.Length()) + inx
-			coordinates[ index ] = Coordinate{Row: row, Column: col}
+			coordinates[index] = Coordinate{Row: row, Column: col}
 		}
 	}
 

@@ -7,7 +7,14 @@ import (
 
 type Slicer struct {
 	Pizza      *pizza.Pizza
-	SliceCache map[pizza.Coordinate] []*pizza.Slice
+	SliceCache map[pizza.Coordinate][]*pizza.Slice
+	Params     SlicerParams
+}
+
+type SlicerParams struct {
+	Name                 string
+	CornerDepth          int
+	CornerLastSliceDepth int
 }
 
 func (slicer *Slicer) Init() {
@@ -29,7 +36,7 @@ func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
 
 	for _, xy := range slice.Traversal() {
 
-		cell := slicer.Pizza.Cells[ xy ]
+		cell := slicer.Pizza.Cells[xy]
 
 		if cell.Slice != nil {
 			return true
@@ -45,7 +52,7 @@ func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
 
 	for _, xy := range slice.Traversal() {
 
-		cell := slicer.Pizza.Cells[ xy ]
+		cell := slicer.Pizza.Cells[xy]
 
 		if cell.Slice != nil && !contains(overlap, cell.Slice) {
 			overlap = append(overlap, cell.Slice)
@@ -59,7 +66,7 @@ func (slicer *Slicer) findSmallestAt(xy pizza.Coordinate) *pizza.Slice {
 
 	var smallest *pizza.Slice
 
-	slices := slicer.SliceCache[ xy ]
+	slices := slicer.SliceCache[xy]
 
 	for _, slice := range slices {
 
@@ -87,9 +94,9 @@ func (slicer *Slicer) FindSmallestParts() {
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
-		fmt.Printf("Find smalest slices %d/%d\r", size, count + 1)
+		fmt.Printf("Find smalest slices %d/%d\r", size, count+1)
 
-		if slicer.Pizza.Cells[ xy ].Slice != nil {
+		if slicer.Pizza.Cells[xy].Slice != nil {
 			continue
 		}
 
@@ -105,7 +112,7 @@ func (slicer *Slicer) FindSmallestParts() {
 
 func (slicer *Slicer) findBiggestAt(xy pizza.Coordinate) *pizza.Slice {
 
-	slices := slicer.SliceCache[ xy ]
+	slices := slicer.SliceCache[xy]
 
 	var bigggest *pizza.Slice
 
@@ -135,9 +142,9 @@ func (slicer *Slicer) FindBiggestParts() {
 
 	for count, xy := range slicer.Pizza.Traversal() {
 
-		fmt.Printf("Find biggest slices %d/%d\r", size, count + 1)
+		fmt.Printf("Find biggest slices %d/%d\r", size, count+1)
 
-		if slicer.Pizza.Cells[ xy ].Slice != nil {
+		if slicer.Pizza.Cells[xy].Slice != nil {
 			continue
 		}
 
