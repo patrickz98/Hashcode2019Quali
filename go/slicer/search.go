@@ -2,6 +2,7 @@ package slicer
 
 import (
 	"../pizza"
+	"fmt"
 )
 
 func SearchSlices(piz *pizza.Pizza) {
@@ -25,27 +26,30 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.TryAll()
 
 	// big: 91.13% med: 98.80%
+	// slicer.ExpandThroughNeighbors()
+	// slicer.ExpandThroughDestruction()
+	// slicer.ExpandThroughShrink()
+	// slicer.TryAll()
+
+	slicer.FindSingles()
 	slicer.ExpandThroughNeighbors()
 	slicer.ExpandThroughDestruction()
 	slicer.ExpandThroughShrink()
-	slicer.TryAll()
 
-	// bestCover, _ := piz.Score()
-	//
-	// for {
-	// 	fmt.Printf("############# cover=%d\n", bestCover)
-	//
-	// 	// slicer.ExpandThroughDestruction()
-	// 	// slicer.ExpandThroughShrink()
-	// 	slicer.TryAll()
-	// 	slicer.MoveSlices()
-	//
-	// 	cover, _ := piz.Score()
-	//
-	// 	if bestCover == cover {
-	// 		break
-	// 	}
-	//
-	// 	bestCover = cover
-	// }
+	bestCover, _ := piz.Score()
+
+	for {
+		fmt.Printf("############# cover=%d\n", bestCover)
+
+		slicer.TryAll()
+		slicer.ChangeSlices()
+
+		cover, _ := piz.Score()
+
+		if bestCover == cover {
+			break
+		}
+
+		bestCover = cover
+	}
 }
