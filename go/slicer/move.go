@@ -1,8 +1,9 @@
 package slicer
 
-import "fmt"
-// import "../simple"
-import "../pizza"
+import (
+	"../pizza"
+	"fmt"
+)
 
 func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 
@@ -34,22 +35,6 @@ func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 			slicer.Pizza.AddSlice(moveCandidate)
 
 			return
-
-			// fmt.Printf("trigger: (%d, %d)\n", xy.Row, xy.Column)
-			//
-			// fmt.Println("moveCandidate:")
-			// moveCandidate.Print()
-			// moveCandidate.VectorPrint()
-			//
-			// fmt.Println("overlap:")
-			// overlap.Print()
-			// overlap.VectorPrint()
-			//
-			// for _, xxy := range moveCandidate.Complement(overlap) {
-			// 	fmt.Printf("(%d, %d)\n", xxy.Row, xxy.Column)
-			// }
-			//
-			// simple.Exit()
 		}
 	}
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+type Slices []*pizza.Slice
+
 type Slicer struct {
 	Pizza      *pizza.Pizza
 	SliceCache map[pizza.Coordinate][]*pizza.Slice
