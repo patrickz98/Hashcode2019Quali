@@ -11,19 +11,24 @@ func (slicer *Slicer) forceExpand(xy pizza.Coordinate) {
 		return
 	}
 
+	good := 0
 	var forceSlice *pizza.Slice
-	var overlaps []*pizza.Slice
+	var forceOverlaps []*pizza.Slice
 
 	slices := slicer.SliceCache[ xy ]
 
 	for _, slice := range slices {
 
-		if slice == nil {
-			continue
-		}
+		overlaps := slicer.overlapSlices(slice)
+		size := slice.Size()
+		destruction := slicer.CalculateSize(overlaps)
 
-		if (forceSlice == nil) || (forceSlice.Size() > slice.Size()) {
+		gain := size + destruction
+
+		if forceSlice == nil || good < gain {
+			good = gain
 			forceSlice = slice
+			forceOverlaps = overlaps
 		}
 	}
 
@@ -31,7 +36,7 @@ func (slicer *Slicer) forceExpand(xy pizza.Coordinate) {
 		return
 	}
 
-	for _, sli := range overlaps {
+	for _, sli := range forceOverlaps {
 		slicer.Pizza.RemoveSlice(sli)
 	}
 

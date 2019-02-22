@@ -20,8 +20,11 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandShot()
 	// slicer.FindBiggestParts()
 
+	// big: 90.82% med: 98.54%
+	// slicer.ExpandThroughNeighbors()
 	// slicer.TryAll()
 
+	// big: 91.13% med: 98.80%
 	slicer.ExpandThroughNeighbors()
 	slicer.ExpandThroughDestruction()
 	slicer.ExpandThroughShrink()

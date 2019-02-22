@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-
 func (slicer *Slicer) TryAll() {
 
 	fmt.Println("Expand...")
@@ -13,7 +12,8 @@ func (slicer *Slicer) TryAll() {
 
 	queue := InitCoordinateQueue()
 
-	for _, xy := range piz.Traversal() {
+	for _, xy := range piz.TraversalNotSlicedCells() {
+
 		queue.Push(xy)
 	}
 

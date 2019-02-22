@@ -76,7 +76,7 @@ func (slicer *Slicer) findBestNeighbor(xy pizza.Coordinate) *Neighbor {
 
 func (slicer *Slicer) ExpandThroughNeighbors() {
 
-	fmt.Println("Expand edge...")
+	fmt.Println("Find best neighbors...")
 
 	for _, xy := range slicer.Pizza.Traversal() {
 
@@ -145,7 +145,7 @@ func (slicer *Slicer) fixOverlapNeighbors(queue map[ pizza.Coordinate ] *Neighbo
 
 func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 
-	fmt.Println("Expand edge...")
+	fmt.Println("Find best neighbors...")
 
 	// queue := make([]pizza.Coordinate, 1)
 	// queue[ 0 ] = pizza.Coordinate{Row: slicer.Pizza.Row.Start, Column: slicer.Pizza.Column.Start}

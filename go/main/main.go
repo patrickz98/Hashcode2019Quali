@@ -11,20 +11,20 @@ func main() {
 
 	start := time.Now()
 
-	// best: 100.00% --> 100.00%
+	// 100.00%
 	// inputPath := "../../input/a_example.in"
 	// submissionPath := "../../submissions/a_example.out"
 
-	// best: 100.00% --> 100.00%
+	// 100.00%
 	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
-	// best: 99.33% --> 98.54%
-	inputPath := "../../input/c_medium.in"
+	// 99.33%
+	// inputPath := "../../input/c_medium.in"
 	// submissionPath := "../../submissions/c_medium.out"
 
-	// best: 93.06% --> 91.19%
-	// inputPath := "../../input/d_big.in"
+	// 93.06%
+	inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
