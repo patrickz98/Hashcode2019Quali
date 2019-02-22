@@ -11,6 +11,10 @@ type Coordinate struct {
 	Column int
 }
 
+func (xy Coordinate) Stringify() string {
+	return fmt.Sprintf("(%d, %d)", xy.Row, xy.Column)
+}
+
 type Cell struct {
 	Slice *Slice
 	Type  rune
@@ -306,7 +310,7 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 		cell := pizza.Cells[xy]
 
 		if cell.Slice != slice {
-			panic("Remove wrong slice")
+			panic("RemoveSlices wrong slice")
 		}
 
 		cell.Slice = nil

@@ -20,17 +20,22 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandShot()
 	// slicer.FindBiggestParts()
 
+	// slicer.TryAll()
+
 	slicer.ExpandThroughNeighbors()
 	slicer.ExpandThroughDestruction()
 	slicer.ExpandThroughShrink()
+	slicer.TryAll()
 
 	// bestCover, _ := piz.Score()
 	//
 	// for {
 	// 	fmt.Printf("############# cover=%d\n", bestCover)
 	//
-	// 	slicer.ExpandThroughDestruction()
-	// 	slicer.ExpandThroughShrink()
+	// 	// slicer.ExpandThroughDestruction()
+	// 	// slicer.ExpandThroughShrink()
+	// 	slicer.TryAll()
+	// 	slicer.MoveSlices()
 	//
 	// 	cover, _ := piz.Score()
 	//

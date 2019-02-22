@@ -103,7 +103,7 @@ func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (sh
 	}
 }
 
-func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) (newSlices Slices, overlaps Slices) {
+func (slicer *Slicer) shrinkAt(xy pizza.Coordinate) (newSlices Slices, overlaps Slices) {
 
 	bestGain := 0
 	var newSlice *pizza.Slice
@@ -178,15 +178,10 @@ func (slicer *Slicer) ExpandThroughShrink() {
 		fmt.Printf("Shrink queue --> %-7d\r", len(queue.data) - 1)
 
 		xy := queue.Pop()
-		slices, overlaps := slicer.tryExpandShrink(*xy)
+		slices, overlaps := slicer.shrinkAt(*xy)
 
-		for _, over := range overlaps {
-			slicer.Pizza.RemoveSlice(over)
-		}
-
-		for _, slice := range slices {
-			slicer.Pizza.AddSlice(slice)
-		}
+		slicer.RemoveSlices(overlaps)
+		slicer.AddSlices(slices)
 	}
 
 	fmt.Println()

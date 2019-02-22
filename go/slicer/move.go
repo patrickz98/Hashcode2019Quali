@@ -5,11 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
-
-	if slicer.Pizza.Cells[ xy ].Slice != nil {
-		return
-	}
+func (slicer *Slicer) tryMove(xy pizza.Coordinate) (move *pizza.Slice, old *pizza.Slice) {
 
 	slices := slicer.SliceCache[ xy ]
 
@@ -17,26 +13,24 @@ func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 
 		overlaps := slicer.overlapSlices(moveCandidate)
 
-		if len(overlaps) > 1 {
+		if len(overlaps) != 1 {
 			continue
 		}
 
-		for _, overlap := range overlaps {
+		overlap := overlaps[ 0 ]
 
-			if moveCandidate == overlap {
-				continue
-			}
-
-			if moveCandidate.Size() != overlap.Size() {
-				continue
-			}
-
-			slicer.Pizza.RemoveSlice(overlap)
-			slicer.Pizza.AddSlice(moveCandidate)
-
-			return
+		if moveCandidate == overlap {
+			continue
 		}
+
+		if moveCandidate.Size() != overlap.Size() {
+			continue
+		}
+
+		return moveCandidate, overlap
 	}
+
+	return nil, nil
 }
 
 func (slicer *Slicer) MoveSlices() {
@@ -50,8 +44,29 @@ func (slicer *Slicer) MoveSlices() {
 	}
 
 	for queue.HasItems() {
-		fmt.Printf("Move queue --> %-7d\r", len(queue.data) - 1)
-		slicer.tryMove(*queue.Pop())
+		fmt.Printf("Move queue --> %-7d\r", queue.Len())
+
+		xy := *queue.Pop()
+
+		if slicer.Pizza.Cells[ xy ].Slice != nil {
+			return
+		}
+
+		moved, old := slicer.tryMove(xy)
+
+		if moved == nil || old == nil {
+			continue
+		}
+
+		fmt.Println("---------- old ----------")
+		old.PrintVector()
+		old.Print()
+		slicer.Pizza.RemoveSlice(old)
+
+		fmt.Println("---------- moved ----------")
+		moved.PrintVector()
+		moved.Print()
+		slicer.Pizza.AddSlice(moved)
 	}
 
 	fmt.Printf("Move queue --> done\n")

@@ -19,7 +19,7 @@ func main() {
 	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
-	// best: 99.33% --> 99.30%
+	// best: 99.33% --> 98.54%
 	inputPath := "../../input/c_medium.in"
 	// submissionPath := "../../submissions/c_medium.out"
 

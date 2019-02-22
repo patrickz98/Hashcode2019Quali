@@ -30,10 +30,29 @@ func (queue *CoordinateQueue) HasItems() bool {
 	return len(queue.data) > 0
 }
 
+func (queue *CoordinateQueue) Len() int {
+
+	return len(queue.data)
+}
+
 func InitCoordinateQueue() *CoordinateQueue {
 
 	queue := &CoordinateQueue{}
 	queue.data = make([]pizza.Coordinate, 0)
 
 	return queue
+}
+
+func (queue *CoordinateQueue) PopFist() *pizza.Coordinate {
+
+	if len(queue.data) <= 0 {
+		return nil
+	}
+
+	n := len(queue.data) - 1
+	item := queue.data[ n ]
+
+	queue.data = queue.data[ :n ]
+
+	return &item
 }

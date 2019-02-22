@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) tryExpand(xy pizza.Coordinate) (new Slices, overlap Slices) {
+func (slicer *Slicer) destructionAt(xy pizza.Coordinate) (new Slices, overlap Slices) {
 
 	bestGain := 0
 	var newSlice *pizza.Slice
@@ -57,19 +57,14 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 	for queue.HasItems() {
 
 		fmt.Printf("Destruction queue --> %-7d\r", len(queue.data) - 1)
-		// slicer.tryExpand(queue)
+		// slicer.destructionAt(queue)
 
 		xy := queue.Pop()
 
-		slices, overlaps := slicer.tryExpand(*xy)
+		slices, overlaps := slicer.destructionAt(*xy)
 
-		for _, over := range overlaps {
-			slicer.Pizza.RemoveSlice(over)
-		}
-
-		for _, slice := range slices {
-			slicer.Pizza.AddSlice(slice)
-		}
+		slicer.RemoveSlices(overlaps)
+		slicer.AddSlices(slices)
 	}
 
 	fmt.Println()

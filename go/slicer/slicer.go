@@ -159,3 +159,69 @@ func (slicer *Slicer) FindBiggestParts() {
 
 	fmt.Println()
 }
+
+func (slicer *Slicer) AddSlice(slice *pizza.Slice) {
+
+	slicer.Pizza.AddSlice(slice)
+}
+
+func (slicer *Slicer) AddSlices(slices Slices) {
+
+	for _, slice := range slices {
+		slicer.Pizza.AddSlice(slice)
+	}
+}
+
+func (slicer *Slicer) RemoveSlice(slice *pizza.Slice) {
+
+	slicer.Pizza.RemoveSlice(slice)
+}
+
+func (slicer *Slicer) RemoveSlices(slices Slices) {
+
+	for _, slice := range slices {
+		slicer.Pizza.RemoveSlice(slice)
+	}
+}
+
+func (slicer *Slicer) leftover(slice *pizza.Slice, overlap *pizza.Slice) []pizza.Coordinate {
+
+	return overlap.Complement(slice)
+}
+
+func (slicer *Slicer) leftovers(slices Slices, overlaps Slices) []pizza.Coordinate {
+
+	coords := make([]pizza.Coordinate, 0)
+
+	// fmt.Println("-------- slices --------")
+	//
+	// for _, tmp := range slices {
+	// 	tmp.PrintVector()
+	// 	tmp.Print()
+	// }
+	//
+	// fmt.Println("------- overlaps -------")
+	//
+	// for _, tmp := range overlaps {
+	// 	tmp.PrintVector()
+	// 	tmp.Print()
+	// }
+
+	for _, overlap := range overlaps {
+
+		for _, sli := range slices {
+
+			coords = append(coords, overlap.Complement(sli)...)
+		}
+	}
+
+	// fmt.Println("------- coords -------")
+	//
+	// for _, coord := range coords {
+	// 	fmt.Println(coord.Stringify())
+	// }
+	//
+	// simple.Exit()
+
+	return coords
+}

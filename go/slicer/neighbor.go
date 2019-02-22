@@ -7,8 +7,8 @@ import (
 )
 
 type Neighbor struct {
-	Slice *pizza.Slice
-	Score int
+	Slices Slices
+	Score  int
 }
 
 func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) int {
@@ -71,7 +71,7 @@ func (slicer *Slicer) findBestNeighbor(xy pizza.Coordinate) *Neighbor {
 		return nil
 	}
 
-	return &Neighbor{Slice: slice, Score: factor}
+	return &Neighbor{Slices: slicer.splitSlice(slice), Score: factor}
 }
 
 func (slicer *Slicer) ExpandThroughNeighbors() {
@@ -87,7 +87,7 @@ func (slicer *Slicer) ExpandThroughNeighbors() {
 		neighbor := slicer.findBestNeighbor(xy)
 
 		if neighbor != nil {
-			slicer.Pizza.AddSlice(neighbor.Slice)
+			slicer.AddSlices(neighbor.Slices)
 		}
 	}
 }
@@ -184,25 +184,26 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 			break
 		}
 
-		bestSlice := best.Slice
-		slicer.Pizza.AddSlice(bestSlice)
+		bestSlice := best.Slices
+		slicer.AddSlices(bestSlice)
 
-		for _, xy := range bestSlice.TraversalWithBorder() {
+		for _, sli := range bestSlice {
+			for _, xy := range sli.TraversalWithBorder() {
 
-			if !slicer.Pizza.ContainsCoordinate(xy) {
-				continue
+				if !slicer.Pizza.ContainsCoordinate(xy) {
+					continue
+				}
+
+				if slicer.Pizza.HasSliceAt(xy) {
+					continue
+				}
+
+				queue[ xy ] = slicer.findBestNeighbor(xy)
 			}
 
-			if slicer.Pizza.HasSliceAt(xy) {
-				continue
-			}
-
-			queue[ xy ] = slicer.findBestNeighbor(xy)
+			slicer.fixOverlapNeighbors(queue, sli)
+			covered += sli.Size()
 		}
-
-		slicer.fixOverlapNeighbors(queue, bestSlice)
-
-		covered += bestSlice.Size()
 
 		// bestSlice.PrintVector()
 		fmt.Printf("covered=%d queue=%-6d\r", covered, len(queue),)
