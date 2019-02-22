@@ -10,47 +10,34 @@ func SearchSlices(piz *pizza.Pizza) {
 	slicer.Init()
 
 	// slicer.ExpandRandom()
-
 	// slicer.FindSingles()
-
-	slicer.ExpandThroughNeighborsIntelligent()
+	// slicer.ExpandThroughNeighborsIntelligent()
+	// slicer.ExpandThroughNeighbors()
 	// slicer.FindSmallestParts()
-	slicer.ExpandThroughDestruction()
-	slicer.ExpandThroughShrink()
-
+	// slicer.ExpandThroughDestruction()
+	// slicer.ExpandThroughShrink()
 	// slicer.ExpandThroughCorners()
-
 	// slicer.ExpandShot()
 	// slicer.FindBiggestParts()
 
-	// slicer.ExpandThroughDestruction()
-	// slicer.ExpandThroughShrink()
+	slicer.ExpandThroughNeighbors()
+	slicer.ExpandThroughDestruction()
+	slicer.ExpandThroughShrink()
 
-	// bestCover := 0
-	// var slices []*pizza.Slice
+	// bestCover, _ := piz.Score()
 	//
-	// for inx := 0; inx < 10; inx++ {
+	// for {
+	// 	fmt.Printf("############# cover=%d\n", bestCover)
 	//
-	// 	slicer.FindSingles()
-	// 	slicer.ExpandRandom()
-	// 	// slicer.ExpandThroughDestruction()
-	// 	// slicer.ExpandThroughShrink()
+	// 	slicer.ExpandThroughDestruction()
+	// 	slicer.ExpandThroughShrink()
 	//
 	// 	cover, _ := piz.Score()
 	//
-	// 	if bestCover < cover {
-	// 		bestCover = cover
-	// 		slices = piz.Slices()
+	// 	if bestCover == cover {
+	// 		break
 	// 	}
 	//
-	// 	fmt.Printf("############# %d cover=%d\n", inx, cover)
-	//
-	// 	piz.RemoveAllSlice()
-	// }
-	//
-	// fmt.Printf("############# best=%d\n", bestCover)
-	//
-	// for _, sli := range slices {
-	// 	piz.AddSlice(sli)
+	// 	bestCover = cover
 	// }
 }

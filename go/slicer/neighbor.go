@@ -8,10 +8,10 @@ import (
 
 type Neighbor struct {
 	Slice *pizza.Slice
-	Score float32
+	Score int
 }
 
-func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) float32 {
+func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) int {
 
 	rowStart := slice.Row.Start - 1
 	rowEnd := slice.Row.End + 1
@@ -41,14 +41,16 @@ func (slicer *Slicer) calcNeighborFactor(slice *pizza.Slice) float32 {
 		}
 	}
 
-	return float32(factor) / float32(slice.Size())
+	// return float32(factor) / float32(slice.Size())
+	return factor - slice.Size()
 }
 
 func (slicer *Slicer) findBestNeighbor(xy pizza.Coordinate) *Neighbor {
 
 	slices := slicer.SliceCache[ xy ]
 
-	factor := float32(0)
+	// factor := float32(0)
+	factor := 0
 	var slice *pizza.Slice
 
 	for _, sli := range slices {
@@ -92,7 +94,7 @@ func (slicer *Slicer) ExpandThroughNeighbors() {
 
 func (slicer *Slicer) findBestNeighborCandidate(candidates map[pizza.Coordinate] *Neighbor) *Neighbor {
 
-	score := float32(0)
+	score := 0
 	var neighbor *Neighbor
 
 	for _, candidate := range candidates {
@@ -148,13 +150,30 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 	// queue := make([]pizza.Coordinate, 1)
 	// queue[ 0 ] = pizza.Coordinate{Row: slicer.Pizza.Row.Start, Column: slicer.Pizza.Column.Start}
 
-	// startXY := pizza.Coordinate{Row: slicer.Pizza.Row.Start, Column: slicer.Pizza.Column.Start}
-	startXY := pizza.Coordinate{Row: slicer.Pizza.Row.End / 2, Column: slicer.Pizza.Column.End / 2}
-
 	queue := make(map[ pizza.Coordinate ] *Neighbor)
-	queue[ startXY ] = slicer.findBestNeighbor(startXY)
 
-	coverd := 0
+	// startXY := pizza.Coordinate{Row: slicer.Pizza.Row.End, Column: slicer.Pizza.Column.End}
+	// queue[ startXY ] = slicer.findBestNeighbor(startXY)
+
+	for _, iny := range slicer.Pizza.Row.Range() {
+
+		xy1 := pizza.Coordinate{Row: iny, Column: slicer.Pizza.Column.Start}
+		xy2 := pizza.Coordinate{Row: iny, Column: slicer.Pizza.Column.End}
+
+		queue[ xy1 ] = slicer.findBestNeighbor(xy1)
+		queue[ xy2 ] = slicer.findBestNeighbor(xy2)
+	}
+
+	for _, inx := range slicer.Pizza.Column.Range() {
+
+		xy1 := pizza.Coordinate{Row: slicer.Pizza.Row.Start, Column: inx}
+		xy2 := pizza.Coordinate{Row: slicer.Pizza.Row.End, Column: inx}
+
+		queue[ xy1 ] = slicer.findBestNeighbor(xy1)
+		queue[ xy2 ] = slicer.findBestNeighbor(xy2)
+	}
+
+	covered := 0
 
 	for len(queue) > 0 {
 
@@ -183,9 +202,11 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 
 		slicer.fixOverlapNeighbors(queue, bestSlice)
 
-		coverd += bestSlice.Size()
+		covered += bestSlice.Size()
 
 		// bestSlice.PrintVector()
-		fmt.Printf("queue=%d coverd=%d\n", len(queue), coverd)
+		fmt.Printf("covered=%d queue=%-6d\r", covered, len(queue),)
 	}
+
+	fmt.Println()
 }

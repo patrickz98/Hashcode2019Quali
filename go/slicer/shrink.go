@@ -105,12 +105,6 @@ func (slicer *Slicer) shrinkSlice(trigger *pizza.Slice, shrink *pizza.Slice) (sh
 
 func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 
-	// if slicer.Pizza.Cells[ *xy ].Slice != nil {
-	// 	return
-	// }
-
-	// fmt.Printf("--> (%d, %d)\n", xy.Row, xy.Column)
-
 	bestGain := 0
 	var newSlice *pizza.Slice
 	var sliceOverlaps []*pizza.Slice
@@ -121,7 +115,8 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 		overlaps := slicer.overlapSlices(sliceCandidate)
 		newSlices := make([]*pizza.Slice, 0)
 
-		lost := 0
+		lostSize := 0
+		replaceSize := 0
 		replacementOk := true
 
 		for _, shrinkSlice := range overlaps {
@@ -133,11 +128,13 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 				break
 			}
 
+			lostSize += sliceCandidate.Size()
+
 			if status == eaten {
 				continue
 			}
 
-			lost += shrinkSlice.Size() - newSlice.Size()
+			replaceSize += newSlice.Size()
 			newSlices = append(newSlices, newSlice)
 		}
 
@@ -145,7 +142,7 @@ func (slicer *Slicer) tryExpandShrink(xy pizza.Coordinate) {
 			continue
 		}
 
-		gain := sliceCandidate.Size() - lost
+		gain := replaceSize + sliceCandidate.Size() - lostSize
 
 		if gain > bestGain {
 			bestGain = gain

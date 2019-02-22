@@ -54,9 +54,9 @@ func (slicer *Slicer) tryMove(xy pizza.Coordinate) {
 	}
 }
 
-func (slicer *Slicer) ExpandThroughMove() {
+func (slicer *Slicer) MoveSlices() {
 
-	fmt.Println("Expand through move")
+	fmt.Println("Move existing slices")
 
 	queue := InitCoordinateQueue()
 

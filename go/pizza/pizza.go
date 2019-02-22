@@ -304,6 +304,11 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 
 	for _, xy := range slice.Traversal() {
 		cell := pizza.Cells[xy]
+
+		if cell.Slice != slice {
+			panic("Remove wrong slice")
+		}
+
 		cell.Slice = nil
 	}
 }
