@@ -2,43 +2,23 @@ package slicer
 
 import (
 	"../pizza"
-	"fmt"
 )
 
-func SearchSlices(piz *pizza.Pizza, params []SlicerParams) {
+func SearchSlices(piz *pizza.Pizza) {
 
 	slicer := Slicer{Pizza: piz}
 	slicer.Init()
 
 	// slicer.ExpandRandom()
 
-	scorePercent := make([]float32, 0)
+	slicer.FindSingles()
 
-	for _, param := range params {
-		fmt.Println("\nNow trying: " + param.Name)
+	// slicer.ExpandThroughNeighborsIntelligent()
+	// slicer.FindSmallestParts()
+	// slicer.ExpandThroughDestruction()
+	// slicer.ExpandThroughShrink()
 
-		piz.RemoveAllSlice()
-		slicer.Params = param
-		slicer.setCorners()
-
-		//slicer.FindBiggestParts()
-		//slicer.FindSingles()
-
-		//slicer.ExpandThroughEdge()
-		slicer.FindSmallestParts()
-		slicer.ExpandThroughDestruction()
-		slicer.ExpandThroughShrink()
-
-		_, addToScore := piz.Score()
-		scorePercent = append(scorePercent, addToScore*100)
-		piz.PrintScore()
-	}
-
-	fmt.Println()
-
-	for i, param := range params {
-		fmt.Printf(param.Name+": %f\n", scorePercent[i])
-	}
+	slicer.ExpandThroughCorners()
 
 	// slicer.ExpandShot()
 	// slicer.FindBiggestParts()

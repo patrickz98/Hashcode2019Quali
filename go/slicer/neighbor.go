@@ -118,6 +118,8 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 	queue := make([]pizza.Coordinate, 1)
 	queue[ 0 ] = pizza.Coordinate{Row: slicer.Pizza.Row.Start, Column: slicer.Pizza.Column.Start}
 
+	coverd := 0
+
 	for len(queue) > 0 {
 
 		scores := make(map[pizza.Coordinate] *Neighbor)
@@ -185,7 +187,10 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 
 		queue = tmp
 
+		coverd += bestSlice.Size()
+
 		bestSlice.PrintVector()
+		fmt.Printf("queue=%d coverd=%d\n", len(queue), coverd)
 
 		// for _, xy := range queue {
 			// fmt.Printf("(%d, %d)\n", xy.Row, xy.Column)

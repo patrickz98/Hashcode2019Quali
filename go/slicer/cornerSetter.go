@@ -31,6 +31,7 @@ func (slicer *Slicer) setCorners() {
 }
 
 func (slicer *Slicer) findBestSliceForCoordinatesRecursive(xy pizza.Coordinate, rowDir int, columnDir int, depth int) {
+
 	if (xy.Row > depth && slicer.Pizza.Row.End-xy.Row > depth) ||
 		(xy.Column > depth && slicer.Pizza.Column.End-xy.Column > depth) ||
 		xy.Row < 0 || xy.Row > slicer.Pizza.Row.End ||
@@ -135,9 +136,59 @@ func (slicer *Slicer) getLastSlice(xy pizza.Coordinate, rowDir int, columnDir in
 	return nil
 }
 
-func Abs(x int) int {
-	if x < 0 {
-		return -x
+func (slicer *Slicer) ExpandThroughCorners() {
+
+	paramSlices := make([]SlicerParams, 0)
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 0/3", 0, 3,
+	})
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 50/3", 50, 3,
+	})
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 100/3", 100, 3,
+	})
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 150/3", 150, 3,
+	})
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 500/3", 500, 3,
+	})
+
+	paramSlices = append(paramSlices, SlicerParams{
+		"Corner 1000/3", 500, 3,
+	})
+
+	scorePercent := make([]float32, 0)
+
+	for _, param := range paramSlices {
+		fmt.Println("\nNow trying: " + param.Name)
+
+		slicer.Pizza.RemoveAllSlice()
+		slicer.Params = param
+		slicer.setCorners()
+
+		//slicer.FindBiggestParts()
+		//slicer.FindSingles()
+
+		//slicer.ExpandThroughEdge()
+		slicer.FindSmallestParts()
+		slicer.ExpandThroughDestruction()
+		slicer.ExpandThroughShrink()
+
+		_, addToScore := slicer.Pizza.Score()
+		scorePercent = append(scorePercent, addToScore*100)
+		slicer.Pizza.PrintScore()
 	}
-	return x
+
+	fmt.Println()
+
+	for i, param := range paramSlices {
+		fmt.Printf(param.Name + ": %f\n", scorePercent[i])
+	}
 }

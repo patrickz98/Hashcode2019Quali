@@ -32,3 +32,10 @@ func Min(x, y int) int {
 func Exit() {
 	os.Exit(0)
 }
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}

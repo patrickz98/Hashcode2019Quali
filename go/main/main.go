@@ -16,7 +16,7 @@ func main() {
 	// submissionPath := "../../submissions/a_example.out"
 
 	// best: 100.00% --> 100.00%
-	// inputPath := "../../input/b_small.in"
+	inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
 	// best: 99.33% --> 99.30%
@@ -24,38 +24,12 @@ func main() {
 	// submissionPath := "../../submissions/c_medium.out"
 
 	// best: 93.06% --> 91.19%
-	inputPath := "../../input/d_big.in"
+	// inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
-
-	paramSlices := make([]slicer.SlicerParams, 0)
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 0/3", 0, 3,
-	})
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 50/3", 50, 3,
-	})
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 100/3", 100, 3,
-	})
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 150/3", 150, 3,
-	})
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 500/3", 500, 3,
-	})
-
-	paramSlices = append(paramSlices, slicer.SlicerParams{
-		"Corner 1000/3", 500, 3,
-	})
 
 	piz := pizza.NewPizza(inputPath)
 
-	slicer.SearchSlices(&piz, paramSlices)
+	slicer.SearchSlices(&piz)
 
 	//piz := pizza.NewPizza(inputPath)
 
@@ -74,12 +48,11 @@ func main() {
 
 	// piz.PrintSlices(false)
 	// piz.CreateSubmission(submissionPath)
-	//piz.PrintScore()
+	piz.PrintScore()
 
-	// piz.PrintSlicesToFile(true, "yyy-marked.txt")
-	// piz.PrintSlicesToFile(false, "yyy.txt")
+	piz.PrintSlicesToFile(true, "yyy-marked.txt")
+	piz.PrintSlicesToFile(false, "yyy.txt")
 
-	//
 	// over := pizza.Slice{
 	// 	Pizza: &pizz,
 	// 	Row: pizza.Vector{Start: 0, End: 1},
