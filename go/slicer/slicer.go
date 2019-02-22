@@ -8,13 +8,6 @@ import (
 type Slicer struct {
 	Pizza      *pizza.Pizza
 	SliceCache map[pizza.Coordinate][]*pizza.Slice
-	Params     SlicerParams
-}
-
-type SlicerParams struct {
-	Name                 string
-	CornerDepth          int
-	CornerLastSliceDepth int
 }
 
 func (slicer *Slicer) Init() {
