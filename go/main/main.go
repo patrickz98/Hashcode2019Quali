@@ -16,7 +16,7 @@ func main() {
 	// submissionPath := "../../submissions/a_example.out"
 
 	// best: 100.00% --> 100.00%
-	inputPath := "../../input/b_small.in"
+	// inputPath := "../../input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
 	// best: 99.33% --> 99.30%
@@ -24,7 +24,7 @@ func main() {
 	// submissionPath := "../../submissions/c_medium.out"
 
 	// best: 93.06% --> 91.19%
-	// inputPath := "../../input/d_big.in"
+	inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
