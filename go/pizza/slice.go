@@ -10,15 +10,10 @@ type Slice struct {
 	Column Vector
 }
 
-func (slice Slice) Size() int {
+func (slice Slice) ingredients() (tomato int, mushroom int) {
 
-	return slice.Row.Length() * slice.Column.Length()
-}
-
-func (slice Slice) IngredientsOk() bool {
-
-	tomato := 0
-	mushroom := 0
+	tomato = 0
+	mushroom = 0
 
 	for _, xy := range slice.Traversal() {
 		cell := slice.Pizza.Cells[xy]
@@ -30,6 +25,24 @@ func (slice Slice) IngredientsOk() bool {
 		}
 	}
 
+	return tomato, mushroom
+}
+
+func (slice Slice) IngredientsBalance() int {
+
+	tomato, mushroom := slice.ingredients()
+
+	return tomato - mushroom
+}
+
+func (slice Slice) Size() int {
+
+	return slice.Row.Length() * slice.Column.Length()
+}
+
+func (slice Slice) IngredientsOk() bool {
+
+	tomato, mushroom := slice.ingredients()
 	ingredients := slice.Pizza.Ingredients
 
 	return tomato >= ingredients && mushroom >= ingredients

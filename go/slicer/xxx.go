@@ -30,6 +30,13 @@ func (slicer *Slicer) TryAll() {
 			continue
 		}
 
+		// balanced := slicer.findBalanced(xy)
+		//
+		// if balanced != nil {
+		// 	slicer.AddSlice(balanced)
+		// 	continue
+		// }
+
 		neighbors := slicer.findBestNeighbor(xy)
 
 		if neighbors != nil {
