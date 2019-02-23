@@ -48,7 +48,7 @@ func SearchSlices(piz *pizza.Pizza) {
 	// 	fmt.Printf("############# cover=%d\n", bestCover)
 	//
 	// 	slicer.TryAll()
-	// 	slicer.ChangeSlices()
+	// 	slicer.ShakeSlices()
 	//
 	// 	cover, _ := piz.Score()
 	//

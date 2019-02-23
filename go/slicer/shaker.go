@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) changeAt(xy pizza.Coordinate) (new Slices, overlap Slices) {
+func (slicer *Slicer) shakeAt(xy pizza.Coordinate) (new Slices, overlap Slices) {
 
 	// bestGain := 0
 	var newSlice *pizza.Slice
@@ -44,7 +44,7 @@ func (slicer *Slicer) changeAt(xy pizza.Coordinate) (new Slices, overlap Slices)
 	return splitParts, overlaps
 }
 
-func (slicer *Slicer) ChangeSlices() {
+func (slicer *Slicer) ShakeSlices() {
 
 	fmt.Println("Change existing slices")
 
@@ -66,7 +66,7 @@ func (slicer *Slicer) ChangeSlices() {
 		// 	return
 		// }
 
-		slices, old := slicer.changeAt(xy)
+		slices, old := slicer.shakeAt(xy)
 
 		if slices == nil {
 			continue
