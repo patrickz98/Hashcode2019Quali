@@ -11,7 +11,8 @@ func (slicer *Slicer) buildSlicesCache() {
 
 	max := slicer.Pizza.MaxCells
 
-	slices := make(map[pizza.Coordinate] []*pizza.Slice)
+	slices := make(map[pizza.Coordinate][]*pizza.Slice)
+	slicer.TopLeftSliceCache = make(map[pizza.Coordinate][]*pizza.Slice)
 
 	total := slicer.Pizza.Size()
 
@@ -38,13 +39,15 @@ func (slicer *Slicer) buildSlicesCache() {
 					Column: cellV,
 				}
 
-				if ! slic.Valid() {
+				if !slic.Valid() {
 					continue
 				}
 
+				slicer.TopLeftSliceCache[coordinate] = append(slicer.TopLeftSliceCache[coordinate], slic)
+
 				// Add Slice to each x and y position.
 				for _, xy := range slic.Traversal() {
-					slices[ xy ] = append(slices[ xy ], slic)
+					slices[xy] = append(slices[xy], slic)
 				}
 
 				slicesCount++
@@ -52,7 +55,7 @@ func (slicer *Slicer) buildSlicesCache() {
 		}
 
 		// fmt.Printf("Generating possible slices: %3.0f%%\r", (float32(count) / float32(total) * 100.0))
-		fmt.Printf("Generating possible slices %d/%d\r", total, count + 1)
+		fmt.Printf("Generating possible slices %d/%d\r", total, count+1)
 	}
 
 	fmt.Println()
@@ -62,8 +65,8 @@ func (slicer *Slicer) buildSlicesCache() {
 	slicer.SliceCache = slices
 
 	for key := range slices {
-		sort.Slice(slices[ key ], func(i int, j int) bool {
-			return slices[ key ][ i ].Size() < slices[ key ][ j ].Size()
+		sort.Slice(slices[key], func(i int, j int) bool {
+			return slices[key][i].Size() < slices[key][j].Size()
 		})
 	}
 }

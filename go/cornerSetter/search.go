@@ -1,13 +1,14 @@
-package slicer
+package cornerSetter
 
 import (
 	"../pizza"
+	"../slicer"
 	"fmt"
 )
 
 func SearchSlices(piz *pizza.Pizza) {
 
-	slicer := Slicer{Pizza: piz}
+	slicer := slicer.Slicer{Pizza: piz}
 	slicer.Init()
 
 	// slicer.ExpandRandom()
