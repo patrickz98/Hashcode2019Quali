@@ -46,7 +46,7 @@ func (slicer *Slicer) shakeAt(xy pizza.Coordinate) (new Slices, overlap Slices) 
 
 func (slicer *Slicer) ShakeSlices() {
 
-	fmt.Println("Change existing slices")
+	fmt.Println("Shake existing slices")
 
 	queue := InitCoordinateQueue()
 
@@ -58,7 +58,7 @@ func (slicer *Slicer) ShakeSlices() {
 	changed := 0
 
 	for queue.HasItems() {
-		fmt.Printf("--> Change changed=%d queue=%-7d \r", changed, queue.Len())
+		fmt.Printf("--> Shake changed=%d queue=%-7d \r", changed, queue.Len())
 
 		xy := *queue.Pop()
 
