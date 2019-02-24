@@ -8,8 +8,9 @@ import (
 type Slices []*pizza.Slice
 
 type Slicer struct {
-	Pizza      *pizza.Pizza
-	SliceCache map[pizza.Coordinate][]*pizza.Slice
+	Pizza             *pizza.Pizza
+	SliceCache        map[pizza.Coordinate][]*pizza.Slice
+	TopLeftSliceCache map[pizza.Coordinate][]*pizza.Slice
 }
 
 func (slicer *Slicer) Init() {

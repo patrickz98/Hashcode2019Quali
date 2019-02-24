@@ -10,7 +10,7 @@ type Slice struct {
 	Column Vector
 }
 
-func (slice Slice) ingredients() (tomato int, mushroom int) {
+func (slice Slice) IngredientsCount() (tomato int, mushroom int) {
 
 	tomato = 0
 	mushroom = 0
@@ -30,7 +30,7 @@ func (slice Slice) ingredients() (tomato int, mushroom int) {
 
 func (slice Slice) IngredientsBalance() int {
 
-	tomato, mushroom := slice.ingredients()
+	tomato, mushroom := slice.IngredientsCount()
 
 	return tomato - mushroom
 }
@@ -42,7 +42,7 @@ func (slice Slice) Size() int {
 
 func (slice Slice) IngredientsOk() bool {
 
-	tomato, mushroom := slice.ingredients()
+	tomato, mushroom := slice.IngredientsCount()
 	ingredients := slice.Pizza.Ingredients
 
 	return tomato >= ingredients && mushroom >= ingredients

@@ -6,8 +6,6 @@ import (
 
 func (slicer *Slicer) TryAll() {
 
-	fmt.Println("Expand...")
-
 	piz := slicer.Pizza
 
 	queue := InitCoordinateQueue()

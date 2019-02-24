@@ -26,6 +26,8 @@ type Pizza struct {
 	Cells       map[Coordinate]*Cell
 	Row         Vector
 	Column      Vector
+
+	ScoreTotal int
 }
 
 func (pizza Pizza) PrintParams() {
@@ -185,17 +187,9 @@ func (pizza Pizza) SliceCount() int {
 
 func (pizza Pizza) Score() (covered int, score float32) {
 
-	total := pizza.Size()
+	score = float32(pizza.ScoreTotal) / float32(pizza.Size())
 
-	covered = 0
-
-	for _, sli := range pizza.Slices() {
-		covered += sli.Size()
-	}
-
-	score = float32(covered) / float32(total)
-
-	return covered, score
+	return pizza.ScoreTotal, score
 }
 
 func (pizza Pizza) PrintScore() {
@@ -285,6 +279,8 @@ func (pizza *Pizza) AddSlice(slice *Slice) {
 
 		cell.Slice = slice
 	}
+
+	pizza.ScoreTotal += slice.Size()
 }
 
 func (pizza *Pizza) SafeAddSlice(slice *Slice) bool {
@@ -301,6 +297,7 @@ func (pizza *Pizza) SafeAddSlice(slice *Slice) bool {
 		pizza.Cells[xy].Slice = slice
 	}
 
+	pizza.ScoreTotal += slice.Size()
 	return true
 }
 
@@ -315,6 +312,8 @@ func (pizza *Pizza) RemoveSlice(slice *Slice) {
 
 		cell.Slice = nil
 	}
+
+	pizza.ScoreTotal -= slice.Size()
 }
 
 func (pizza *Pizza) RemoveAllSlice() {
@@ -322,6 +321,8 @@ func (pizza *Pizza) RemoveAllSlice() {
 	for _, xy := range pizza.Traversal() {
 		pizza.Cells[xy].Slice = nil
 	}
+
+	pizza.ScoreTotal = 0
 }
 
 func (pizza Pizza) CheckErrors() {
