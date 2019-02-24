@@ -3,7 +3,6 @@ package cornerSetter
 import (
 	"../pizza"
 	"../slicer"
-	"fmt"
 )
 
 func SearchSlices(piz *pizza.Pizza) {

@@ -15,6 +15,12 @@ func (xy Coordinate) Stringify() string {
 	return fmt.Sprintf("(%d, %d)", xy.Row, xy.Column)
 }
 
+func (xy Coordinate) AddTo(row int, column int) Coordinate {
+	xy.Row += row
+	xy.Column += column
+	return xy
+}
+
 type Cell struct {
 	Slice *Slice
 	Type  rune

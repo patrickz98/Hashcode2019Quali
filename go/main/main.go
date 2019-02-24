@@ -20,16 +20,16 @@ func main() {
 	// submissionPath := "../../submissions/b_small.out"
 
 	// 99.33%
-	// inputPath := "../../input/c_medium.in"
+	inputPath := "../../input/c_medium.in"
 	// submissionPath := "../../submissions/c_medium.out"
 
 	// 93.06%
-	inputPath := "../../input/d_big.in"
+	//inputPath := "../../input/d_big.in"
 	// submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
 
-	slicer.SearchSlices(&piz)
+	cornerSetter.SearchSlices(&piz)
 
 	//piz := pizza.NewPizza(inputPath)
 
