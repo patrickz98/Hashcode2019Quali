@@ -100,24 +100,24 @@ func (slicer *Slicer) ExpandBalancedIntelligent() {
 	fmt.Printf("sliMushrooms = %d\n", len(sliMushrooms))
 	fmt.Printf("sliBalanced = %d\n", len(sliBalanced))
 
-	bal := 0
-
-	queue := InitCoordinateQueue()
-
-	for _, xy := range slicer.Pizza.Traversal() {
-		queue.Push(xy)
-	}
-
-	for queue.HasItems() {
-
-		xy := *queue.Pop()
-		slices := slicer.SliceCache[ xy ]
-
-		for _, sli := range slices {
-
-			tom1, mus1 := sli.IngredientsCount()
-
-			tmp := bal + (tom1 - mus1)
-		}
-	}
+	// bal := 0
+	//
+	// queue := InitCoordinateQueue()
+	//
+	// for _, xy := range slicer.Pizza.Traversal() {
+	// 	queue.Push(xy)
+	// }
+	//
+	// for queue.HasItems() {
+	//
+	// 	xy := *queue.Pop()
+	// 	slices := slicer.SliceCache[ xy ]
+	//
+	// 	for _, sli := range slices {
+	//
+	// 		tom1, mus1 := sli.IngredientsCount()
+	//
+	// 		tmp := bal + (tom1 - mus1)
+	// 	}
+	// }
 }

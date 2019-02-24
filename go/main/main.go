@@ -1,8 +1,8 @@
 package main
 
 import (
-	"../cornerSetter"
 	"../pizza"
+	"../slicer"
 	"fmt"
 	"time"
 )
