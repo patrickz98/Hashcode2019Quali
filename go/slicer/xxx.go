@@ -5,13 +5,10 @@ import (
 	"fmt"
 )
 
+// var dist = 0
+// var shrink = 0
+
 func (slicer *Slicer) tryAllAt(queue *CoordinateQueue, xy pizza.Coordinate) {
-
-	piz := slicer.Pizza
-
-	if piz.HasSliceAt(xy) {
-		return
-	}
 
 	neighbors := slicer.findBestNeighbor(xy)
 
@@ -20,29 +17,36 @@ func (slicer *Slicer) tryAllAt(queue *CoordinateQueue, xy pizza.Coordinate) {
 		return
 	}
 
-	slices, overlaps := slicer.destructionAt(xy)
+	distSlices, distOverlaps := slicer.destructionAt(xy)
+	shrinkSlices, shrinkOverlaps := slicer.shrinkAt(xy)
 
-	if len(slices) > 0 {
-		slicer.RemoveSlices(overlaps)
-		slicer.AddSlices(slices)
+	distGain := slicer.CalculateGain(distSlices, distOverlaps)
+	shrinkGain := slicer.CalculateGain(shrinkSlices, shrinkOverlaps)
 
-		leftovers := slicer.leftovers(slices, overlaps)
-		queue.PushAll(leftovers)
-
+	if distGain == 0 && shrinkGain == 0 {
 		return
 	}
 
-	slices, overlaps = slicer.shrinkAt(xy)
+	// fmt.Printf("distGain=%d shrinkGain=%d\n", distGain, shrinkGain)
 
-	if len(slices) > 0 {
-		slicer.RemoveSlices(overlaps)
-		slicer.AddSlices(slices)
+	if distGain > shrinkGain {
+		// dist++
+		slicer.RemoveSlices(distOverlaps)
+		slicer.AddSlices(distSlices)
 
-		leftovers := slicer.leftovers(slices, overlaps)
+		leftovers := slicer.leftovers(distSlices, distOverlaps)
 		queue.PushAll(leftovers)
 
-		return
+	} else {
+		// shrink++
+		slicer.RemoveSlices(shrinkOverlaps)
+		slicer.AddSlices(shrinkSlices)
+
+		leftovers := slicer.leftovers(shrinkSlices, shrinkOverlaps)
+		queue.PushAll(leftovers)
 	}
+
+	// fmt.Printf("dist=%d shrink=%d\n", dist, shrink)
 
 	// move, old := slicer.shakeAt(xy)
 	//
@@ -55,26 +59,27 @@ func (slicer *Slicer) tryAllAt(queue *CoordinateQueue, xy pizza.Coordinate) {
 	//
 	// 	return
 	// }
+
+	// queue.PushStart(xy)
 }
 
 func (slicer *Slicer) TryAll() {
 
 	queue := InitCoordinateQueue()
 	// queue.Push(pizza.Coordinate{Row: 0, Column: 0})
-	queue.PushAll(slicer.Pizza.Traversal())
+	// queue.PushAll(slicer.Pizza.Traversal())
+	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
 
-	// piz := slicer.Pizza
-	// for _, xy := range piz.TraversalNotSlicedCells() {
-	//
-	// 	queue.Push(xy)
-	// }
+	score, _ := slicer.Pizza.Score()
 
 	for queue.HasItems() {
 
 		xy := *queue.Pop()
 		slicer.tryAllAt(queue, xy)
 
-		// fmt.Printf("Expand queue --> %-7d\r", queue.Len())
+		gain, _ := slicer.Pizza.Score()
+		fmt.Printf("Expand gain=%d queue=%-7d\r", gain - score, queue.Len())
+
 		// fmt.Printf("%s\n", xy.Stringify())
 	}
 

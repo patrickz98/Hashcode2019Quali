@@ -2,6 +2,7 @@ package slicer
 
 import (
 	"../pizza"
+	"fmt"
 )
 
 func SearchSlices(piz *pizza.Pizza) {
@@ -21,18 +22,13 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.FindBiggestParts()
 	// slicer.ExpandBalanced()
 	// slicer.TryAll()
-
-	slicer.TryAll()
-	// slicer.ExpandThroughDestruction()
-	// slicer.ExpandThroughNeighborsIntelligent()
-
 	// slicer.ExpandBalancedIntelligent()
 
 	// big: 86.31% med: 95.03%
 	// slicer.ExpandBalanced()
 	// slicer.TryAll()
 
-	// big: 90.82% med: 98.54%
+	// big: 90.83% med: 98.62%
 	// slicer.ExpandThroughNeighbors()
 	// slicer.TryAll()
 
@@ -42,26 +38,28 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandThroughShrink()
 	// slicer.TryAll()
 
-	// big: 92.39%
+	// big: 92.40% mid: 99.18%
 	// slicer.FindSingles()
-	// slicer.ExpandThroughNeighbors()
+	slicer.ExpandThroughNeighbors()
 	// slicer.ExpandThroughDestruction()
 	// slicer.ExpandThroughShrink()
-	//
-	// bestCover, _ := piz.Score()
-	//
-	// for {
-	// 	fmt.Printf("############# cover=%d\n", bestCover)
-	//
-	// 	slicer.TryAll()
-	// 	slicer.ShakeSlices()
-	//
-	// 	cover, _ := piz.Score()
-	//
-	// 	if bestCover == cover {
-	// 		break
-	// 	}
-	//
-	// 	bestCover = cover
-	// }
+
+	bestCover, _ := piz.Score()
+
+	for {
+		fmt.Printf("############# cover=%d\n", bestCover)
+
+		// slicer.ExpandThroughDestruction()
+		// slicer.ExpandThroughShrink()
+		slicer.TryAll()
+		slicer.ShakeSlices()
+
+		cover, _ := piz.Score()
+
+		if bestCover == cover {
+			break
+		}
+
+		bestCover = cover
+	}
 }

@@ -25,6 +25,11 @@ func (queue *CoordinateQueue) Push(coord pizza.Coordinate) {
 	queue.data = append(queue.data, coord)
 }
 
+func (queue *CoordinateQueue) PushStart(coord pizza.Coordinate) {
+
+	queue.data = append([]pizza.Coordinate{coord}, queue.data...)
+}
+
 func (queue *CoordinateQueue) PushAll(coords []pizza.Coordinate) {
 
 	queue.data = append(queue.data, coords...)

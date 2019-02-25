@@ -11,8 +11,8 @@ func (slicer *Slicer) buildSlicesCache() {
 
 	max := slicer.Pizza.MaxCells
 
-	slices := make(map[pizza.Coordinate][]*pizza.Slice)
-	slicer.TopLeftSliceCache = make(map[pizza.Coordinate][]*pizza.Slice)
+	slices := make(map[ pizza.Coordinate ] Slices)
+	slicer.TopLeftSliceCache = make(map[ pizza.Coordinate ] Slices)
 
 	total := slicer.Pizza.Size()
 

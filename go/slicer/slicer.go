@@ -9,15 +9,15 @@ type Slices []*pizza.Slice
 
 type Slicer struct {
 	Pizza             *pizza.Pizza
-	SliceCache        map[pizza.Coordinate][]*pizza.Slice
-	TopLeftSliceCache map[pizza.Coordinate][]*pizza.Slice
+	SliceCache        map[ pizza.Coordinate ] Slices
+	TopLeftSliceCache map[ pizza.Coordinate ] Slices
 }
 
 func (slicer *Slicer) Init() {
 	slicer.buildSlicesCache()
 }
 
-func (slicer Slicer) CalculateSize(slices []*pizza.Slice) int {
+func (slicer Slicer) CalculateSize(slices Slices) int {
 
 	size := 0
 
@@ -26,6 +26,11 @@ func (slicer Slicer) CalculateSize(slices []*pizza.Slice) int {
 	}
 
 	return size
+}
+
+func (slicer Slicer) CalculateGain(slices1 Slices, slices2 Slices) int {
+
+	return slicer.CalculateSize(slices1) - slicer.CalculateSize(slices2)
 }
 
 func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
