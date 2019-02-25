@@ -47,10 +47,7 @@ func (slicer *Slicer) ExpandThroughDestruction() {
 	fmt.Println("Expand through destruction")
 
 	queue := InitCoordinateQueue()
-
-	for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
-		queue.Push(xy)
-	}
+	queue.PushAll(slicer.Pizza.Traversal())
 
 	start, _ := slicer.Pizza.Score()
 

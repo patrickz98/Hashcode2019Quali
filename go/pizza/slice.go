@@ -118,6 +118,30 @@ func (slice Slice) TraversalWithBorder() []Coordinate {
 	return coordinates
 }
 
+func (slice Slice) TraversalBorder() []Coordinate {
+
+	rowStart := slice.Row.Start - 1
+	rowEnd := slice.Row.End + 1
+
+	colStart := slice.Column.Start - 1
+	colEnd := slice.Column.End + 1
+
+	coordinates := make([]Coordinate, 0)
+
+	for iny := rowStart; iny <= rowEnd; iny++ {
+		for inx := colStart; inx <= colEnd; inx++ {
+
+			xy := Coordinate{Row: iny, Column: inx}
+
+			if !slice.ContainsCoordinate(xy) {
+				coordinates = append(coordinates, xy)
+			}
+		}
+	}
+
+	return coordinates
+}
+
 func (slice Slice) Contains(slice2 *Slice) bool {
 
 	return slice.Row.ContainsVector(slice2.Row) && slice.Column.ContainsVector(slice2.Column)

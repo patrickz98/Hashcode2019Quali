@@ -26,8 +26,7 @@ type Pizza struct {
 	Cells       map[Coordinate]*Cell
 	Row         Vector
 	Column      Vector
-
-	ScoreTotal int
+	ScoreTotal  int
 }
 
 func (pizza Pizza) PrintParams() {

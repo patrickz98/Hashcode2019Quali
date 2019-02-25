@@ -25,6 +25,11 @@ func (queue *CoordinateQueue) Push(coord pizza.Coordinate) {
 	queue.data = append(queue.data, coord)
 }
 
+func (queue *CoordinateQueue) PushAll(coords []pizza.Coordinate) {
+
+	queue.data = append(queue.data, coords...)
+}
+
 func (queue *CoordinateQueue) HasItems() bool {
 
 	return len(queue.data) > 0

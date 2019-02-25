@@ -177,7 +177,6 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 
 	for len(queue) > 0 {
 
-		// scores := make(map[pizza.Coordinate] *Neighbor)
 		best := slicer.findBestNeighborCandidate(queue)
 
 		if best == nil {
@@ -205,7 +204,6 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 			covered += sli.Size()
 		}
 
-		// bestSlice.PrintVector()
 		fmt.Printf("covered=%d queue=%-6d\r", covered, len(queue),)
 	}
 
