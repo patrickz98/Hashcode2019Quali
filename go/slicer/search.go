@@ -22,9 +22,11 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandBalanced()
 	// slicer.TryAll()
 
+	slicer.ExpandBalancedIntelligent()
+
 	// big: 86.31% med: 95.03%
-	slicer.ExpandBalanced()
-	slicer.TryAll()
+	// slicer.ExpandBalanced()
+	// slicer.TryAll()
 
 	// big: 90.82% med: 98.54%
 	// slicer.ExpandThroughNeighbors()

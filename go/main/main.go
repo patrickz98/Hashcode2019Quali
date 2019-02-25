@@ -9,6 +9,8 @@ import (
 
 func main() {
 
+	// simple.test()
+
 	start := time.Now()
 
 	// 100.00%
