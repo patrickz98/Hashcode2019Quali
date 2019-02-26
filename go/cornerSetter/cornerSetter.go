@@ -7,22 +7,20 @@ import (
 )
 
 type CornerSetter struct {
-	Slicer *slicer.Slicer
-	Pizza  *pizza.Pizza
-	Params CornerParams
+	Slicer       *slicer.Slicer
+	Pizza        *pizza.Pizza
+	Params       CornerParams
+	SetLastSlice int
+	Cache        [][]float32
 
 	NeuralNet *NeuralNet
 }
 
-func (cornerSetter *CornerSetter) SetSlices() bool {
+func (cornerSetter *CornerSetter) SetSlices(currentIteration int, settingThreshold float32) bool {
 
 	addedSomething := false
 
 	for xy, slices := range cornerSetter.Slicer.TopLeftSliceCache {
-
-		if cornerSetter.Pizza.Cells[xy].Slice != nil {
-			continue
-		}
 
 		if len(slices) == 0 {
 			continue
@@ -33,7 +31,7 @@ func (cornerSetter *CornerSetter) SetSlices() bool {
 
 		for _, sl := range slices {
 
-			contenderScore := cornerSetter.sliceValueScorer(xy, sl, Min(xy.Row, xy.Row-cornerSetter.Pizza.Row.End), Min(xy.Column, xy.Column-cornerSetter.Pizza.Column.End))
+			contenderScore := cornerSetter.sliceValueScorer(xy, sl, currentIteration, Min(xy.Row, cornerSetter.Pizza.Row.End-xy.Row), Min(xy.Column, cornerSetter.Pizza.Column.End-xy.Column))
 
 			if highscore < contenderScore {
 				highscore = contenderScore
@@ -41,9 +39,10 @@ func (cornerSetter *CornerSetter) SetSlices() bool {
 			}
 		}
 
-		if highscore >= cornerSetter.Params.CornerMinScore {
+		if highscore >= settingThreshold {
 			if cornerSetter.Pizza.SafeAddSlice(addedSlice) {
 				addedSomething = true
+				cornerSetter.SetLastSlice = xy.GetTransPos(*cornerSetter.Pizza)
 			}
 		}
 	}

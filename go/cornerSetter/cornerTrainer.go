@@ -10,19 +10,23 @@ import (
 	"strings"
 )
 
-const POPULATION = 25
-const KEEP_BEST_COUNT = 5
-const MUTATION_THRESHOLD = 0.5
+const POPULATION = 50
+const KEEP_BEST = 0.20
+const MUTATE = 0.50
+const PAIR = 0.30
+
+const MUTATION_THRESHOLD = 0
 
 var MaxSlicesInAPlace = 0
 
 type CornerTrainer struct {
-	Slicer       *slicer.Slicer
-	ParamsLimit  CornerParamsLimit
-	Generation   int
-	HighScore    float32
-	OldHighScore float32
-	NeuralNet    NeuralNet
+	Slicer             *slicer.Slicer
+	ParamsLimit        CornerParamsLimit
+	Generation         int
+	LastImprovementGen int
+	HighScore          float32
+	OldHighScore       float32
+	NeuralNet          NeuralNet
 
 	CornerSetter CornerSetter
 	Params       []CornerParams
@@ -41,13 +45,24 @@ func (cornerTrainer *CornerTrainer) Init(path string) {
 
 	cornerTrainer.NeuralNet = NeuralNet{}
 	cornerTrainer.NeuralNet.Init()
-	cornerTrainer.CornerSetter = CornerSetter{cornerTrainer.Slicer, cornerTrainer.Slicer.Pizza, CornerParams{}, &cornerTrainer.NeuralNet}
+	cornerTrainer.NeuralNet.UseJFMethod = false
+
+	cornerTrainer.CornerSetter = CornerSetter{
+		Slicer:    cornerTrainer.Slicer,
+		Pizza:     cornerTrainer.Slicer.Pizza,
+		Params:    CornerParams{},
+		NeuralNet: &cornerTrainer.NeuralNet,
+	}
+
+	cornerTrainer.buildSlicesCache()
+
 	cornerTrainer.Params = make([]CornerParams, 0)
 	cornerTrainer.Scores = make([]float32, 0)
 
 	cornerTrainer.ParamsLimit = CornerParamsLimit{
-		LimitFloat32{0, 1},
-		LimitFloat32NNSlice{cornerTrainer.NeuralNet.TotalConnectionsCount()},
+		LimitFloat32NNSlice{cornerTrainer.NeuralNet.TotalConnectionsCount(), 3},
+		LimitFloat32NNSlice{len(cornerTrainer.NeuralNet.InputLayer), 1},
+		LimitIntSlice{len(cornerTrainer.NeuralNet.InputLayer), len(cornerTrainer.NeuralNet.Layer[0]), 1},
 	}
 
 	if err == nil {
@@ -74,28 +89,35 @@ func (cornerTrainer *CornerTrainer) Init(path string) {
 func (cornerTrainer *CornerTrainer) ExpandThroughCorners() {
 
 	averageScore := float32(0)
+	averageKeeperScore := float32(0)
+	oldAverageKeeperScore := float32(0)
+	KeeperAverageImprovementGen := 0
 	cornerTrainer.Scores = make([]float32, POPULATION)
-	LastImprovementGen := 0
+	cornerTrainer.LastImprovementGen = 0
 	for cornerTrainer.HighScore < 1 {
 		scoreSum := float32(0)
-		HighestRep := 0
+		scoreKeeperSum := float32(0)
+
+		fmt.Printf("\nCurrent Generation: %d, AverageScore %.3f/%.3f, Highscore: %.3f, Improvement: %.3f/%d, %.3f/%d\n", cornerTrainer.Generation, averageKeeperScore, averageScore, 100*cornerTrainer.HighScore, averageKeeperScore-oldAverageKeeperScore, KeeperAverageImprovementGen, 100*(cornerTrainer.HighScore-cornerTrainer.OldHighScore), cornerTrainer.LastImprovementGen)
 		for i, params := range cornerTrainer.Params {
 
 			addToScore := cornerTrainer.Scores[i]
 
-			if i >= KEEP_BEST_COUNT {
+			Rep := 0
+			if i >= int(KEEP_BEST*POPULATION) {
 				cornerTrainer.CornerSetter.Params = params
 
 				cornerTrainer.CornerSetter.Pizza.RemoveAllSlice()
 
-				for j := 0; j < 20; j++ {
-					if j > HighestRep {
-						HighestRep = j
+				for j := 1; j <= 5; j++ {
+
+					if cornerTrainer.CornerSetter.SetSlices(j, 1-(0.2*float32(j))) {
+						Rep++
 					}
 
-					if !cornerTrainer.CornerSetter.SetSlices() {
+					/*if !cornerTrainer.CornerSetter.SetSlices(j, 1 - (0.1 * float32(j))) {
 						break
-					}
+					}*/
 				}
 
 				_, addToScore = cornerTrainer.CornerSetter.Pizza.Score()
@@ -109,17 +131,29 @@ func (cornerTrainer *CornerTrainer) ExpandThroughCorners() {
 			//cornerTrainer.CornerSetter.Slicer.ExpandThroughShrink()
 
 			scoreSum += addToScore
+
+			if i < int(KEEP_BEST*POPULATION) {
+				scoreKeeperSum += addToScore
+			}
+
+			fmt.Printf("%d: %.3f, %d\n", i, addToScore*100, Rep)
 			cornerTrainer.Scores[i] = addToScore
-			fmt.Printf("Current Generation: %d/%d, Score %.3f, AverageScore %.3f, Highscore: %.3f, Improvement: %.3f/%d, HighestRep %d,             \r", i, cornerTrainer.Generation, 100*addToScore, averageScore, 100*cornerTrainer.HighScore, 100*(cornerTrainer.HighScore-cornerTrainer.OldHighScore), LastImprovementGen, HighestRep)
+			//fmt.Printf("Current Generation: %d/%d, Score %.3f, AverageScore %.3f, Highscore: %.3f, Improvement: %.3f/%d, HighestRep %d,             \r", i, cornerTrainer.Generation, 100*addToScore, averageScore, 100*cornerTrainer.HighScore, 100*(cornerTrainer.HighScore-cornerTrainer.OldHighScore), LastImprovementGen, HighestRep)
 		}
 		averageScore = 100 * scoreSum / float32(len(cornerTrainer.Params))
+		averageKeeperScore = 100 * scoreKeeperSum / float32(int(KEEP_BEST*POPULATION))
+
+		if averageKeeperScore > oldAverageKeeperScore {
+			oldAverageKeeperScore = averageKeeperScore
+			KeeperAverageImprovementGen = cornerTrainer.Generation
+		}
 
 		for j, _ := range cornerTrainer.Params {
 			if cornerTrainer.Scores[j] > cornerTrainer.HighScore {
 
 				cornerTrainer.OldHighScore = cornerTrainer.HighScore
 				cornerTrainer.HighScore = cornerTrainer.Scores[j]
-				LastImprovementGen = cornerTrainer.Generation
+				cornerTrainer.LastImprovementGen = cornerTrainer.Generation
 				//cornerTrainer.Slicer.Pizza.CreateSubmission("../../submissions_Lukas/d_big.out")
 			}
 		}
@@ -147,26 +181,24 @@ func (cornerTrainer *CornerTrainer) AdaptParams() {
 		}
 	}
 
-	for i := 0; i < KEEP_BEST_COUNT; i++ {
+	for i := 0; i < int(POPULATION*KEEP_BEST); i++ {
 		buffer = append(buffer, cornerTrainer.Params[i])
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < int(POPULATION*MUTATE); i++ {
 		buffer = append(buffer, cornerTrainer.Mutate(cornerTrainer.Params[i], MUTATION_THRESHOLD))
-		buffer = append(buffer, cornerTrainer.Mutate(cornerTrainer.Params[i], MUTATION_THRESHOLD*2))
 	}
 
-	for i := 0; i < 5; i++ {
-		buffer = append(buffer, cornerTrainer.PairParams(cornerTrainer.Params[0], cornerTrainer.Params[i+1]))
+	for i := 0; i < int(POPULATION*PAIR); i += 2 {
+		buffer = append(buffer, cornerTrainer.Mutate(cornerTrainer.PairParams(cornerTrainer.Params[rand.Intn(int(KEEP_BEST*POPULATION))], cornerTrainer.Params[rand.Intn(int(KEEP_BEST*POPULATION))]), 0))
+		buffer = append(buffer, cornerTrainer.PairParams(cornerTrainer.Params[rand.Intn(int(KEEP_BEST*POPULATION))], cornerTrainer.ParamsLimit.getRandomParams()))
 	}
 
-	for i := 0; i < 3; i++ {
-		buffer = append(buffer, cornerTrainer.PairParams(cornerTrainer.Params[1], cornerTrainer.Params[i+2]))
+	for len(buffer) < POPULATION {
+		buffer = append(buffer, cornerTrainer.ParamsLimit.getRandomParams())
 	}
 
-	for i := 0; i < 2; i++ {
-		buffer = append(buffer, cornerTrainer.PairParams(cornerTrainer.Params[2], cornerTrainer.Params[i+3]))
-	}
+	buffer = buffer[:POPULATION]
 
 	cornerTrainer.Params = buffer
 }
@@ -174,6 +206,8 @@ func (cornerTrainer *CornerTrainer) AdaptParams() {
 func (cornerTrainer *CornerTrainer) PairParams(param1 CornerParams, param2 CornerParams) CornerParams {
 	child := CornerParams{}
 	child.NeuralNet = make([]float32, cornerTrainer.NeuralNet.TotalConnectionsCount())
+	child.InputOrder = make([]float32, len(cornerTrainer.NeuralNet.InputLayer))
+	child.InputTarget = make([]int, len(cornerTrainer.NeuralNet.InputLayer))
 
 	childVal := reflect.ValueOf(&child)
 	param1Val := reflect.ValueOf(param1)
@@ -184,17 +218,44 @@ func (cornerTrainer *CornerTrainer) PairParams(param1 CornerParams, param2 Corne
 
 		switch value.Kind() {
 		case reflect.Int:
-			newValue := (param1Val.Field(i).Int() + param2Val.Field(i).Int()) / 2
-			value.SetInt(newValue)
+			//newValue := (param1Val.Field(i).Int() + param2Val.Field(i).Int()) / 2
+			//value.SetInt(newValue)
+
+			if rand.Float32() > 0.5 {
+				value.SetInt(param1Val.Field(i).Int())
+			} else {
+				value.SetInt(param2Val.Field(i).Int())
+			}
+
 		case reflect.Float32:
-			newValue := (param1Val.Field(i).Float() + param2Val.Field(i).Float()) / 2
-			value.SetFloat(newValue)
+			//newValue := (param1Val.Field(i).Float() + param2Val.Field(i).Float()) / 2
+			//value.SetFloat(newValue)
+
+			if rand.Float32() > 0.5 {
+				value.SetFloat(param1Val.Field(i).Float())
+			} else {
+				value.SetFloat(param2Val.Field(i).Float())
+			}
 		case reflect.Float64:
-			newValue := (param1Val.Field(i).Float() + param2Val.Field(i).Float()) / 2
-			value.SetFloat(newValue)
+			//newValue := (param1Val.Field(i).Float() + param2Val.Field(i).Float()) / 2
+			//value.SetFloat(newValue)
+
+			if rand.Float32() > 0.5 {
+				value.SetFloat(param1Val.Field(i).Float())
+			} else {
+				value.SetFloat(param2Val.Field(i).Float())
+			}
+
 		case reflect.Slice:
-			for j := 0; j < cornerTrainer.NeuralNet.TotalConnectionsCount(); j++ {
-				value.Index(j).SetFloat((param1Val.Field(i).Index(j).Float() + param2Val.Field(i).Index(j).Float()) / 2)
+			for j := 0; j < int(reflect.ValueOf(cornerTrainer.ParamsLimit).Field(i-1).FieldByName("Count").Int()); j++ {
+				//value.Index(j).SetFloat((param1Val.Field(i).Index(j).Float() + param2Val.Field(i).Index(j).Float()) / float64(2))
+
+				if rand.Float32() > 0.5 {
+					value.Index(j).Set(param1Val.Field(i).Index(j))
+				} else {
+					value.Index(j).Set(param2Val.Field(i).Index(j))
+				}
+
 			}
 		default:
 			panic("Unspecified behaviour in PairParams")

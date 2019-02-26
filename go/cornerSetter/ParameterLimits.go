@@ -7,11 +7,12 @@ import (
 	"strconv"
 )
 
-const MUTATE_FACTOR = 20
+const MUTATE_FACTOR = 5
 
 type CornerParamsLimit struct {
-	CornerMinScore LimitFloat32
-	NeuralNet      LimitFloat32NNSlice
+	NeuralNet   LimitFloat32NNSlice
+	InputOrder  LimitFloat32NNSlice
+	InputTarget LimitIntSlice
 }
 
 type LimitInt struct {
@@ -24,8 +25,15 @@ type LimitFloat32 struct {
 	Max float32
 }
 
+type LimitIntSlice struct {
+	Count    int
+	MaxInt   int
+	Mutating int
+}
+
 type LimitFloat32NNSlice struct {
-	NeuralNetConnections int
+	Count    int
+	Mutating int
 }
 
 func (lim LimitInt) GetRandomNumber() int {
@@ -37,10 +45,20 @@ func (lim LimitFloat32) GetRandomNumber() float32 {
 }
 
 func (lim LimitFloat32NNSlice) GetRandomNumber() []float32 {
-	buffer := make([]float32, 0)
+	buffer := make([]float32, lim.Count)
 
-	for i := 0; i < lim.NeuralNetConnections; i++ {
-		buffer = append(buffer, rand.Float32())
+	for i := 0; i < lim.Count; i++ {
+		buffer[i] = (rand.Float32() * 2) - 1
+	}
+
+	return buffer
+}
+
+func (lim LimitIntSlice) GetRandomNumber() []int {
+	buffer := make([]int, lim.Count)
+
+	for i := 0; i < lim.Count; i++ {
+		buffer[i] = rand.Intn(lim.MaxInt)
 	}
 
 	return buffer
@@ -56,10 +74,21 @@ func (lim LimitFloat32) Mutate(inp *float32) float32 {
 
 func (lim LimitFloat32NNSlice) Mutate(data *[]float32) []float32 {
 
-	for i := 0; i < rand.Intn(10); i++ {
-		index := int(rand.Float32() * float32(lim.NeuralNetConnections))
+	for i := 0; i < rand.Intn(lim.Mutating); i++ {
+		index := int(rand.Float32() * float32(lim.Count))
 
-		(*data)[index] = MinMax(0, 1, (*data)[index]+float32(rand.NormFloat64()*float64(1)/MUTATE_FACTOR))
+		(*data)[index] = MinMax(-1, 1, (*data)[index]+float32(rand.NormFloat64()*float64(2)/MUTATE_FACTOR))
+	}
+
+	return *data
+}
+
+func (lim LimitIntSlice) Mutate(data *[]int) []int {
+
+	for i := 0; i < rand.Intn(lim.Mutating); i++ {
+		index := int(rand.Float32() * float32(lim.Count))
+
+		(*data)[index] = rand.Intn(lim.MaxInt)
 	}
 
 	return *data

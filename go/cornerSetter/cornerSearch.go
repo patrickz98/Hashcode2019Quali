@@ -1,4 +1,3 @@
-
 package cornerSetter
 
 import (
@@ -22,6 +21,10 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandShot()
 	// slicer.FindBiggestParts()
 
+	ct := CornerTrainer{Slicer: &slicer}
+	ct.Init("Test.txt")
+	ct.ExpandThroughCorners()
+
 	// big: 90.82% med: 98.54%
 	// slicer.ExpandThroughNeighbors()
 	// slicer.TryAll()
@@ -32,25 +35,4 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandThroughShrink()
 	// slicer.TryAll()
 
-	slicer.FindSingles()
-	slicer.ExpandThroughNeighbors()
-	slicer.ExpandThroughDestruction()
-	slicer.ExpandThroughShrink()
-
-	bestCover, _ := piz.Score()
-
-	for {
-		fmt.Printf("############# cover=%d\n", bestCover)
-
-		slicer.TryAll()
-		slicer.ChangeSlices()
-
-		cover, _ := piz.Score()
-
-		if bestCover == cover {
-			break
-		}
-
-		bestCover = cover
-	}
 }

@@ -21,6 +21,11 @@ func (xy Coordinate) AddTo(row int, column int) Coordinate {
 	return xy
 }
 
+func (xy Coordinate) GetTransPos(pizza Pizza) int {
+	return (xy.Row * pizza.Column.End) + xy.Column
+
+}
+
 type Cell struct {
 	Slice *Slice
 	Type  rune
@@ -369,8 +374,8 @@ func (pizza Pizza) HasSliceAt(xy Coordinate) bool {
 func (pizza *Pizza) IngredientsCount() (tomato int, mushrooms int) {
 
 	tmp := Slice{
-		Pizza: pizza,
-		Row: pizza.Row,
+		Pizza:  pizza,
+		Row:    pizza.Row,
 		Column: pizza.Column,
 	}
 

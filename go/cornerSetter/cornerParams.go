@@ -3,9 +3,10 @@ package cornerSetter
 import "reflect"
 
 type CornerParams struct {
-	Name           string
-	CornerMinScore float32
-	NeuralNet      []float32
+	Name        string
+	NeuralNet   []float32
+	InputOrder  []float32
+	InputTarget []int
 }
 
 func (cornerParams *CornerParams) Init(data []string) {

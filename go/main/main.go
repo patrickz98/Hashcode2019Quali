@@ -14,11 +14,11 @@ func main() {
 	start := time.Now()
 
 	// 100.00%
-	// inputPath := "../../input/a_example.in"
+	inputPath := "../../input/a_example.in"
 	// submissionPath := "../../submissions/a_example.out"
 
 	// 100.00%
-	// inputPath := "../../input/b_small.in"
+	//inputPath := "input/b_small.in"
 	// submissionPath := "../../submissions/b_small.out"
 
 	// 99.33%
