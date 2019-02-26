@@ -1,8 +1,8 @@
 package main
 
 import (
-	"../cornerSetter"
 	"../pizza"
+	"../slicer"
 	"fmt"
 	"time"
 )
@@ -14,7 +14,7 @@ func main() {
 	start := time.Now()
 
 	// 100.00%
-	inputPath := "../../input/a_example.in"
+	//inputPath := "../../input/a_example.in"
 	// submissionPath := "../../submissions/a_example.out"
 
 	// 100.00%
