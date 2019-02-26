@@ -5,10 +5,7 @@ import (
 	"fmt"
 )
 
-// var dist = 0
-// var shrink = 0
-
-func (slicer *Slicer) tryAllAt(queue *CoordinateQueue, xy pizza.Coordinate) {
+func (slicer *Slicer) tryDestuctShinkAt(xy pizza.Coordinate) (slices Slices, overlaps Slices) {
 
 	neighbors := slicer.findBestNeighbor(xy)
 
@@ -24,46 +21,17 @@ func (slicer *Slicer) tryAllAt(queue *CoordinateQueue, xy pizza.Coordinate) {
 	shrinkGain := slicer.CalculateGain(shrinkSlices, shrinkOverlaps)
 
 	if distGain == 0 && shrinkGain == 0 {
-		return
+		return nil , nil
 	}
-
-	// fmt.Printf("distGain=%d shrinkGain=%d\n", distGain, shrinkGain)
 
 	if distGain > shrinkGain {
-		// dist++
-		slicer.RemoveSlices(distOverlaps)
-		slicer.AddSlices(distSlices)
-
-		leftovers := slicer.leftovers(distSlices, distOverlaps)
-		queue.PushAll(leftovers)
-
+		return distSlices, distOverlaps
 	} else {
-		// shrink++
-		slicer.RemoveSlices(shrinkOverlaps)
-		slicer.AddSlices(shrinkSlices)
-
-		leftovers := slicer.leftovers(shrinkSlices, shrinkOverlaps)
-		queue.PushAll(leftovers)
+		return shrinkSlices, shrinkOverlaps
 	}
-
-	// fmt.Printf("dist=%d shrink=%d\n", dist, shrink)
-
-	// move, old := slicer.shakeAt(xy)
-	//
-	// if move != nil {
-	// 	slicer.RemoveSlices(old)
-	// 	slicer.AddSlices(move)
-	//
-	// 	leftovers := slicer.leftovers(move, old)
-	// 	queue.PushAll(leftovers)
-	//
-	// 	return
-	// }
-
-	// queue.PushStart(xy)
 }
 
-func (slicer *Slicer) TryAll() {
+func (slicer *Slicer) TryDestuctShink() {
 
 	queue := InitCoordinateQueue()
 	// queue.Push(pizza.Coordinate{Row: 0, Column: 0})
@@ -75,12 +43,25 @@ func (slicer *Slicer) TryAll() {
 	for queue.HasItems() {
 
 		xy := *queue.Pop()
-		slicer.tryAllAt(queue, xy)
+
+		if slicer.Pizza.HasSliceAt(xy) {
+			continue
+		}
+
+		slices, overlaps := slicer.tryDestuctShinkAt(xy)
+
+		if slices == nil {
+			continue
+		}
+
+		slicer.RemoveSlices(overlaps)
+		slicer.AddSlices(slices)
+
+		leftovers := slicer.leftovers(slices, overlaps)
+		queue.PushAll(leftovers)
 
 		gain, _ := slicer.Pizza.Score()
 		fmt.Printf("Expand gain=%d queue=%-7d\r", gain - score, queue.Len())
-
-		// fmt.Printf("%s\n", xy.Stringify())
 	}
 
 	fmt.Println()

@@ -58,9 +58,10 @@ func (slicer *Slicer) ShakeSlices() {
 	changed := 0
 
 	for queue.HasItems() {
-		fmt.Printf("--> Shake changed=%d queue=%-7d \r", changed, queue.Len())
 
 		xy := *queue.Pop()
+
+		fmt.Printf("--> Shake changed=%d queue=%-7d \r", changed, queue.Len())
 
 		// if slicer.Pizza.HasSliceAt(xy) {
 		// 	return

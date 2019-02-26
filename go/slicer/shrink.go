@@ -167,6 +167,7 @@ func (slicer *Slicer) ExpandThroughShrink() {
 
 	queue := InitCoordinateQueue()
 	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+	// queue.PushAll(slicer.Pizza.Traversal())
 
 	start, _ := slicer.Pizza.Score()
 
