@@ -32,8 +32,7 @@ type Pizza struct {
 	Cells       map[Coordinate]*Cell
 	Row         Vector
 	Column      Vector
-
-	ScoreTotal int
+	ScoreTotal  int
 }
 
 func (pizza Pizza) PrintParams() {
@@ -365,4 +364,15 @@ func (pizza Pizza) ContainsCoordinate(coordinate Coordinate) bool {
 func (pizza Pizza) HasSliceAt(xy Coordinate) bool {
 
 	return pizza.Cells[xy].Slice != nil
+}
+
+func (pizza *Pizza) IngredientsCount() (tomato int, mushrooms int) {
+
+	tmp := Slice{
+		Pizza: pizza,
+		Row: pizza.Row,
+		Column: pizza.Column,
+	}
+
+	return tmp.IngredientsCount()
 }

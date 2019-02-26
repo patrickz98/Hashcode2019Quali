@@ -7,11 +7,7 @@ import (
 	"time"
 )
 
-func (slicer *Slicer) findRandom(xy pizza.Coordinate) {
-
-	if slicer.Pizza.Cells[ xy ].Slice != nil {
-		return
-	}
+func (slicer *Slicer) findRandom(xy pizza.Coordinate) *pizza.Slice {
 
 	slices := slicer.SliceCache[ xy ]
 	saveSlices := make([]*pizza.Slice, 0)
@@ -24,17 +20,13 @@ func (slicer *Slicer) findRandom(xy pizza.Coordinate) {
 	}
 
 	if len(saveSlices) <= 0 {
-		return
+		return nil
 	}
-
-	// fmt.Printf("len(saveSlices)=%d\n", len(saveSlices))
 
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	inx := random.Intn(len(saveSlices))
 
-	// fmt.Printf("inx=%d\n", inx)
-
-	slicer.Pizza.AddSlice(saveSlices[ inx ])
+	return saveSlices[ inx ]
 }
 
 func (slicer *Slicer) ExpandRandom() {
@@ -42,6 +34,17 @@ func (slicer *Slicer) ExpandRandom() {
 	fmt.Println("Expand random...")
 
 	for _, xy := range slicer.Pizza.Traversal() {
-		slicer.findRandom(xy)
+
+		if slicer.Pizza.Cells[ xy ].Slice != nil {
+			continue
+		}
+
+		slice := slicer.findRandom(xy)
+
+		if slice == nil {
+			continue
+		}
+
+		slicer.AddSlice(slice)
 	}
 }

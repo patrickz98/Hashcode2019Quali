@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) changeAt(xy pizza.Coordinate) (new Slices, overlap Slices) {
+func (slicer *Slicer) shakeAt(xy pizza.Coordinate) (new Slices, overlap Slices) {
 
 	// bestGain := 0
 	var newSlice *pizza.Slice
@@ -44,29 +44,19 @@ func (slicer *Slicer) changeAt(xy pizza.Coordinate) (new Slices, overlap Slices)
 	return splitParts, overlaps
 }
 
-func (slicer *Slicer) ChangeSlices() {
-
-	fmt.Println("Change existing slices")
-
-	queue := InitCoordinateQueue()
-
-	// for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
-	for _, xy := range slicer.Pizza.Traversal() {
-		queue.Push(xy)
-	}
+func (slicer *Slicer) ShakeSlicesWithQueue(queue *CoordinateQueue) {
 
 	changed := 0
 
+	//fmt.Printf("--> Shake changed=%d queue=%-7d \r", changed, queue.Len())
+
 	for queue.HasItems() {
-		fmt.Printf("--> Change changed=%d queue=%-7d \r", changed, queue.Len())
 
 		xy := *queue.Pop()
 
-		// if slicer.Pizza.HasSliceAt(xy) {
-		// 	return
-		// }
+		//fmt.Printf("--> Shake changed=%d queue=%-7d \r", changed, queue.Len())
 
-		slices, old := slicer.changeAt(xy)
+		slices, old := slicer.shakeAt(xy)
 
 		if slices == nil {
 			continue
@@ -74,12 +64,20 @@ func (slicer *Slicer) ChangeSlices() {
 
 		changed++
 
-		// fmt.Printf("fund=%d\n", len(slices))
-
 		slicer.RemoveSlices(old)
 		slicer.AddSlices(slices)
 	}
 
-	fmt.Println()
-	// fmt.Printf("Change queue --> done\n")
+	//fmt.Println()
+}
+
+func (slicer *Slicer) ShakeSlices() {
+
+	fmt.Println("Shake existing slices")
+
+	queue := InitCoordinateQueue()
+	queue.PushAll(slicer.Pizza.Traversal())
+	//queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+
+	slicer.ShakeSlicesWithQueue(queue)
 }

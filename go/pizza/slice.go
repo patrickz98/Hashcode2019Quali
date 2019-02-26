@@ -10,15 +10,10 @@ type Slice struct {
 	Column Vector
 }
 
-func (slice Slice) Size() int {
+func (slice Slice) IngredientsCount() (tomato int, mushroom int) {
 
-	return slice.Row.Length() * slice.Column.Length()
-}
-
-func (slice Slice) IngredientsOk() bool {
-
-	tomato := 0
-	mushroom := 0
+	tomato = 0
+	mushroom = 0
 
 	for _, xy := range slice.Traversal() {
 		cell := slice.Pizza.Cells[xy]
@@ -30,6 +25,24 @@ func (slice Slice) IngredientsOk() bool {
 		}
 	}
 
+	return tomato, mushroom
+}
+
+func (slice Slice) IngredientsBalance() int {
+
+	tomato, mushroom := slice.IngredientsCount()
+
+	return tomato - mushroom
+}
+
+func (slice Slice) Size() int {
+
+	return slice.Row.Length() * slice.Column.Length()
+}
+
+func (slice Slice) IngredientsOk() bool {
+
+	tomato, mushroom := slice.IngredientsCount()
 	ingredients := slice.Pizza.Ingredients
 
 	return tomato >= ingredients && mushroom >= ingredients
@@ -99,6 +112,30 @@ func (slice Slice) TraversalWithBorder() []Coordinate {
 			xy := Coordinate{Row: iny, Column: inx}
 
 			coordinates = append(coordinates, xy)
+		}
+	}
+
+	return coordinates
+}
+
+func (slice Slice) TraversalBorder() []Coordinate {
+
+	rowStart := slice.Row.Start - 1
+	rowEnd := slice.Row.End + 1
+
+	colStart := slice.Column.Start - 1
+	colEnd := slice.Column.End + 1
+
+	coordinates := make([]Coordinate, 0)
+
+	for iny := rowStart; iny <= rowEnd; iny++ {
+		for inx := colStart; inx <= colEnd; inx++ {
+
+			xy := Coordinate{Row: iny, Column: inx}
+
+			if !slice.ContainsCoordinate(xy) {
+				coordinates = append(coordinates, xy)
+			}
 		}
 	}
 

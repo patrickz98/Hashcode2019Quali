@@ -1,96 +1,74 @@
 package slicer
 
 import (
+	"../pizza"
 	"fmt"
 )
 
-func (slicer *Slicer) TryAll() {
+func (slicer *Slicer) tryDestuctShinkAt(xy pizza.Coordinate) (slices Slices, overlaps Slices) {
 
-	fmt.Println("Expand...")
+	neighbors := slicer.findBestNeighbor(xy)
 
-	piz := slicer.Pizza
-
-	queue := InitCoordinateQueue()
-
-	for _, xy := range piz.TraversalNotSlicedCells() {
-
-		queue.Push(xy)
+	if neighbors != nil {
+		slicer.AddSlices(neighbors.Slices)
+		return
 	}
 
+	distSlices, distOverlaps := slicer.destructionAt(xy)
+	shrinkSlices, shrinkOverlaps := slicer.shrinkAt(xy)
+
+	distGain := slicer.CalculateGain(distSlices, distOverlaps)
+	shrinkGain := slicer.CalculateGain(shrinkSlices, shrinkOverlaps)
+
+	if distGain == 0 && shrinkGain == 0 {
+		return nil , nil
+	}
+
+	if distGain > shrinkGain {
+		return distSlices, distOverlaps
+	} else {
+		return shrinkSlices, shrinkOverlaps
+	}
+}
+
+func (slicer *Slicer) tryDestuctShinkWithQueue(queue *CoordinateQueue) {
+
+	score, _ := slicer.Pizza.Score()
+	fmt.Printf("Expand gain=%d queue=%-7d\r", 0, queue.Len())
+
 	for queue.HasItems() {
-		// xy := *queue.PopFist()
+
 		xy := *queue.Pop()
 
-		// fmt.Println(xy.Stringify())
-		// simple.Exit()
-
-		fmt.Printf("Expand queue --> %-7d\r", queue.Len())
-
-		if piz.HasSliceAt(xy) {
+		if slicer.Pizza.HasSliceAt(xy) {
 			continue
 		}
 
-		neighbors := slicer.findBestNeighbor(xy)
+		slices, overlaps := slicer.tryDestuctShinkAt(xy)
 
-		if neighbors != nil {
-			slicer.AddSlices(neighbors.Slices)
+		if slices == nil {
 			continue
 		}
 
-		// smallest := slicer.findSmallestAt(xy)
-		//
-		// if smallest != nil {
-		// 	piz.AddSlice(smallest)
-		// 	continue
-		// }
+		slicer.RemoveSlices(overlaps)
+		slicer.AddSlices(slices)
 
-		slices, overlaps := slicer.destructionAt(xy)
+		leftovers := slicer.leftovers(slices, overlaps)
+		queue.PushAll(leftovers)
 
-		if len(slices) > 0 {
-			slicer.RemoveSlices(overlaps)
-			slicer.AddSlices(slices)
-
-			leftovers := slicer.leftovers(slices, overlaps)
-
-			for _, leftXY := range leftovers {
-				queue.Push(leftXY)
-			}
-
-			continue
-		}
-
-		slices, overlaps = slicer.shrinkAt(xy)
-
-		if len(slices) > 0 {
-			slicer.RemoveSlices(overlaps)
-			slicer.AddSlices(slices)
-
-			leftovers := slicer.leftovers(slices, overlaps)
-
-			for _, leftXY := range leftovers {
-				queue.Push(leftXY)
-			}
-
-			continue
-		}
-
-		// move, old := slicer.tryMove(xy)
-		//
-		// if move == nil || old == nil {
-		// 	continue
-		// }
-		//
-		// // fmt.Println("Move")
-		//
-		// slicer.RemoveSlice(old)
-		// slicer.AddSlice(move)
-		//
-		// leftovers := slicer.leftover(move, old)
-		//
-		// for _, leftXY := range leftovers {
-		// 	queue.Push(leftXY)
-		// }
+		gain, _ := slicer.Pizza.Score()
+		fmt.Printf("Expand gain=%d queue=%-7d\r", gain - score, queue.Len())
 	}
 
 	fmt.Println()
+}
+
+func (slicer *Slicer) TryDestuctShink() {
+
+	queue := InitCoordinateQueue()
+	// queue.Push(pizza.Coordinate{Row: 0, Column: 0})
+	// queue.PushAll(slicer.Pizza.Traversal())
+	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+
+	slicer.tryDestuctShinkWithQueue(queue)
 }

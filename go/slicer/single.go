@@ -3,10 +3,7 @@ package slicer
 import "fmt"
 import "../pizza"
 
-func (slicer *Slicer) FindSingles() {
-
-	fmt.Println("Find singles")
-
+func (slicer *Slicer) findSpecialCells() (noSlices []pizza.Coordinate, singles []pizza.Coordinate) {
 	noSlicesCoords := make([]pizza.Coordinate, 0)
 	oneSlicesPoss := make([]pizza.Coordinate, 0)
 
@@ -30,6 +27,15 @@ func (slicer *Slicer) FindSingles() {
 
 		oneSlicesPoss = append(oneSlicesPoss, xy)
 	}
+
+	return noSlicesCoords, oneSlicesPoss
+}
+
+func (slicer *Slicer) FindSingles() {
+
+	fmt.Println("Find singles")
+
+	noSlicesCoords, oneSlicesPoss := slicer.findSpecialCells()
 
 	fmt.Printf("Not containable cells: %d\n", len(noSlicesCoords))
 	fmt.Printf("Single containable cells: %d\n", len(oneSlicesPoss))

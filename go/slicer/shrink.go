@@ -144,7 +144,7 @@ func (slicer *Slicer) shrinkAt(xy pizza.Coordinate) (newSlices Slices, overlaps 
 
 		gain := replaceSize + sliceCandidate.Size() - lostSize
 
-		if gain > bestGain {
+		if bestGain < gain {
 			bestGain = gain
 			newSlice = sliceCandidate
 			sliceOverlaps = overlaps
@@ -166,10 +166,8 @@ func (slicer *Slicer) ExpandThroughShrink() {
 	fmt.Println("Expand through shrink")
 
 	queue := InitCoordinateQueue()
-
-	for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
-		queue.Push(xy)
-	}
+	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+	// queue.PushAll(slicer.Pizza.Traversal())
 
 	start, _ := slicer.Pizza.Score()
 

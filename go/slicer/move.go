@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (slicer *Slicer) tryMove(xy pizza.Coordinate) (move *pizza.Slice, old *pizza.Slice) {
+func (slicer *Slicer) tryMoveAt(xy pizza.Coordinate) (move *pizza.Slice, old *pizza.Slice) {
 
 	slices := slicer.SliceCache[ xy ]
 
@@ -38,12 +38,10 @@ func (slicer *Slicer) MoveSlices() {
 	fmt.Println("Move existing slices")
 
 	queue := InitCoordinateQueue()
-
-	for _, xy := range slicer.Pizza.TraversalNotSlicedCells() {
-		queue.Push(xy)
-	}
+	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
 
 	for queue.HasItems() {
+
 		fmt.Printf("Move queue --> %-7d\r", queue.Len())
 
 		xy := *queue.Pop()
@@ -52,7 +50,7 @@ func (slicer *Slicer) MoveSlices() {
 			return
 		}
 
-		moved, old := slicer.tryMove(xy)
+		moved, old := slicer.tryMoveAt(xy)
 
 		if moved == nil || old == nil {
 			continue
