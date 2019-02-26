@@ -15,8 +15,8 @@ func main() {
 	start := time.Now()
 
 	// 100.00%
-	inputPath := "../../input/a_example.in"
-	submissionPath := "../../submissions/a_example.out"
+	//inputPath := "../../input/a_example.in"
+	//submissionPath := "../../submissions/a_example.out"
 
 	// 100.00%
 	//inputPath := "../../input/b_small.in"
@@ -27,8 +27,8 @@ func main() {
 	//submissionPath := "../../submissions/c_medium.out"
 
 	// 93.06%
-	//inputPath := "../../input/d_big.in"
-	//submissionPath := "../../submissions/d_big.out"
+	inputPath := "../../input/d_big.in"
+	submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
 

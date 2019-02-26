@@ -4,7 +4,6 @@ import (
 	"../pizza"
 	"../simple"
 	"fmt"
-	"sort"
 )
 
 func (slicer *Slicer) buildSlicesCache() {
@@ -64,9 +63,9 @@ func (slicer *Slicer) buildSlicesCache() {
 
 	slicer.SliceCache = slices
 
-	for key := range slices {
-		sort.Slice(slices[key], func(i int, j int) bool {
-			return slices[key][i].Size() < slices[key][j].Size()
-		})
-	}
+	//for key := range slices {
+	//	sort.Slice(slices[key], func(i int, j int) bool {
+	//		return slices[key][i].Size() < slices[key][j].Size()
+	//	})
+	//}
 }
