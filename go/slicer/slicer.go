@@ -2,6 +2,7 @@ package slicer
 
 import (
 	"../pizza"
+	"../set"
 	"fmt"
 )
 
@@ -47,7 +48,7 @@ func (slicer *Slicer) overlap(slice *pizza.Slice) bool {
 	return false
 }
 
-func (slicer *Slicer) overlapSlices(slice *pizza.Slice) []*pizza.Slice {
+func (slicer *Slicer) overlapSlices(slice *pizza.Slice) Slices {
 
 	overlap := make([]*pizza.Slice, 0)
 
@@ -190,37 +191,25 @@ func (slicer *Slicer) leftover(slice *pizza.Slice, overlap *pizza.Slice) []pizza
 
 func (slicer *Slicer) leftovers(slices Slices, overlaps Slices) []pizza.Coordinate {
 
-	coords := make([]pizza.Coordinate, 0)
-
-	// fmt.Println("-------- slices --------")
-	//
-	// for _, tmp := range slices {
-	// 	tmp.PrintVector()
-	// 	tmp.Print()
-	// }
-	//
-	// fmt.Println("------- overlaps -------")
-	//
-	// for _, tmp := range overlaps {
-	// 	tmp.PrintVector()
-	// 	tmp.Print()
-	// }
+	coords := set.New(pizza.Coordinate{})
 
 	for _, overlap := range overlaps {
 
 		for _, sli := range slices {
 
-			coords = append(coords, overlap.Complement(sli)...)
+			for _, xy := range overlap.Complement(sli) {
+				coords.Insert(xy)
+			}
 		}
 	}
 
-	// fmt.Println("------- coords -------")
-	//
-	// for _, coord := range coords {
-	// 	fmt.Println(coord.Stringify())
-	// }
-	//
-	// simple.Exit()
+	result := make([]pizza.Coordinate, 0)
 
-	return coords
+	coords.Do(func(val interface{}) {
+
+		xy := val.(pizza.Coordinate)
+		result = append(result, xy)
+	})
+
+	return result
 }

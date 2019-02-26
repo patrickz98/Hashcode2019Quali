@@ -31,14 +31,10 @@ func (slicer *Slicer) tryDestuctShinkAt(xy pizza.Coordinate) (slices Slices, ove
 	}
 }
 
-func (slicer *Slicer) TryDestuctShink() {
-
-	queue := InitCoordinateQueue()
-	// queue.Push(pizza.Coordinate{Row: 0, Column: 0})
-	// queue.PushAll(slicer.Pizza.Traversal())
-	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+func (slicer *Slicer) tryDestuctShinkWithQueue(queue *CoordinateQueue) {
 
 	score, _ := slicer.Pizza.Score()
+	fmt.Printf("Expand gain=%d queue=%-7d\r", 0, queue.Len())
 
 	for queue.HasItems() {
 
@@ -65,4 +61,14 @@ func (slicer *Slicer) TryDestuctShink() {
 	}
 
 	fmt.Println()
+}
+
+func (slicer *Slicer) TryDestuctShink() {
+
+	queue := InitCoordinateQueue()
+	// queue.Push(pizza.Coordinate{Row: 0, Column: 0})
+	// queue.PushAll(slicer.Pizza.Traversal())
+	queue.PushAll(slicer.Pizza.TraversalNotSlicedCells())
+
+	slicer.tryDestuctShinkWithQueue(queue)
 }

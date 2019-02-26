@@ -5,9 +5,78 @@ import (
 	"fmt"
 )
 
+func brute1(slicer *Slicer) {
+
+	slicer.ExpandThroughNeighbors()
+
+	bestCover, _ := slicer.Pizza.Score()
+
+	for {
+		slicer.TryDestuctShink()
+		slicer.ShakeSlices()
+
+		cover, _ := slicer.Pizza.Score()
+
+		fmt.Printf("############# cover=%d\n", cover)
+
+		if bestCover == cover {
+			break
+		}
+
+		bestCover = cover
+	}
+}
+
+func brute2(slicer *Slicer) {
+
+	slicer.ExpandThroughNeighbors()
+	slicer.TryDestuctShink()
+
+	bestCover, _ := slicer.Pizza.Score()
+
+	for {
+		//slicer.TryDestuctShink()
+		slicer.DestructShrinkHoles()
+		slicer.ShakeSlices()
+
+		cover, _ := slicer.Pizza.Score()
+
+		fmt.Printf("############# cover=%d\n", cover)
+
+		if bestCover == cover {
+			break
+		}
+
+		bestCover = cover
+	}
+}
+
+func brute3(slicer *Slicer) {
+
+	slicer.ExpandThroughNeighbors()
+	slicer.TryDestuctShink()
+
+	bestCover, _ := slicer.Pizza.Score()
+
+	for {
+		slicer.TryDestuctShink()
+		slicer.ShakeHoles()
+
+		cover, _ := slicer.Pizza.Score()
+
+		fmt.Printf("############# cover=%d\n", cover)
+
+		if bestCover == cover {
+			break
+		}
+
+		bestCover = cover
+	}
+}
+
 func SearchSlices(piz *pizza.Pizza) {
 
-	slicer := Slicer{Pizza: piz}
+	slicer := &Slicer{Pizza: piz}
 	slicer.Init()
 
 	// slicer.ExpandRandom()
@@ -23,6 +92,11 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandBalanced()
 	// slicer.TryDestuctShink()
 	// slicer.ExpandBalancedIntelligent()
+
+	//slicer.ExpandThroughNeighbors()
+	////slicer.TryDestuctShink()
+	//slicer.DestructShrinkHoles()
+	//slicer.TryDestuctShink()
 
 	// med: 98.60%
 	// slicer.ExpandThroughNeighbors()
@@ -62,28 +136,12 @@ func SearchSlices(piz *pizza.Pizza) {
 	// slicer.ExpandThroughShrink()
 	// slicer.TryDestuctShink()
 
-	// big: 92.42% mid: 99.19%
-	slicer.ExpandThroughNeighbors()
-	// slicer.ExpandThroughDestruction()
-	// slicer.ExpandThroughShrink()
-	// slicer.TryDestuctShink()
+	// big: 92.42% med: 99.19%
+	//brute1(slicer)
 
-	bestCover, _ := piz.Score()
+	// big: 00.00% med: 99.18%
+	//brute2(slicer)
 
-	for {
-		// slicer.ExpandThroughDestruction()
-		// slicer.ExpandThroughShrink()
-		slicer.TryDestuctShink()
-		slicer.ShakeSlices()
-
-		cover, _ := piz.Score()
-
-		fmt.Printf("############# cover=%d\n", cover)
-
-		if bestCover == cover {
-			break
-		}
-
-		bestCover = cover
-	}
+	// big: 00.00% med: 99.25%
+	brute3(slicer)
 }

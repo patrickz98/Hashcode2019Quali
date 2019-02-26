@@ -78,7 +78,11 @@ func (slicer *Slicer) ExpandThroughNeighbors() {
 
 	fmt.Println("Find best neighbors...")
 
-	for _, xy := range slicer.Pizza.Traversal() {
+	size := slicer.Pizza.Size()
+
+	for inx, xy := range slicer.Pizza.Traversal() {
+
+		fmt.Printf("--> neighbors %d/%d\r", size, inx)
 
 		if slicer.Pizza.HasSliceAt(xy) {
 			continue
@@ -90,6 +94,8 @@ func (slicer *Slicer) ExpandThroughNeighbors() {
 			slicer.AddSlices(neighbor.Slices)
 		}
 	}
+
+	fmt.Println()
 }
 
 func (slicer *Slicer) findBestNeighborCandidate(candidates map[pizza.Coordinate] *Neighbor) *Neighbor {
@@ -204,7 +210,7 @@ func (slicer *Slicer) ExpandThroughNeighborsIntelligent() {
 			covered += sli.Size()
 		}
 
-		fmt.Printf("covered=%d queue=%-6d\r", covered, len(queue),)
+		fmt.Printf("covered=%d queue=%-6d\r", covered, len(queue))
 	}
 
 	fmt.Println()
