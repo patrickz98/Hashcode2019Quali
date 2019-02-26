@@ -4,6 +4,7 @@ import (
 	"../pizza"
 	"../slicer"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -14,20 +15,20 @@ func main() {
 	start := time.Now()
 
 	// 100.00%
-	//inputPath := "../../input/a_example.in"
-	// submissionPath := "../../submissions/a_example.out"
+	inputPath := "../../input/a_example.in"
+	submissionPath := "../../submissions/a_example.out"
 
 	// 100.00%
-	//inputPath := "input/b_small.in"
-	// submissionPath := "../../submissions/b_small.out"
+	//inputPath := "../../input/b_small.in"
+	//submissionPath := "../../submissions/b_small.out"
 
 	// 99.33%
 	//inputPath := "../../input/c_medium.in"
-	// submissionPath := "../../submissions/c_medium.out"
+	//submissionPath := "../../submissions/c_medium.out"
 
 	// 93.06%
-	inputPath := "../../input/d_big.in"
-	// submissionPath := "../../submissions/d_big.out"
+	//inputPath := "../../input/d_big.in"
+	//submissionPath := "../../submissions/d_big.out"
 
 	piz := pizza.NewPizza(inputPath)
 
@@ -49,7 +50,7 @@ func main() {
 	// piz.CheckErrors()
 
 	// piz.PrintSlices(false)
-	// piz.CreateSubmission(submissionPath)
+	piz.CreateSubmission(submissionPath)
 	piz.PrintScore()
 
 	piz.PrintSlicesToFile(true, "yyy-marked.txt")
@@ -64,5 +65,6 @@ func main() {
 	// over.VectorPrint()
 
 	elapsed := time.Since(start)
-	fmt.Printf("Done: %s\n", elapsed)
+	//fmt.Printf("Done: %s\n", elapsed)
+	fmt.Fprintf(os.Stderr, "Done: %s\n", elapsed)
 }

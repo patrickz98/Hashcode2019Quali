@@ -4,6 +4,7 @@ import (
 	"../simple"
 	"fmt"
 	"io/ioutil"
+	"os"
 )
 
 type Coordinate struct {
@@ -206,9 +207,13 @@ func (pizza Pizza) PrintScore() {
 
 	count, score := pizza.Score()
 
-	fmt.Printf("Slices: %d\n", pizza.SliceCount())
-	fmt.Printf("Covered cells: %d/%d\n", pizza.Size(), count)
-	fmt.Printf("Percent: %.2f%%\n", score*100)
+	//fmt.Printf("Slices: %d\n", pizza.SliceCount())
+	//fmt.Printf("Covered cells: %d/%d\n", pizza.Size(), count)
+	//fmt.Printf("Percent: %.2f%%\n", score*100)
+
+	fmt.Fprintf(os.Stderr, "Slices: %d\n", pizza.SliceCount())
+	fmt.Fprintf(os.Stderr, "Covered cells: %d/%d\n", pizza.Size(), count)
+	fmt.Fprintf(os.Stderr, "Percent: %.2f%%\n", score*100)
 }
 
 func (pizza Pizza) VectorPrint(row Vector, column Vector) {

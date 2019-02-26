@@ -219,4 +219,6 @@ func (slicer *Slicer) ShakeHoles() {
 
 		fmt.Printf("--> shake %d/%d\r", holesLen, inx)
 	}
+
+	fmt.Println()
 }

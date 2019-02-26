@@ -82,7 +82,7 @@ func (slicer *Slicer) ExpandThroughNeighbors() {
 
 	for inx, xy := range slicer.Pizza.Traversal() {
 
-		fmt.Printf("--> neighbors %d/%d\r", size, inx)
+		fmt.Printf("--> neighbors %d/%d\r", size, inx + 1)
 
 		if slicer.Pizza.HasSliceAt(xy) {
 			continue
