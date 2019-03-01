@@ -1,4 +1,4 @@
-package main
+package show
 
 import (
 	"../simple"
@@ -29,7 +29,7 @@ func (this SlideParams) ScorePath() string {
 	return this.SubmissionPath() + ".score"
 }
 
-func Init(params SlideParams) SlideShow {
+func Init(params SlideParams) *SlideShow {
 	dat, err := ioutil.ReadFile(params.InputPath)
 	simple.CheckErr(err)
 
@@ -69,7 +69,7 @@ func Init(params SlideParams) SlideShow {
 		photos[ inx ] = photo
 	}
 
-	slideshow := SlideShow{
+	slideshow := &SlideShow{
 		Photos: photos,
 		params: params,
 	}

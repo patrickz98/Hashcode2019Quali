@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"../show"
+	"../slider"
+	"fmt"
+)
 
 func main()  {
 
@@ -9,46 +13,35 @@ func main()  {
 	inputDir := "../../input/"
 	submissionDir := "../../submissions/"
 
-	params := SlideParams{
-		InputPath: inputDir + "a_example.txt",
-		SubmissionDir: submissionDir,
-	}
+	//params := show.SlideParams{
+	//	InputPath: inputDir + "a_example.txt",
+	//	SubmissionDir: submissionDir,
+	//}
 
-	//params := SlideParams{
+	//params := show.SlideParams{
 	//	InputPath: inputDir + "b_lovely_landscapes.txt",
 	//	SubmissionDir: submissionDir,
 	//}
 
-	//params := SlideParams{
-	//	InputPath: inputDir + "c_memorable_moments.txt",
-	//	SubmissionDir: submissionDir,
-	//}
+	params := show.SlideParams{
+		InputPath: inputDir + "c_memorable_moments.txt",
+		SubmissionDir: submissionDir,
+	}
 
-	//params := SlideParams{
+	//params := show.SlideParams{
 	//	InputPath: inputDir + "d_pet_pictures.txt",
 	//	SubmissionDir: submissionDir,
 	//}
 
-	//params := SlideParams{
+	//params := show.SlideParams{
 	//	InputPath: inputDir + "e_shiny_selfies.txt",
 	//	SubmissionDir: submissionDir,
 	//}
 
-	slideshow := Init(params)
+	slideshow := show.Init(params)
 
-	S1 := &Slide{
-		Photos: []*Photo{slideshow.Photos[ 0 ]},
-	}
+	slider.Find(slideshow)
 
-	S2 := &Slide{
-		Photos: []*Photo{slideshow.Photos[ 3 ]},
-	}
-
-	S3 := &Slide{
-		Photos: []*Photo{slideshow.Photos[ 1 ], slideshow.Photos[ 2 ]},
-	}
-
-	slideshow.Slides = []*Slide{S1, S2, S3}
-	slideshow.InterestFactor()
+	//slideshow.InterestFactor()
 	slideshow.Submission()
 }

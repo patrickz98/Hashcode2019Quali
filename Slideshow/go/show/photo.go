@@ -1,4 +1,4 @@
-package main
+package show
 
 import (
 	"fmt"
@@ -10,6 +10,16 @@ type Photo struct {
 	Orientation string
 	Tags        *set.Set
 	TagsLen     int
+}
+
+func (this Photo) Horizontal() bool {
+
+	return this.Orientation == "H"
+}
+
+func (this Photo) Vertical() bool {
+
+	return this.Orientation == "V"
 }
 
 func (this Photo) Print() {

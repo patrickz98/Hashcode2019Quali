@@ -1,4 +1,4 @@
-package main
+package show
 
 import (
 	"github.com/golang-collections/collections/set"
