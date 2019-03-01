@@ -1,0 +1,4 @@
+Slices: 3
+Covered cells: 15/15
+Percent: 100.00%
+Done: 1.326673ms
