@@ -6,14 +6,33 @@ func main()  {
 
 	fmt.Println("Start")
 
+	inputDir := "../../input/"
+	submissionDir := "../../submissions/"
+
 	params := SlideParams{
-		InputPath: "../../input/a_example.txt",
-		SubmissionDir: "../../submissions/",
+		InputPath: inputDir + "a_example.txt",
+		SubmissionDir: submissionDir,
 	}
-	//inputPath := "../../input/b_lovely_landscapes.txt"
-	//inputPath := "../../input/c_memorable_moments.txt"
-	//inputPath := "../../input/d_pet_pictures.txt"
-	//inputPath := "../../input/e_shiny_selfies.txt"
+
+	//params := SlideParams{
+	//	InputPath: inputDir + "b_lovely_landscapes.txt",
+	//	SubmissionDir: submissionDir,
+	//}
+
+	//params := SlideParams{
+	//	InputPath: inputDir + "c_memorable_moments.txt",
+	//	SubmissionDir: submissionDir,
+	//}
+
+	//params := SlideParams{
+	//	InputPath: inputDir + "d_pet_pictures.txt",
+	//	SubmissionDir: submissionDir,
+	//}
+
+	//params := SlideParams{
+	//	InputPath: inputDir + "e_shiny_selfies.txt",
+	//	SubmissionDir: submissionDir,
+	//}
 
 	slideshow := Init(params)
 
