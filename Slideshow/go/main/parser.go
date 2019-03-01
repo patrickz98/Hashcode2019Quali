@@ -4,12 +4,33 @@ import (
 	"../simple"
 	"github.com/golang-collections/collections/set"
 	"io/ioutil"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
 
-func Init(path string) SlideShow {
-	dat, err := ioutil.ReadFile(path)
+type SlideParams struct {
+	InputPath string
+	SubmissionDir string
+}
+
+func (this SlideParams) FileName() string {
+
+	return filepath.Base(this.InputPath)
+}
+
+func (this SlideParams) SubmissionPath() string {
+
+	return this.SubmissionDir + this.FileName()
+}
+
+func (this SlideParams) ScorePath() string {
+
+	return this.SubmissionPath() + ".score"
+}
+
+func Init(params SlideParams) SlideShow {
+	dat, err := ioutil.ReadFile(params.InputPath)
 	simple.CheckErr(err)
 
 	lines := strings.SplitAfter(string(dat), "\n")
@@ -50,6 +71,7 @@ func Init(path string) SlideShow {
 
 	slideshow := SlideShow{
 		Photos: photos,
+		params: params,
 	}
 
 	return slideshow

@@ -6,13 +6,16 @@ func main()  {
 
 	fmt.Println("Start")
 
-	inputPath := "../../input/a_example.txt"
+	params := SlideParams{
+		InputPath: "../../input/a_example.txt",
+		SubmissionDir: "../../submissions/",
+	}
 	//inputPath := "../../input/b_lovely_landscapes.txt"
 	//inputPath := "../../input/c_memorable_moments.txt"
 	//inputPath := "../../input/d_pet_pictures.txt"
 	//inputPath := "../../input/e_shiny_selfies.txt"
 
-	slideshow := Init(inputPath)
+	slideshow := Init(params)
 
 	S1 := &Slide{
 		Photos: []*Photo{slideshow.Photos[ 0 ]},

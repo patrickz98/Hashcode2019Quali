@@ -8,8 +8,10 @@ import (
 )
 
 type SlideShow struct {
-	Photos []*Photo
-	Slides []*Slide
+	Photos         []*Photo
+	Slides         []*Slide
+	params         SlideParams
+	interestFactor int
 }
 
 func (this SlideShow) InterestFactor() int {
@@ -37,6 +39,8 @@ func (this SlideShow) InterestFactor() int {
 		score += transScore
 	}
 
+	this.interestFactor = score
+
 	return score
 }
 
@@ -59,6 +63,10 @@ func (this SlideShow) Submission() {
 	}
 
 	bytes := []byte(submissionStr)
-	err := ioutil.WriteFile("xxx.txt", bytes, 0644)
+	err := ioutil.WriteFile(this.params.SubmissionPath(), bytes, 0644)
+	simple.CheckErr(err)
+
+	bytes = []byte(fmt.Sprintf("Score: %d\n", this.interestFactor))
+	err = ioutil.WriteFile(this.params.ScorePath(), bytes, 0644)
 	simple.CheckErr(err)
 }
