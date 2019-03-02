@@ -37,3 +37,8 @@ func (this Slide) PhotoIDs() []int {
 
 	return result
 }
+
+func NewSlide(photos ...*Photo) *Slide {
+
+	return &Slide{Photos: photos}
+}
