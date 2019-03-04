@@ -3,11 +3,34 @@ package slider
 import (
 	"../show"
 	"fmt"
+	"github.com/golang-collections/collections/set"
 )
 
 
 type Slider struct {
 	Show *show.SlideShow
+}
+
+func (this *Slider) statistics() {
+
+	verticals := 0
+	horizontals := 0
+
+	length := len(this.Show.Photos)
+
+	for inx := 0; inx < length; inx++ {
+
+		photo := this.Show.Photos[ inx ]
+
+		if photo.Horizontal() {
+			horizontals++
+		} else {
+			verticals++
+		}
+	}
+
+	fmt.Println("verticals:", verticals)
+	fmt.Println("horizontals:", horizontals)
 }
 
 func (this *Slider) findVertical() {
@@ -33,14 +56,15 @@ func (this *Slider) findVertical() {
 
 func (this *Slider) findVCouples() {
 
-	couples := make([][]*show.Photo, 0)
+	//couples := make([][]*show.Photo, 0)
+	couples := set.New()
 
 	length := len(this.Show.Photos)
 
 	count := 0
 
 	for inx := 0; inx < length; inx++ {
-		fmt.Println("inx", inx)
+		fmt.Printf("inx=%d count=%d\n", inx, count)
 
 		for iny := inx + 1; iny < length; iny++ {
 
@@ -54,6 +78,8 @@ func (this *Slider) findVCouples() {
 			}
 
 			//slide := show.NewSlide(photo1, photo2)
+			//slide := []*show.Photo{photo1, photo2}
+			//couples.Insert(slide)
 
 			count++
 			//couples = append(couples, []*show.Photo{photo1, photo2})
@@ -62,7 +88,8 @@ func (this *Slider) findVCouples() {
 
 	//fmt.Println(couples)
 	fmt.Println("count:", count)
-	fmt.Println("couples:", len(couples))
+	//fmt.Println("couples:", len(couples))
+	fmt.Println("couples:", couples.Len())
 }
 
 func (this *Slider) merge(slides1 []*show.Slide, slides2 []*show.Slide) {
