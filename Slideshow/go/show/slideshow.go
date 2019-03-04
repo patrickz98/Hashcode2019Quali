@@ -12,32 +12,24 @@ type SlideShow struct {
 	params         SlideParams
 }
 
-func (this *SlideShow) InterestFactor() int {
+func (this *SlideShow) InterestFactorFor(slides []*Slide) int {
 
 	score := 0
 
-	for inx := 0; inx < len(this.Slides) - 1; inx++ {
+	for inx := 0; inx < len(slides) - 1; inx++ {
 
-		S1 := this.Slides[ inx ].Tags()
-		S2 := this.Slides[ inx + 1 ].Tags()
+		S1 := slides[ inx ]
+		S2 := slides[ inx + 1 ]
 
-		common  := S1.Intersection(S2)
-		S1NotS2 := S1.Difference(S2)
-		S2NotS1 := S2.Difference(S1)
-
-		fmt.Println(common)
-		fmt.Println(S1NotS2)
-		fmt.Println(S2NotS1)
-
-		transScore := simple.Min(
-			common.Len(),
-			S1NotS2.Len(),
-			S2NotS1.Len())
-
-		score += transScore
+		score += S1.InterestFactor(*S2)
 	}
 
 	return score
+}
+
+func (this *SlideShow) InterestFactor() int {
+
+	return this.InterestFactorFor(this.Slides)
 }
 
 func (this SlideShow) Submission() {
