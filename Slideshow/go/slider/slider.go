@@ -6,7 +6,7 @@ import (
 	"github.com/golang-collections/collections/set"
 )
 
-var splitfactor = 8
+var splitfactor = 4
 
 type Slider struct {
 	Show *show.SlideShow
@@ -359,7 +359,7 @@ func (this *Slider) find() {
 		slides[ inx ] = set.New()
 	}
 
-	for inx, photo := range this.Show.Photos[:4000] {
+	for inx, photo := range this.Show.Photos[:1000] {
 
 		if photo.Vertical() {
 			continue

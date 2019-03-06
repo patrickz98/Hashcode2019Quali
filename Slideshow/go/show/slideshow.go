@@ -54,4 +54,6 @@ func (this SlideShow) Submission() {
 
 	score := fmt.Sprintf("Score: %d\n", this.InterestFactor())
 	simple.Write(this.params.ScorePath(), score)
+
+	fmt.Println("Submission", this.params.SubmissionPath())
 }
