@@ -9,9 +9,10 @@ func Find(slideShow *show.SlideShow) {
 
 	slider := Slider{Show: slideShow}
 	//slider.findVertical()
-	slider.statistics()
+	//slider.statistics()
 	//slider.findVCouples()
-	//slider.find()
+	//slider.findRec()
+	slider.find()
 
 	fmt.Println("Interest-Factor: ", slideShow.InterestFactor())
 }
