@@ -6,8 +6,6 @@ import (
 	"github.com/golang-collections/collections/set"
 )
 
-var splitfactor = 4
-
 type Slider struct {
 	Show *show.SlideShow
 }
@@ -240,7 +238,7 @@ func (this *Slider) InterestFactorFor(slides [][]*show.Slide) int {
 	return this.Show.InterestFactorFor(mergerd)
 }
 
-func (this *Slider) findMerge(leftovers *set.Set, allCouples [][]*show.Slide, sync chan int) {
+func (this *Slider) findMerge(logtag string, leftovers *set.Set, allCouples [][]*show.Slide, sync chan int) {
 
 	//count := 0
 	//leftoverslen := leftovers.Len()
@@ -266,6 +264,8 @@ func (this *Slider) findMerge(leftovers *set.Set, allCouples [][]*show.Slide, sy
 		//fmt.Println("bestindex", bestindex)
 		//fmt.Println("bestcoupleindex", bestcoupleindex)
 
+		fmt.Println(logtag, "merge gain", gain)
+
 		couple := allCouples[ bestcoupleindex ]
 
 		part1 := append([]*show.Slide{}, couple[:bestindex]...)
@@ -283,6 +283,8 @@ func (this *Slider) findMerge(leftovers *set.Set, allCouples [][]*show.Slide, sy
 }
 
 func (this *Slider) findMergeAll(results... coupleSync) [][]*show.Slide {
+
+	splitfactor := 4
 
 	allCouples := make([][]*show.Slide, 0)
 	leftovers := set.New()
@@ -316,14 +318,23 @@ func (this *Slider) findMergeAll(results... coupleSync) [][]*show.Slide {
 	done := make(chan int, splitfactor)
 
 	for inx := 0; inx < splitfactor; inx++ {
-		go this.findMerge(splitLeftovers[ inx ], splitCouples[ inx ], done)
+		logtag := fmt.Sprintf("#%d", inx)
+		go this.findMerge(logtag, splitLeftovers[ inx ], splitCouples[ inx ], done)
 	}
+
+	mergeGain := 0
 
 	for inx := 0; inx < splitfactor; inx++ {
 
+		//<- done
+		//result := <- done
 		result := <- done
-		fmt.Println("merge gain", result)
+		//fmt.Println("merge gain", result)
+
+		mergeGain += result
 	}
+
+	fmt.Println("merge gain", mergeGain)
 
 	allCouples = make([][]*show.Slide, 0)
 	leftovers = set.New()
@@ -334,8 +345,7 @@ func (this *Slider) findMergeAll(results... coupleSync) [][]*show.Slide {
 		leftovers = leftovers.Union(splitLeftovers[ inx ])
 	}
 
-	fmt.Println("allCouples", len(allCouples))
-	fmt.Println("leftovers", leftovers.Len())
+	fmt.Println("allCouples", len(allCouples), "leftovers", leftovers.Len())
 
 	return allCouples
 }
@@ -353,13 +363,15 @@ func (this *Slider) commitSlides(results... []*show.Slide) {
 
 func (this *Slider) find() {
 
+	splitfactor := 8
+
 	slides := make([]*set.Set, splitfactor)
 
 	for inx := range slides {
 		slides[ inx ] = set.New()
 	}
 
-	for inx, photo := range this.Show.Photos[:1000] {
+	for inx, photo := range this.Show.Photos[:10000] {
 
 		if photo.Vertical() {
 			continue
