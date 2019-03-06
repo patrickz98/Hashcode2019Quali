@@ -144,7 +144,7 @@ func (this *Slider) findBestCouples(logtag string, slides *set.Set, done chan co
 		}
 
 		totalGain += bestGain
-		fmt.Println(logtag, "totalGain", totalGain)
+		fmt.Println(logtag, "totalGain", totalGain, "left", slides.Len())
 
 		couple := []*show.Slide{slide1, bestSlide}
 		couples = append(couples, couple)
@@ -238,7 +238,7 @@ func (this *Slider) InterestFactorFor(slides [][]*show.Slide) int {
 	return this.Show.InterestFactorFor(mergerd)
 }
 
-func (this *Slider) findMerge(results... coupleSync) {
+func (this *Slider) findMerge(results... coupleSync) [][]*show.Slide {
 
 	allCouples := make([][]*show.Slide, 0)
 	leftovers := set.New()
@@ -247,8 +247,6 @@ func (this *Slider) findMerge(results... coupleSync) {
 		allCouples = append(allCouples, result.couples...)
 		leftovers = leftovers.Union(result.leftovers)
 	}
-
-	fmt.Println("#### InterestFactorFor", this.InterestFactorFor(allCouples))
 
 	count := 0
 	leftoverslen := leftovers.Len()
@@ -284,12 +282,24 @@ func (this *Slider) findMerge(results... coupleSync) {
 	})
 
 	fmt.Println()
-	fmt.Println("#### InterestFactorFor", this.InterestFactorFor(allCouples))
+
+	return allCouples
+}
+
+func (this *Slider) commitSlides(results... []*show.Slide) {
+
+	newShow := make([]*show.Slide, 0)
+
+	for _, slideShow := range results {
+		newShow = append(newShow, slideShow...)
+	}
+
+	this.Show.Slides = newShow
 }
 
 func (this *Slider) find() {
 
-	splitfactor := 4
+	splitfactor := 8
 
 	slides := make([]*set.Set, splitfactor)
 
@@ -297,7 +307,7 @@ func (this *Slider) find() {
 		slides[ inx ] = set.New()
 	}
 
-	for inx, photo := range this.Show.Photos[:4000] {
+	for inx, photo := range this.Show.Photos[:40000] {
 
 		if photo.Vertical() {
 			continue
@@ -339,5 +349,9 @@ func (this *Slider) find() {
 
 	fmt.Println("total", total, "leftovers", totalLeft)
 
-	this.findMerge(results...)
+	mergedCouples := this.findMerge(results...)
+
+	fmt.Println("#### InterestFactorFor", this.InterestFactorFor(mergedCouples))
+
+	this.commitSlides(mergedCouples...)
 }
