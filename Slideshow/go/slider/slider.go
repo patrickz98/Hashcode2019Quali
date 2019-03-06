@@ -10,6 +10,12 @@ type Slider struct {
 	Show *show.SlideShow
 }
 
+type coupleSync struct {
+	couples           [][]*show.Slide
+	leftovers         *set.Set
+	interestingFactor int
+}
+
 func (this *Slider) statistics() {
 
 	verticals := 0
@@ -93,7 +99,7 @@ func (this *Slider) findVerticalCouples() {
 	//fmt.Println("couples:", couples.Len())
 }
 
-func (this *Slider) findBestCouples(logtag string, slides *set.Set, done chan int) {
+func (this *Slider) findBestCouples(logtag string, slides *set.Set, done chan coupleSync) {
 
 	couples := make([][]*show.Slide, 0)
 
@@ -138,7 +144,7 @@ func (this *Slider) findBestCouples(logtag string, slides *set.Set, done chan in
 		}
 
 		totalGain += bestGain
-		fmt.Println(logtag, "totalGain =", totalGain)
+		fmt.Println(logtag, "totalGain", totalGain)
 
 		couple := []*show.Slide{slide1, bestSlide}
 		couples = append(couples, couple)
@@ -146,21 +152,144 @@ func (this *Slider) findBestCouples(logtag string, slides *set.Set, done chan in
 		slides.Remove(bestSlide)
 	})
 
-	//fmt.Println(logtag, "couples =", len(couples))
-
-	commitSlices := make([]*show.Slide, 0)
-
-	for _, couple := range couples {
-		commitSlices = append(commitSlices, couple...)
+	result := coupleSync{
+		couples: couples,
+		leftovers: leftOvers,
+		interestingFactor: totalGain,
 	}
 
-	//fmt.Println(logtag, "interest factor:", this.Show.InterestFactorFor(commitSlices))
-	done <- this.Show.InterestFactorFor(commitSlices)
+	done <- result
+}
+
+func (this *Slider) findBestPositionIn(slides []*show.Slide, place *show.Slide) (factor int, index int) {
+
+	factor = 0
+	index = -1
+
+	for inx := 0; inx <= len(slides); inx++ {
+
+		lost := 0
+		gain := 0
+
+		if inx > 0 && inx < len(slides) {
+			pre := slides[ inx - 1 ]
+			cur := slides[ inx ]
+
+			lost += pre.InterestFactor(*cur)
+		}
+
+		// pre place
+		if inx > 0 {
+			slide := slides[ inx - 1 ]
+			gain += slide.InterestFactor(*place)
+		}
+
+		// post place
+		if inx < len(slides) {
+			slide := slides[ inx ]
+			gain += place.InterestFactor(*slide)
+		}
+
+		gain -= lost
+
+		if gain > factor {
+			factor = gain
+			index = inx
+		}
+	}
+
+	return factor, index
+}
+
+func (this *Slider) findBestInCouples(couples [][]*show.Slide, slide *show.Slide) (int, int, int) {
+
+	bestfactor := 0
+	bestindex := 0
+	bestcoupleindex := 0
+
+	for inx, couple := range couples {
+
+		factor, index := this.findBestPositionIn(couple, slide)
+
+		if factor <= 0 {
+			continue
+		}
+
+		if factor <= bestfactor {
+			continue
+		}
+
+		bestfactor = factor
+		bestindex = index
+		bestcoupleindex = inx
+	}
+
+	return bestfactor, bestindex, bestcoupleindex
+}
+
+func (this *Slider) InterestFactorFor(slides [][]*show.Slide) int {
+
+	mergerd := make([]*show.Slide, 0)
+
+	for _, slideShow := range slides {
+		mergerd = append(mergerd, slideShow...)
+	}
+
+	return this.Show.InterestFactorFor(mergerd)
+}
+
+func (this *Slider) findMerge(results... coupleSync) {
+
+	allCouples := make([][]*show.Slide, 0)
+	leftovers := set.New()
+
+	for _, result := range results {
+		allCouples = append(allCouples, result.couples...)
+		leftovers = leftovers.Union(result.leftovers)
+	}
+
+	fmt.Println("#### InterestFactorFor", this.InterestFactorFor(allCouples))
+
+	count := 0
+	leftoverslen := leftovers.Len()
+	gain := 0
+
+	leftovers.Do(func(val interface{}) {
+
+		count++
+		fmt.Printf("merge %4.1f%% gain %d\r", float32(count) / float32(leftoverslen) * 100, gain)
+
+		slide := val.(*show.Slide)
+
+		bestfactor, bestindex, bestcoupleindex := this.findBestInCouples(allCouples, slide)
+
+		if bestfactor <= 0 {
+			return
+		}
+
+		gain += bestfactor
+		//fmt.Println("gain", bestfactor)
+		//fmt.Println("bestindex", bestindex)
+		//fmt.Println("bestcoupleindex", bestcoupleindex)
+
+		couple := allCouples[ bestcoupleindex ]
+
+		part1 := append([]*show.Slide{}, couple[:bestindex]...)
+		part2 := append([]*show.Slide{}, couple[bestindex:]...)
+
+		tmp := append(part1, slide)
+		tmp = append(tmp, part2...)
+
+		allCouples[ bestcoupleindex ] = tmp
+	})
+
+	fmt.Println()
+	fmt.Println("#### InterestFactorFor", this.InterestFactorFor(allCouples))
 }
 
 func (this *Slider) find() {
 
-	splitfactor := 8
+	splitfactor := 4
 
 	slides := make([]*set.Set, splitfactor)
 
@@ -168,7 +297,7 @@ func (this *Slider) find() {
 		slides[ inx ] = set.New()
 	}
 
-	for inx, photo := range this.Show.Photos {
+	for inx, photo := range this.Show.Photos[:4000] {
 
 		if photo.Vertical() {
 			continue
@@ -184,24 +313,31 @@ func (this *Slider) find() {
 		fmt.Println(inx, "slide:", slide.Len())
 	}
 
-	done := make(chan int, splitfactor)
+	done := make(chan coupleSync, splitfactor)
 
 	for inx, slide := range slides {
 		logtag := fmt.Sprintf("#%d", inx)
 		go this.findBestCouples(logtag, slide, done)
 	}
 
-	results := make([]int, splitfactor)
+	results := make([]coupleSync, splitfactor)
 
 	total := 0
+	totalLeft := 0
 
 	for inx := 0; inx < splitfactor; inx++ {
-		factor := <- done
-		results[ inx ] = factor
 
+		result := <- done
+		results[ inx ] = result
+
+		factor := result.interestingFactor
 		total += factor
-		fmt.Println("Result", inx, ":", factor, "total =", total)
+		totalLeft += result.leftovers.Len()
+
+		fmt.Println("Result", inx, "factor", factor, "leftovers", result.leftovers.Len())
 	}
 
-	fmt.Println("total:", total)
+	fmt.Println("total", total, "leftovers", totalLeft)
+
+	this.findMerge(results...)
 }

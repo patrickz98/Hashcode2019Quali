@@ -8,6 +8,24 @@ import (
 
 func main()  {
 
+	//test := make([]int, 4)
+	//test[0] = 1
+	//test[1] = 2
+	//test[2] = 3
+	//test[3] = 4
+	//
+	//part1 := append([]int{}, test[:1]...)
+	//part2 := append([]int{}, test[1:]...)
+	//
+	//fmt.Println("part1", part1)
+	//fmt.Println("part2", part2)
+	//
+	//tmp := append(part1, 0)
+	//tmp = append(tmp, part2...)
+	//fmt.Println("tmp", tmp)
+	//
+	//os.Exit(0)
+
 	fmt.Println("Start")
 
 	inputDir := "../../input/"
